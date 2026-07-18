@@ -1,0 +1,37 @@
+[
+  {
+    "id": "navigation-config",
+    "links": [
+      {
+        "label": "Work",
+        "href": "/projects",
+        "visibility": true,
+        "external": false
+      },
+      {
+        "label": "About",
+        "href": "/about",
+        "visibility": true,
+        "external": false
+      },
+      {
+        "label": "Writing",
+        "href": "/blog",
+        "visibility": true,
+        "external": false
+      },
+      {
+        "label": "Experience",
+        "href": "/experience",
+        "visibility": true,
+        "external": false
+      },
+      {
+        "label": "Contact",
+        "href": "/contact",
+        "visibility": true,
+        "external": false
+      }
+    ]
+  }
+]

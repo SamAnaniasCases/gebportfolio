@@ -1,0 +1,26 @@
+[
+  {
+    "id": "site-config",
+    "name": "Sam Ananias",
+    "titleTemplate": "%s | Sam Ananias - Portfolio",
+    "description": "Professional engineering portfolio and architecture handbook of Sam Ananias.",
+    "canonicalURL": "https://samananias.com",
+    "locale": "en_US",
+    "socialLinks": [
+      {
+        "platform": "github",
+        "url": "https://github.com",
+        "label": "GitHub"
+      },
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com",
+        "label": "LinkedIn"
+      }
+    ],
+    "defaultImage": "/og-default.png",
+    "contactSettings": {
+      "email": "sam@samananias.com"
+    }
+  }
+]

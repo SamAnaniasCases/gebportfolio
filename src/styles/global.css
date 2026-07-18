@@ -1,0 +1,54 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+@theme {
+  /* Mapping Tailwind color theme variables to our CSS tokens */
+  --color-bg: var(--color-bg-raw);
+  --color-surface: var(--color-surface-raw);
+  --color-surface-subtle: var(--color-surface-subtle-raw);
+  --color-text: var(--color-text-raw);
+  --color-text-muted: var(--color-text-muted-raw);
+  --color-primary: var(--color-primary-raw);
+  --color-primary-hover: var(--color-primary-hover-raw);
+  --color-primary-active: var(--color-primary-active-raw);
+  --color-accent: var(--color-accent-raw);
+  --color-border-custom: var(--color-border-raw);
+  --color-focus: var(--color-focus-raw);
+
+  /* Radius mapping */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-pill: var(--radius-pill);
+
+  /* Font mapping */
+  --font-display: var(--font-sans-display);
+  --font-sans: var(--font-sans-body);
+  --font-mono: var(--font-mono);
+
+  /* Typography size mapping */
+  --text-display: var(--font-size-display);
+  --text-h1: var(--font-size-h1);
+  --text-h2: var(--font-size-h2);
+  --text-h3: var(--font-size-h3);
+  --text-h4: var(--font-size-h4);
+  --text-body-large: var(--font-size-body-large);
+  --text-body: var(--font-size-body);
+  --text-small: var(--font-size-small);
+  --text-caption: var(--font-size-caption);
+
+  /* Transitions */
+  --animate-reveal: reveal var(--transition-reveal) var(--ease-standard);
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
