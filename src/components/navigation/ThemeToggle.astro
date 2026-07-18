@@ -1,0 +1,49 @@
+---
+import { Sun, Moon } from "@lucide/astro";
+import Button from "../primitives/Button.astro";
+
+interface Props {
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { class: className = "", ...rest } = Astro.props;
+---
+
+<Button
+  id="theme-toggle"
+  variant="ghost"
+  size="sm"
+  class:list={["h-10 w-10 rounded-full p-0 select-none", className]}
+  aria-label="Toggle theme mode"
+  {...rest}
+>
+  <!-- Moon icon visible in light mode -->
+  <span class="flex items-center justify-center dark:hidden">
+    <Moon class="h-5 w-5 transition-transform duration-300 group-hover:rotate-12" />
+  </span>
+
+  <!-- Sun icon visible in dark mode -->
+  <span class="hidden items-center justify-center dark:flex">
+    <Sun class="h-5 w-5 transition-transform duration-300 group-hover:rotate-45" />
+  </span>
+</Button>
+
+<script>
+  const handleToggle = () => {
+    document.documentElement.classList.toggle("dark");
+  };
+
+  const setupToggle = () => {
+    const toggleBtn = document.getElementById("theme-toggle");
+    if (toggleBtn) {
+      toggleBtn.addEventListener("click", handleToggle);
+    }
+  };
+
+  // Setup on page load
+  setupToggle();
+
+  // Support View Transitions if added later
+  document.addEventListener("astro:after-swap", setupToggle);
+</script>

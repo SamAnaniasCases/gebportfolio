@@ -1,0 +1,89 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"button"> {
+  variant?: "primary" | "secondary" | "ghost" | "destructive" | "text";
+  size?: "sm" | "md" | "lg";
+  isLoading?: boolean;
+}
+
+const {
+  variant = "primary",
+  size = "md",
+  isLoading = false,
+  class: className = "",
+  disabled,
+  ...rest
+} = Astro.props;
+
+// Base styles including focus-visible configurations
+const baseStyles =
+  "relative inline-flex items-center justify-center font-sans font-medium transition-colors duration-200 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:opacity-50 disabled:pointer-events-none cursor-pointer";
+
+// Size mappings matching 36px, 44px, and 48px heights
+const sizeStyles = {
+  sm: "h-9 px-4 text-small",
+  md: "h-11 px-5 text-body",
+  lg: "h-12 px-6 text-body-large",
+};
+
+// Variant style mappings
+const variantStyles = {
+  primary:
+    "bg-primary text-bg hover:bg-primary-hover active:bg-primary-active border border-transparent",
+  secondary:
+    "bg-surface text-text border border-border-custom hover:bg-surface-subtle active:bg-accent",
+  ghost:
+    "bg-transparent text-text hover:bg-surface-subtle active:bg-accent border border-transparent",
+  destructive:
+    "bg-red-600 text-white hover:bg-red-700 active:bg-red-800 border border-transparent focus-visible:ring-red-500",
+  text: "bg-transparent text-primary hover:underline p-0 h-auto min-h-0 min-w-0 border-0 rounded-none focus-visible:ring-0 focus-visible:underline",
+};
+
+const classes = [
+  variant !== "text"
+    ? baseStyles
+    : "relative inline-flex items-center justify-center font-sans font-medium transition-colors duration-200 outline-none disabled:opacity-50 disabled:pointer-events-none cursor-pointer",
+  variant !== "text" ? sizeStyles[size] : "",
+  variantStyles[variant],
+  isLoading ? "pointer-events-none select-none" : "",
+  className,
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<button class={classes} disabled={disabled || isLoading} aria-busy={isLoading} {...rest}>
+  <!-- Loader spinner overlay -->
+  {
+    isLoading && (
+      <span class="absolute inset-0 flex items-center justify-center">
+        <svg
+          class="h-5 w-5 animate-spin text-current"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          />
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          />
+        </svg>
+      </span>
+    )
+  }
+
+  <!-- Label container that preserves width during loading -->
+  <span class:list={[{ "opacity-0": isLoading }, "flex items-center gap-2"]}>
+    <slot />
+  </span>
+</button>

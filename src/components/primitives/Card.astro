@@ -1,0 +1,82 @@
+---
+interface Props {
+  href?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { href, class: className = "", ...rest } = Astro.props;
+
+const classes = [
+  "relative flex flex-col overflow-hidden rounded-lg border border-border-custom bg-surface p-6",
+  "transition-[transform,box-shadow] duration-200 ease-standard",
+  href ? "hover:-translate-y-[2px] hover:shadow-md cursor-pointer group" : "",
+  className,
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<div class={classes} {...rest}>
+  {
+    Astro.slots.has("media") && (
+      <div class="border-border-custom -mx-6 -mt-6 mb-4 overflow-hidden border-b">
+        <slot name="media" />
+      </div>
+    )
+  }
+
+  {
+    Astro.slots.has("eyebrow") && (
+      <div class="text-caption text-text-muted mb-2 font-semibold tracking-wider uppercase">
+        <slot name="eyebrow" />
+      </div>
+    )
+  }
+
+  {
+    Astro.slots.has("title") && (
+      <h3 class="text-h3 font-display text-text group-hover:text-primary mb-2 font-bold transition-colors duration-200">
+        {href ? (
+          <a
+            href={href}
+            class="focus-visible:ring-focus outline-none after:absolute after:inset-0 after:z-10 after:rounded-lg focus:underline focus-visible:ring-2 focus-visible:ring-offset-2"
+          >
+            <slot name="title" />
+          </a>
+        ) : (
+          <slot name="title" />
+        )}
+      </h3>
+    )
+  }
+
+  {
+    Astro.slots.has("summary") && (
+      <div class="text-body text-text-muted mb-4 leading-relaxed">
+        <slot name="summary" />
+      </div>
+    )
+  }
+
+  <!-- Pushes action slots and metadata to the card bottom -->
+  <div class="mt-auto"></div>
+
+  {
+    Astro.slots.has("metadata") && (
+      <div class="text-small text-text-muted mb-3 flex flex-wrap gap-2">
+        <slot name="metadata" />
+      </div>
+    )
+  }
+
+  {
+    Astro.slots.has("actions") && (
+      <div class="relative z-20 flex items-center gap-4">
+        <slot name="actions" />
+      </div>
+    )
+  }
+
+  <slot />
+</div>

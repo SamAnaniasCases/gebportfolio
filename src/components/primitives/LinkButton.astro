@@ -1,0 +1,51 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"a"> {
+  variant?: "primary" | "secondary" | "ghost" | "destructive" | "text";
+  size?: "sm" | "md" | "lg";
+}
+
+const { variant = "primary", size = "md", class: className = "", ...rest } = Astro.props;
+
+// Base styles matching Button.astro
+const baseStyles =
+  "relative inline-flex items-center justify-center font-sans font-medium transition-colors duration-200 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-bg decoration-none select-none";
+
+// Sizing matching Button.astro
+const sizeStyles = {
+  sm: "h-9 px-4 text-small",
+  md: "h-11 px-5 text-body",
+  lg: "h-12 px-6 text-body-large",
+};
+
+// Variants matching Button.astro
+const variantStyles = {
+  primary:
+    "bg-primary text-bg hover:bg-primary-hover active:bg-primary-active border border-transparent",
+  secondary:
+    "bg-surface text-text border border-border-custom hover:bg-surface-subtle active:bg-accent",
+  ghost:
+    "bg-transparent text-text hover:bg-surface-subtle active:bg-accent border border-transparent",
+  destructive:
+    "bg-red-600 text-white hover:bg-red-700 active:bg-red-800 border border-transparent focus-visible:ring-red-500",
+  text: "bg-transparent text-primary hover:underline p-0 h-auto min-h-0 min-w-0 border-0 rounded-none focus-visible:ring-0 focus-visible:underline",
+};
+
+const classes = [
+  variant !== "text"
+    ? baseStyles
+    : "relative inline-flex items-center justify-center font-sans font-medium transition-colors duration-200 outline-none decoration-none",
+  variant !== "text" ? sizeStyles[size] : "",
+  variantStyles[variant],
+  className,
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<a class={classes} {...rest}>
+  <span class="flex items-center gap-2">
+    <slot />
+  </span>
+</a>

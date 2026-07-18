@@ -48,8 +48,8 @@
   --font-size-small: 0.875rem; /* 14px */
   --font-size-caption: 0.75rem; /* 12px */
 
-  --font-sans-display: "Manrope", Inter, ui-sans-serif, system-ui, sans-serif;
-  --font-sans-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans-display: "Manrope Variable", "Manrope", Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-sans-body: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
