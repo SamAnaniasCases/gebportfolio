@@ -95,12 +95,12 @@
     @apply leading-relaxed;
   }
   code {
-    @apply font-mono text-small bg-surface-subtle border-border-custom rounded px-1.5 py-0.5;
+    @apply text-small bg-surface-subtle border-border-custom rounded px-1.5 py-0.5 font-mono;
   }
   pre {
-    @apply bg-surface-subtle border-border-custom rounded-xl p-4 overflow-x-auto font-mono text-small mb-6;
+    @apply bg-surface-subtle border-border-custom text-small mb-6 overflow-x-auto rounded-xl p-4 font-mono;
     code {
-      @apply p-0 bg-transparent border-0 rounded-none;
+      @apply rounded-none border-0 bg-transparent p-0;
     }
   }
   blockquote {

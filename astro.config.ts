@@ -28,7 +28,7 @@ function syncSingletonsPlugin() {
       const obj = JSON.parse(dataStr);
       const wrapped = [{ id, ...obj }];
       isWriting = true;
-      fs.writeFileSync(srcPath, JSON.stringify(wrapped, null, 2));
+      fs.writeFileSync(srcPath, JSON.stringify(wrapped, null, 2) + "\n");
       setTimeout(() => {
         isWriting = false;
       }, 200);
@@ -50,7 +50,7 @@ function syncSingletonsPlugin() {
           if (Array.isArray(arr) && arr.length > 0) {
             const obj = { ...arr[0] };
             delete obj.id;
-            fs.writeFileSync(SITE_KS, JSON.stringify(obj, null, 2));
+            fs.writeFileSync(SITE_KS, JSON.stringify(obj, null, 2) + "\n");
           }
         }
       } catch (e) {
@@ -66,7 +66,7 @@ function syncSingletonsPlugin() {
           if (Array.isArray(arr) && arr.length > 0) {
             const obj = { ...arr[0] };
             delete obj.id;
-            fs.writeFileSync(NAV_KS, JSON.stringify(obj, null, 2));
+            fs.writeFileSync(NAV_KS, JSON.stringify(obj, null, 2) + "\n");
           }
         }
       } catch (e) {
