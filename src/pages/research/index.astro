@@ -1,0 +1,95 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/primitives/Container.astro";
+import LinkButton from "../../components/primitives/LinkButton.astro";
+import { getCollection } from "astro:content";
+import { BookOpen, User, Calendar, ExternalLink } from "@lucide/astro";
+
+// Fetch research entries
+const publications = await getCollection("research");
+const sortedPublications = publications.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+---
+
+<BaseLayout title="Research">
+  <Container width="default" class="animate-reveal space-y-12 py-12">
+    <!-- Header -->
+    <header class="border-border-custom border-b pb-6 space-y-3">
+      <h1 class="text-h1 font-display text-text font-bold tracking-tight">Research & Publications</h1>
+      <p class="text-body-large text-text-muted max-w-2xl leading-relaxed">
+        Academic papers, peer-reviewed telemetry indexing publications, and consensus simulations.
+      </p>
+    </header>
+
+    <!-- Research List -->
+    <div class="space-y-8">
+      {sortedPublications.map((pub) => {
+        const primaryLink = pub.data.publicationLinks?.[0];
+        return (
+          <div class="border-border-custom bg-surface rounded-2xl border p-6 space-y-4 transition-all duration-normal hover:shadow-sm">
+            <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
+              <div class="space-y-2">
+                <span class="text-caption text-text-muted font-mono uppercase tracking-wider flex items-center gap-1.5">
+                  <Calendar class="size-4" />
+                  {pub.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long" })}
+                  <span class="text-border-custom">|</span>
+                  <span class="capitalize">{pub.data.status.replace("_", " ")}</span>
+                </span>
+                <h2 class="text-h3 font-display text-text font-bold hover:text-primary transition-colors">
+                  <a href={`/research/${pub.id}`}>{pub.data.title}</a>
+                </h2>
+                <div class="flex items-center gap-1.5 text-small text-primary font-medium">
+                  <User class="size-4 shrink-0" />
+                  <span>
+                    Sam Ananias
+                    {pub.data.collaborators.length > 0 && `, ${pub.data.collaborators.join(", ")}`}
+                  </span>
+                </div>
+              </div>
+              {primaryLink && (
+                <LinkButton
+                  href={primaryLink.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  size="sm"
+                  variant="secondary"
+                  class="self-start shrink-0"
+                >
+                  {primaryLink.label}
+                  <ExternalLink class="size-3.5" />
+                </LinkButton>
+              )}
+            </div>
+
+            <div class="border-border-custom bg-surface-subtle border-l-4 pl-4 py-2 mt-4">
+              <h3 class="text-caption font-mono uppercase tracking-wider text-text font-semibold flex items-center gap-1.5 mb-1">
+                <BookOpen class="size-4 text-primary" />
+                Abstract
+              </h3>
+              <p class="text-small text-text-muted italic leading-relaxed">
+                {pub.data.abstract}
+              </p>
+            </div>
+
+            {pub.data.publicationLinks && pub.data.publicationLinks.length > 1 && (
+              <div class="flex flex-wrap gap-2 pt-2 items-center">
+                <span class="text-caption text-text-muted">Additional Links:</span>
+                {pub.data.publicationLinks.slice(1).map((link) => (
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-caption text-primary hover:underline font-medium"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  </Container>
+</BaseLayout>

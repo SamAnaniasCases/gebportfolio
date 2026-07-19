@@ -107,3 +107,11 @@
     @apply border-primary text-text-muted my-6 border-l-4 pl-4 italic;
   }
 }
+
+/* Table of Contents Highlight and Transition Utilities */
+.toc-link {
+  @apply text-caption text-text-muted hover:text-primary duration-150 block py-1 font-medium transition-colors;
+}
+.toc-link-active {
+  @apply text-primary border-primary border-l-2 pl-2 font-semibold;
+}

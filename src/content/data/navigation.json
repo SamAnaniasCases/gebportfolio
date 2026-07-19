@@ -16,7 +16,19 @@
       },
       {
         "label": "Writing",
-        "href": "/blog",
+        "href": "/posts",
+        "visibility": true,
+        "external": false
+      },
+      {
+        "label": "Research",
+        "href": "/research",
+        "visibility": true,
+        "external": false
+      },
+      {
+        "label": "Search",
+        "href": "/search",
         "visibility": true,
         "external": false
       },

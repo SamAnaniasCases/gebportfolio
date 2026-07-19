@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-07-19
+
+### Added
+
+- Blog writing index directory at `src/pages/posts/index.astro`.
+- Blog dynamic detail page at `src/pages/posts/[slug].astro` (with Table of Contents sidebar scroll-highlights).
+- Research index directory page at `src/pages/research/index.astro`.
+- Research detailed publication sheet page at `src/pages/research/[slug].astro`.
+- Search query lookup UI page at `src/pages/search.astro`.
+- Static Search JSON database compilation endpoint at `src/pages/search.json.ts`.
+- Dynamic RSS XML compilation feed endpoint at `src/pages/rss.xml.ts`.
+- Table of Contents link animations helper classes (`.toc-link`, `.toc-link-active`) in `src/styles/global.css`.
+- Seed posts and research entries for Welcome to Astro, Raft Simulation, and IEEE Telemetry Ingestion.
+
+### Changed
+
+- Fixed trailing newline conflicts in Vite `syncSingletonsPlugin` in `astro.config.ts`.
+- Removed unused imports (`Download`, `Grid`, `Card`) inside research components to pass ESLint tests.
+
 ## [0.4.0] - 2026-07-19
 
 ### Added

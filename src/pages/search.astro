@@ -1,0 +1,146 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/primitives/Container.astro";
+import { Search } from "@lucide/astro";
+---
+
+<BaseLayout title="Search Articles & Work">
+  <Container width="default" class="animate-reveal space-y-8 py-12">
+    <!-- Header -->
+    <header class="border-border-custom space-y-3 border-b pb-6">
+      <h1 class="text-h1 font-display text-text font-bold tracking-tight">Global Search</h1>
+      <p class="text-body-large text-text-muted max-w-2xl leading-relaxed">
+        Search across all technical write-ups, engineering case studies, and research publications.
+      </p>
+    </header>
+
+    <!-- Search Input Box -->
+    <div class="relative w-full max-w-3xl">
+      <span class="text-text-muted absolute inset-y-0 left-0 flex items-center pl-4">
+        <Search class="size-5" />
+      </span>
+      <input
+        type="search"
+        id="search-input"
+        placeholder="Type keywords (e.g. Rust, Raft, Telemetry) to filter..."
+        class="bg-surface border-border-custom text-text focus-visible:ring-focus text-body duration-fast w-full rounded-xl border py-3.5 pr-4 pl-11 transition-shadow outline-none focus-visible:ring-2"
+        autocomplete="off"
+      />
+    </div>
+
+    <!-- Search Status Indicator -->
+    <div id="search-status" class="text-small text-text-muted min-h-6 font-medium">
+      Type to search articles and cases...
+    </div>
+
+    <!-- Search Results Container -->
+    <div id="search-results" class="grid max-w-3xl grid-cols-1 gap-6 pt-2">
+      <!-- Search results will inject here dynamically -->
+    </div>
+  </Container>
+
+  <!-- Client-side Search Logic -->
+  <script is:inline>
+    const searchInput = document.getElementById("search-input");
+    const resultsContainer = document.getElementById("search-results");
+    const statusText = document.getElementById("search-status");
+
+    let searchIndex = null;
+    let isLoading = false;
+
+    // Load search index on input focus/interaction
+    const loadSearchIndex = () => {
+      if (searchIndex || isLoading) return;
+      isLoading = true;
+      statusText.innerText = "Loading search index...";
+
+      fetch("/search.json")
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch search index");
+          return res.json();
+        })
+        .then((data) => {
+          searchIndex = data;
+          isLoading = false;
+          statusText.innerText = `Index loaded. Search across ${data.length} entries.`;
+          // Run immediate filter in case user already typed
+          runSearch(searchInput.value);
+        })
+        .catch((err) => {
+          console.error(err);
+          statusText.innerText = "Error loading search database.";
+          isLoading = false;
+        });
+    };
+
+    const runSearch = (query) => {
+      if (!searchIndex) return;
+
+      const cleanQuery = query.trim().toLowerCase();
+      if (!cleanQuery) {
+        resultsContainer.innerHTML = "";
+        statusText.innerText = `Search across ${searchIndex.length} entries.`;
+        return;
+      }
+
+      // Filter matches
+      const matches = searchIndex.filter((item) => {
+        const titleMatch = item.title.toLowerCase().includes(cleanQuery);
+        const summaryMatch = item.summary.toLowerCase().includes(cleanQuery);
+        const tagsMatch = item.tags.some((t) => t.toLowerCase().includes(cleanQuery));
+        return titleMatch || summaryMatch || tagsMatch;
+      });
+
+      // Update status
+      statusText.innerText = `Found ${matches.length} matching result(s).`;
+
+      // Render matches
+      resultsContainer.innerHTML = matches
+        .map(
+          (item) => `
+          <a href="${item.url}" class="border-border-custom bg-surface rounded-xl border p-5 block transition-all duration-normal hover:shadow-sm hover:border-primary group">
+            <div class="flex items-center justify-between gap-3 mb-2">
+              <span class="text-[10px] font-semibold border rounded-full px-2 py-0.5 uppercase font-mono bg-primary/10 border-primary/20 text-primary">
+                ${item.type}
+              </span>
+              <span class="text-caption text-text-muted font-medium uppercase font-mono group-hover:text-primary transition-colors">
+                Read More →
+              </span>
+            </div>
+            <h3 class="text-body-large font-display text-text font-bold group-hover:text-primary transition-colors">
+              ${item.title}
+            </h3>
+            <p class="text-small text-text-muted mt-2 leading-relaxed line-clamp-2">
+              ${item.summary}
+            </p>
+            ${
+              item.tags.length > 0
+                ? `
+              <div class="flex flex-wrap gap-1 mt-3">
+                ${item.tags
+                  .map(
+                    (tag) => `
+                  <span class="bg-surface-subtle border-border-custom text-[10px] text-text-muted rounded border px-1.5 py-0.2 font-mono">
+                    ${tag}
+                  </span>
+                `
+                  )
+                  .join("")}
+              </div>
+            `
+                : ""
+            }
+          </a>
+        `
+        )
+        .join("");
+    };
+
+    // Attach listeners
+    searchInput.addEventListener("focus", loadSearchIndex);
+    searchInput.addEventListener("input", (e) => {
+      loadSearchIndex(); // Safeguard in case focus fired differently
+      runSearch(e.target.value);
+    });
+  </script>
+</BaseLayout>

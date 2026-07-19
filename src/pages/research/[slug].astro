@@ -1,0 +1,109 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/primitives/Container.astro";
+import LinkButton from "../../components/primitives/LinkButton.astro";
+import { getCollection, render } from "astro:content";
+import { ArrowLeft, BookOpen, User, Calendar, ExternalLink } from "@lucide/astro";
+
+export async function getStaticPaths() {
+  const research = await getCollection("research");
+  return research.map((pub) => ({
+    params: { slug: pub.id },
+    props: { pub },
+  }));
+}
+
+const { pub } = Astro.props;
+const { Content } = await render(pub);
+---
+
+<BaseLayout title={pub.data.title} description={pub.data.abstract}>
+  <Container width="default" class="animate-reveal space-y-12 py-12">
+    <!-- Back Navigation -->
+    <nav>
+      <a
+        href="/research"
+        class="text-small text-primary hover:text-primary-hover flex items-center gap-1 font-semibold transition-colors"
+      >
+        <ArrowLeft class="size-4" />
+        Back to Publications
+      </a>
+    </nav>
+
+    <!-- Header -->
+    <header class="border-border-custom space-y-6 border-b pb-8">
+      <span
+        class="text-caption text-text-muted flex items-center gap-1.5 font-mono tracking-wider uppercase"
+      >
+        <Calendar class="size-4" />
+        {pub.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long" })}
+        <span class="text-border-custom">|</span>
+        <span class="capitalize">{pub.data.status.replace("_", " ")}</span>
+      </span>
+
+      <h1 class="text-h1 font-display text-text leading-tight font-extrabold tracking-tight">
+        {pub.data.title}
+      </h1>
+
+      <div class="text-body text-primary flex items-center gap-1.5 font-semibold">
+        <User class="size-5 shrink-0" />
+        <span>
+          Sam Ananias
+          {pub.data.collaborators.length > 0 && `, ${pub.data.collaborators.join(", ")}`}
+        </span>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
+      <!-- Main Content and abstract -->
+      <div class="space-y-8 lg:col-span-2">
+        <!-- Abstract panel -->
+        <div class="border-border-custom bg-surface-subtle space-y-3 rounded-2xl border p-6">
+          <h3
+            class="text-caption text-text flex items-center gap-1.5 font-mono font-bold tracking-wider uppercase"
+          >
+            <BookOpen class="text-primary size-4" />
+            Executive Abstract
+          </h3>
+          <p class="text-body text-text-muted leading-relaxed whitespace-pre-line italic">
+            {pub.data.abstract}
+          </p>
+        </div>
+
+        <!-- Markdown body -->
+        <article
+          class="prose-custom text-body text-text-muted max-w-none space-y-6 leading-relaxed"
+        >
+          <Content />
+        </article>
+      </div>
+
+      <!-- Sidebar with publication links -->
+      <aside class="space-y-6">
+        {
+          pub.data.publicationLinks && pub.data.publicationLinks.length > 0 && (
+            <div class="border-border-custom bg-surface space-y-4 rounded-2xl border p-6">
+              <h3 class="text-h4 font-display text-text border-border-custom border-b pb-3 font-bold">
+                Publication Links
+              </h3>
+              <div class="flex flex-col gap-3">
+                {pub.data.publicationLinks.map((link) => (
+                  <LinkButton
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant="secondary"
+                    class="w-full justify-center gap-1.5"
+                  >
+                    {link.label}
+                    <ExternalLink class="size-4" />
+                  </LinkButton>
+                ))}
+              </div>
+            </div>
+          )
+        }
+      </aside>
+    </div>
+  </Container>
+</BaseLayout>

@@ -1,0 +1,194 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/primitives/Container.astro";
+import Card from "../../components/primitives/Card.astro";
+import { getCollection, render } from "astro:content";
+import { Calendar, Clock, Tag, ArrowLeft } from "@lucide/astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts");
+  // Exclude drafts from paths
+  const publicPosts = posts.filter((post) => !post.data.draft);
+  return publicPosts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+
+// Related articles algorithm
+const allPosts = await getCollection("posts");
+const otherPosts = allPosts.filter((p) => !p.data.draft && p.id !== post.id);
+const currentTags = post.data.tags ?? [];
+
+const relatedPosts = otherPosts
+  .map((p) => {
+    const matchCount = (p.data.tags ?? []).filter((t) => currentTags.includes(t)).length;
+    return { post: p, matchCount };
+  })
+  .filter((item) => item.matchCount > 0)
+  .sort(
+    (a, b) =>
+      b.matchCount - a.matchCount ||
+      b.post.data.publishedDate.getTime() - a.post.data.publishedDate.getTime()
+  )
+  .map((item) => item.post)
+  .slice(0, 3);
+---
+
+<BaseLayout title={post.data.title} description={post.data.excerpt}>
+  <Container width="default" class="animate-reveal space-y-12 py-12">
+    <!-- Back Navigation -->
+    <nav>
+      <a
+        href="/posts"
+        class="text-small text-primary hover:text-primary-hover flex items-center gap-1 font-semibold transition-colors"
+      >
+        <ArrowLeft class="size-4" />
+        Back to Articles
+      </a>
+    </nav>
+
+    <!-- Header -->
+    <header class="border-border-custom space-y-6 border-b pb-8">
+      <div class="text-small text-text-muted flex flex-wrap gap-x-6 gap-y-2 font-medium">
+        <span class="flex items-center gap-1.5">
+          <Calendar class="size-4" />
+          {
+            post.data.publishedDate.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+          }
+        </span>
+        <span class="flex items-center gap-1.5">
+          <Clock class="size-4" />
+          5 min read
+        </span>
+      </div>
+
+      <h1 class="text-h1 font-display text-text leading-tight font-extrabold tracking-tight">
+        {post.data.title}
+      </h1>
+      <p class="text-body-large text-text-muted max-w-3xl leading-relaxed">
+        {post.data.excerpt}
+      </p>
+
+      {
+        post.data.tags && post.data.tags.length > 0 && (
+          <div class="flex flex-wrap gap-1.5 pt-2">
+            {post.data.tags.map((tag) => (
+              <span class="bg-surface-subtle border-border-custom text-caption text-text-muted flex items-center gap-1 rounded border px-2.5 py-0.5 font-medium">
+                <Tag class="text-primary size-3" />
+                {tag}
+              </span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    <!-- Content Columns -->
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-4">
+      <!-- Main Article Content -->
+      <div class="lg:col-span-3">
+        <article
+          class="prose-custom text-body text-text-muted max-w-none space-y-6 leading-relaxed"
+        >
+          <Content />
+        </article>
+      </div>
+
+      <!-- Sticky Table of Contents Sidebar -->
+      {
+        headings.length > 0 && (
+          <aside class="hidden lg:col-span-1 lg:block">
+            <div class="border-border-custom sticky top-8 space-y-4 border-l pl-4">
+              <h4 class="text-caption text-text font-mono font-bold tracking-wider uppercase">
+                On this page
+              </h4>
+              <nav class="space-y-2" id="toc-nav">
+                {headings
+                  .filter((h) => h.depth >= 2 && h.depth <= 4)
+                  .map((h) => (
+                    <a
+                      href={`#${h.slug}`}
+                      class="toc-link transition-all"
+                      style={`padding-left: ${(h.depth - 2) * 8}px;`}
+                    >
+                      {h.text}
+                    </a>
+                  ))}
+              </nav>
+            </div>
+          </aside>
+        )
+      }
+    </div>
+
+    <!-- Related Articles -->
+    {
+      relatedPosts.length > 0 && (
+        <section class="border-border-custom space-y-8 border-t pt-16">
+          <h3 class="text-h3 font-display text-text font-bold">Related Articles</h3>
+          <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+            {relatedPosts.map((related) => (
+              <Card href={`/posts/${related.id}`}>
+                <span slot="eyebrow" class="text-caption font-mono tracking-wider uppercase">
+                  {related.data.publishedDate.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                  })}
+                </span>
+                <span slot="title">{related.data.title}</span>
+                <p slot="summary">{related.data.excerpt}</p>
+                {related.data.tags?.slice(0, 2).map((tag) => (
+                  <span
+                    slot="metadata"
+                    class="bg-surface-subtle border-border-custom text-caption text-text-muted rounded border px-2 py-0.5"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </Card>
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </Container>
+
+  <!-- Table of Contents Active Link Highlighter -->
+  <script is:inline>
+    const observerOptions = {
+      root: null,
+      rootMargin: "-100px 0px -60% 0px",
+      threshold: 0,
+    };
+
+    const links = document.querySelectorAll("#toc-nav a");
+    const headers = document.querySelectorAll(".prose-custom h2, .prose-custom h3");
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute("id");
+          links.forEach((link) => {
+            if (link.getAttribute("href") === `#${id}`) {
+              link.className = "toc-link toc-link-active";
+            } else {
+              link.className = "toc-link";
+            }
+          });
+        }
+      });
+    }, observerOptions);
+
+    headers.forEach((header) => {
+      observer.observe(header);
+    });
+  </script>
+</BaseLayout>
