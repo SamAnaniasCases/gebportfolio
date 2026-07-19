@@ -1,0 +1,131 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/primitives/Container.astro";
+import Button from "../components/primitives/Button.astro";
+import { getEntry } from "astro:content";
+import { Mail, Send, ShieldCheck } from "@lucide/astro";
+
+// Get Site Config Singleton
+const siteEntry = await getEntry("site", "site-config");
+const siteConfig = siteEntry?.data;
+---
+
+<BaseLayout title="Contact Me">
+  <Container width="default" class="animate-reveal space-y-12 py-12">
+    <!-- Header -->
+    <header class="border-border-custom space-y-3 border-b pb-6">
+      <h1 class="text-h1 font-display text-text font-bold tracking-tight">Get in Touch</h1>
+      <p class="text-body-large text-text-muted max-w-2xl leading-relaxed">
+        Have a question or want to collaborate on a systems engineering project? Drop me a message
+        below.
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-5">
+      <!-- Contact Info Sidebar -->
+      <div class="space-y-6 lg:col-span-2">
+        <div class="border-border-custom bg-surface space-y-6 rounded-2xl border p-6">
+          <h3 class="text-h4 font-display text-text border-border-custom border-b pb-3 font-bold">
+            Direct Contact
+          </h3>
+          <p class="text-body text-text-muted leading-relaxed">
+            I am generally responsive via email and usually get back to technical queries within
+            24–48 hours.
+          </p>
+
+          <div class="flex items-center gap-3">
+            <div
+              class="bg-surface-subtle border-border-custom text-primary shrink-0 rounded-lg border p-2"
+            >
+              <Mail class="size-5" />
+            </div>
+            <div>
+              <span class="text-caption text-text-muted block tracking-wider uppercase"
+                >Email Address</span
+              >
+              {
+                siteConfig?.contactSettings.email ? (
+                  <a
+                    href={`mailto:${siteConfig.contactSettings.email}`}
+                    class="text-body text-primary font-semibold hover:underline"
+                  >
+                    {siteConfig.contactSettings.email}
+                  </a>
+                ) : (
+                  <span class="text-body text-text font-medium">sam@samananias.com</span>
+                )
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="border-border-custom bg-surface-subtle space-y-3 rounded-2xl border p-6">
+          <h4 class="text-body font-display text-text flex items-center gap-2 font-bold">
+            <ShieldCheck class="text-primary size-5" />
+            Privacy Invariant
+          </h4>
+          <p class="text-small text-text-muted leading-relaxed">
+            Your data is stored locally inside this static form submittal. No third-party tracking
+            scripts or tracking cookies are enabled.
+          </p>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="lg:col-span-3">
+        <form
+          action={siteConfig?.contactSettings.formEndpoint ?? "#"}
+          method="POST"
+          class="border-border-custom bg-surface space-y-6 rounded-2xl border p-6"
+        >
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <!-- Name -->
+            <div class="space-y-2">
+              <label for="name" class="text-small text-text font-semibold">Your Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                placeholder="Sam Ananias"
+                class="bg-bg border-border-custom text-text focus-visible:ring-focus text-body duration-fast w-full rounded-lg border px-4 py-2.5 transition-shadow outline-none focus-visible:ring-2"
+              />
+            </div>
+
+            <!-- Email -->
+            <div class="space-y-2">
+              <label for="email" class="text-small text-text font-semibold">Email Address</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                placeholder="sam@example.com"
+                class="bg-bg border-border-custom text-text focus-visible:ring-focus text-body duration-fast w-full rounded-lg border px-4 py-2.5 transition-shadow outline-none focus-visible:ring-2"
+              />
+            </div>
+          </div>
+
+          <!-- Message -->
+          <div class="space-y-2">
+            <label for="message" class="text-small text-text font-semibold">Your Message</label>
+            <textarea
+              id="message"
+              name="message"
+              required
+              rows="6"
+              placeholder="Detail your request or engineering scope here..."
+              class="bg-bg border-border-custom text-text focus-visible:ring-focus text-body duration-fast w-full resize-y rounded-lg border px-4 py-2.5 transition-shadow outline-none focus-visible:ring-2"
+            ></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <Button type="submit" variant="primary" class="w-full sm:w-auto">
+            Send Message
+            <Send class="size-4" />
+          </Button>
+        </form>
+      </div>
+    </div>
+  </Container>
+</BaseLayout>

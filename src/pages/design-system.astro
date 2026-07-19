@@ -1,0 +1,248 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/primitives/Container.astro";
+import Grid from "../components/primitives/Grid.astro";
+import Button from "../components/primitives/Button.astro";
+import LinkButton from "../components/primitives/LinkButton.astro";
+import Card from "../components/primitives/Card.astro";
+import ThemeToggle from "../components/navigation/ThemeToggle.astro";
+---
+
+<BaseLayout title="Design System Showcase - Sam Ananias">
+  <Container width="default" class="animate-reveal space-y-16 py-12">
+    <!-- Header with Theme Toggle -->
+    <header
+      class="border-border-custom flex flex-col gap-4 border-b pb-8 md:flex-row md:items-center md:justify-between"
+    >
+      <div>
+        <h1 class="text-h1 font-display text-text font-bold tracking-tight">Design System</h1>
+        <p class="text-body-large text-text-muted mt-2">
+          Visual showcase of tokens, primitives, interactive components, and accessibility
+          baselines.
+        </p>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="text-small text-text-muted font-medium">Toggle Theme:</span>
+        <ThemeToggle />
+      </div>
+    </header>
+
+    <!-- Typography Section -->
+    <section class="space-y-6">
+      <h2 class="text-h2 font-display border-border-custom border-b pb-2 font-bold">
+        1. Typography
+      </h2>
+      <div class="space-y-6">
+        <div>
+          <span class="text-caption text-text-muted mb-1 block">Display (48px - 80px)</span>
+          <p class="text-display font-display text-text leading-none font-bold tracking-tight">
+            Display Heading
+          </p>
+        </div>
+        <div>
+          <span class="text-caption text-text-muted mb-1 block">H1 (40px - 64px)</span>
+          <p class="text-h1 font-display text-text font-bold tracking-tight">Heading Level 1</p>
+        </div>
+        <div>
+          <span class="text-caption text-text-muted mb-1 block">H2 (32px - 48px)</span>
+          <p class="text-h2 font-display text-text font-bold">Heading Level 2</p>
+        </div>
+        <div>
+          <span class="text-caption text-text-muted mb-1 block">H3 (24px - 32px)</span>
+          <p class="text-h3 font-display text-text font-bold">Heading Level 3</p>
+        </div>
+        <div>
+          <span class="text-caption text-text-muted mb-1 block">H4 (20px - 24px)</span>
+          <p class="text-h4 font-display text-text font-semibold">Heading Level 4</p>
+        </div>
+        <div>
+          <span class="text-caption text-text-muted mb-1 block">Body Large (18px - 20px)</span>
+          <p class="text-body-large text-text">
+            This is body-large text used for lead paragraphs. Standard measure targets comfortable
+            readability.
+          </p>
+        </div>
+        <div>
+          <span class="text-caption text-text-muted mb-1 block">Body (16px - 18px)</span>
+          <p class="text-body text-text-muted leading-relaxed">
+            This is standard body copy text. Our typographic rhythm keeps line lengths between 60 to
+            75 characters (~68ch target) to optimize scanning speeds and eye tracking fatigue across
+            responsive viewports.
+          </p>
+        </div>
+        <div>
+          <span class="text-caption text-text-muted mb-1 block">Small (14px) & Caption (12px)</span>
+          <div class="flex items-center gap-6">
+            <span class="text-small text-text-muted font-medium">Small label metadata</span>
+            <span class="text-caption text-text-muted font-semibold tracking-wider uppercase"
+              >Caption tag</span
+            >
+          </div>
+        </div>
+        <div>
+          <span class="text-caption text-text-muted mb-1 block">Technical Monospace</span>
+          <code
+            class="text-mono text-small bg-surface-subtle border-border-custom rounded border px-2 py-1"
+          >
+            const devMode = true;
+          </code>
+        </div>
+      </div>
+    </section>
+
+    <!-- Colors Section -->
+    <section class="space-y-6">
+      <h2 class="text-h2 font-display border-border-custom border-b pb-2 font-bold">
+        2. Color Palette
+      </h2>
+      <Grid cols="2 md:4 lg:5" gap="4">
+        <div class="bg-bg border-border-custom rounded-lg border p-4">
+          <div class="bg-bg border-border-custom mb-2 h-12 w-full rounded border"></div>
+          <span class="text-small text-text block font-semibold">bg</span>
+          <span class="text-caption text-text-muted">Canvas background</span>
+        </div>
+        <div class="bg-surface border-border-custom rounded-lg border p-4">
+          <div class="bg-surface border-border-custom mb-2 h-12 w-full rounded border"></div>
+          <span class="text-small text-text block font-semibold">surface</span>
+          <span class="text-caption text-text-muted">Cards & surfaces</span>
+        </div>
+        <div class="bg-surface-subtle border-border-custom rounded-lg border p-4">
+          <div class="bg-surface-subtle border-border-custom mb-2 h-12 w-full rounded border"></div>
+          <span class="text-small text-text block font-semibold">surface-subtle</span>
+          <span class="text-caption text-text-muted">Secondary blocks</span>
+        </div>
+        <div class="bg-surface border-border-custom rounded-lg border p-4">
+          <div class="bg-primary mb-2 h-12 w-full rounded"></div>
+          <span class="text-small text-text block font-semibold">primary</span>
+          <span class="text-caption text-text-muted">Brand accents</span>
+        </div>
+        <div class="bg-surface border-border-custom rounded-lg border p-4">
+          <div class="bg-accent mb-2 h-12 w-full rounded"></div>
+          <span class="text-small text-text block font-semibold">accent</span>
+          <span class="text-caption text-text-muted">Restrained fills</span>
+        </div>
+      </Grid>
+    </section>
+
+    <!-- Interactive Controls Section -->
+    <section class="space-y-6">
+      <h2 class="text-h2 font-display border-border-custom border-b pb-2 font-bold">
+        3. Interactive Controls
+      </h2>
+
+      <div class="space-y-8">
+        <!-- Variants -->
+        <div>
+          <h3 class="text-h4 font-display mb-4 font-semibold">Button Variants</h3>
+          <div class="flex flex-wrap items-center gap-4">
+            <Button variant="primary">Primary Action</Button>
+            <Button variant="secondary">Secondary Action</Button>
+            <Button variant="ghost">Ghost Option</Button>
+            <Button variant="destructive">Destructive Action</Button>
+            <Button variant="text">Text Button Link</Button>
+          </div>
+        </div>
+
+        <!-- Sizes -->
+        <div>
+          <h3 class="text-h4 font-display mb-4 font-semibold">Button Sizing</h3>
+          <div class="flex flex-wrap items-center gap-4">
+            <Button variant="primary" size="sm">Small Target (36px)</Button>
+            <Button variant="primary" size="md">Medium Target (44px)</Button>
+            <Button variant="primary" size="lg">Large Target (48px)</Button>
+          </div>
+        </div>
+
+        <!-- States -->
+        <div>
+          <h3 class="text-h4 font-display mb-4 font-semibold">States</h3>
+          <div class="flex flex-wrap items-center gap-4">
+            <Button variant="primary" isLoading={true}>Save Configuration</Button>
+            <Button variant="secondary" isLoading={true}>Secondary Loading</Button>
+            <Button variant="primary" disabled={true}>Action Disabled</Button>
+            <Button variant="secondary" disabled={true}>Secondary Disabled</Button>
+          </div>
+        </div>
+
+        <!-- Link Buttons -->
+        <div>
+          <h3 class="text-h4 font-display mb-4 font-semibold">Link Buttons (Semantic Jumps)</h3>
+          <div class="flex flex-wrap items-center gap-4">
+            <LinkButton href="#navigation" variant="primary">Link Primary</LinkButton>
+            <LinkButton href="#navigation" variant="secondary">Link Secondary</LinkButton>
+            <LinkButton href="#navigation" variant="ghost">Link Ghost</LinkButton>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Composable Cards Section -->
+    <section class="space-y-6">
+      <h2 class="text-h2 font-display border-border-custom border-b pb-2 font-bold">
+        4. Cards & Compositions
+      </h2>
+
+      <Grid cols="1 md:2 lg:3" gap="6">
+        <!-- Composable Card 1 (Clickable Case Study) -->
+        <Card href="/projects/case-study-1">
+          <div
+            slot="media"
+            class="bg-primary/20 text-text-muted font-display flex aspect-[16/9] items-center justify-center font-bold"
+          >
+            Project Visual (16:9)
+          </div>
+          <span slot="eyebrow">Case Study · 2026</span>
+          <span slot="title">Distributed Logging Engine</span>
+          <p slot="summary">
+            A high-performance systems engineering project that implements structured logs
+            aggregation across edge nodes with under 5ms replication latency.
+          </p>
+          <span
+            slot="metadata"
+            class="bg-surface-subtle border-border-custom text-caption rounded border px-2 py-0.5"
+            >Rust</span
+          >
+          <span
+            slot="metadata"
+            class="bg-surface-subtle border-border-custom text-caption rounded border px-2 py-0.5"
+            >WebAssembly</span
+          >
+        </Card>
+
+        <!-- Composable Card 2 (Information Card) -->
+        <Card>
+          <span slot="eyebrow">Certification</span>
+          <span slot="title">AWS Cloud Architect Solutions</span>
+          <p slot="summary">
+            Formal recognition of architecture best practices on AWS, focusing on decoupled
+            multi-tenant serverless deployment structures.
+          </p>
+          <div slot="actions">
+            <LinkButton
+              href="https://aws.amazon.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              size="sm"
+              variant="secondary"
+            >
+              Verify Credential
+            </LinkButton>
+          </div>
+        </Card>
+
+        <!-- Composable Card 3 (Blog Post Card) -->
+        <Card href="/posts/designing-with-tokens">
+          <span slot="eyebrow">Technical Article</span>
+          <span slot="title">Why I Adopted Tailwind CSS v4</span>
+          <p slot="summary">
+            Deep-dive review of CSS-first styling configurations, compiling brand systems directly
+            in CSS stylesheets, and dropping heavy configuration loaders.
+          </p>
+          <span slot="metadata" class="text-caption text-primary font-semibold uppercase"
+            >Read Article →</span
+          >
+        </Card>
+      </Grid>
+    </section>
+  </Container>
+</BaseLayout>

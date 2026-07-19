@@ -1,0 +1,172 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/primitives/Container.astro";
+import Grid from "../components/primitives/Grid.astro";
+import Card from "../components/primitives/Card.astro";
+import LinkButton from "../components/primitives/LinkButton.astro";
+import { getEntry, getCollection } from "astro:content";
+import { Cpu, CodeXml, Server, Award } from "@lucide/astro";
+
+// Get Page Singleton
+const aboutPage = await getEntry("pages", "about");
+const pageData = aboutPage?.data;
+const sections = pageData?.sections ?? [];
+
+// Get skills
+const skills = await getCollection("skills");
+const sortedSkills = skills.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+// Group skills by category
+const skillsByCategory = sortedSkills.reduce(
+  (acc, skill) => {
+    const category = skill.data.category;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(skill);
+    return acc;
+  },
+  {} as Record<string, typeof skills>
+);
+
+// Get achievements
+const achievements = await getCollection("achievements");
+const sortedAchievements = achievements.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+// Icon map for skills
+const iconMap = {
+  cpu: Cpu,
+  "code-xml": CodeXml,
+  server: Server,
+};
+---
+
+<BaseLayout title="About Me">
+  <Container width="default" class="animate-reveal space-y-16 py-12">
+    <!-- Bio Section -->
+    <header class="border-border-custom space-y-4 border-b pb-8">
+      <h1 class="text-h1 font-display text-text font-bold tracking-tight">
+        {pageData?.title ?? "About Me"}
+      </h1>
+      <p class="text-body-large text-text-muted max-w-3xl leading-relaxed">
+        Engineering premium developer tools, performance-first cloud infrastructures, and
+        high-frequency replication engines.
+      </p>
+    </header>
+
+    <!-- Content Sections from JSON -->
+    <Grid cols="1 md:2" gap="8">
+      {
+        sections
+          .sort((a, b) => a.order - b.order)
+          .map((sec) => (
+            <div class="space-y-3">
+              <h2 class="text-h3 font-display text-text font-bold">{sec.heading}</h2>
+              <p class="text-body text-text-muted leading-relaxed whitespace-pre-line">
+                {sec.content}
+              </p>
+            </div>
+          ))
+      }
+    </Grid>
+
+    <!-- Skills Taxonomy -->
+    <section class="border-border-custom space-y-8 border-t pt-12">
+      <div class="space-y-2">
+        <h2 class="text-h2 font-display text-text font-bold tracking-tight">
+          Technical Competencies
+        </h2>
+        <p class="text-body text-text-muted">
+          A structured taxonomy of my core engineering capabilities.
+        </p>
+      </div>
+
+      <div class="space-y-12">
+        {
+          Object.entries(skillsByCategory).map(([category, items]) => (
+            <div class="space-y-6">
+              <h3 class="text-h3 font-display text-primary border-border-custom border-b pb-2 font-bold">
+                {category}
+              </h3>
+              <Grid cols="1 md:2 lg:3" gap="6">
+                {items.map((skill) => {
+                  const SkillIcon =
+                    skill.data.iconKey && skill.data.iconKey in iconMap
+                      ? iconMap[skill.data.iconKey as keyof typeof iconMap]
+                      : CodeXml;
+                  return (
+                    <div class="border-border-custom bg-surface duration-fast flex items-start gap-4 rounded-xl border p-5 transition-all hover:shadow-sm">
+                      {SkillIcon && (
+                        <div class="bg-surface-subtle border-border-custom text-primary shrink-0 rounded-lg border p-2">
+                          <SkillIcon class="size-6" />
+                        </div>
+                      )}
+                      <div class="space-y-1">
+                        <h4 class="text-body font-display text-text font-bold">
+                          {skill.data.name}
+                        </h4>
+                        {skill.data.years && (
+                          <span class="text-caption text-text-muted block font-mono font-semibold">
+                            {skill.data.years} Years Exp
+                          </span>
+                        )}
+                        <p class="text-small text-text-muted mt-2 leading-relaxed">
+                          {skill.data.proficiencyEvidence}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </Grid>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Achievements & Credentials -->
+    <section class="border-border-custom space-y-8 border-t pt-12">
+      <div class="space-y-2">
+        <h2 class="text-h2 font-display text-text font-bold tracking-tight">
+          Certifications & Credentials
+        </h2>
+        <p class="text-body text-text-muted">
+          Verified validation of cloud, security, and systems engineering standards.
+        </p>
+      </div>
+
+      <Grid cols="1 md:2" gap="6">
+        {
+          sortedAchievements.map((ach) => (
+            <Card>
+              <span slot="eyebrow" class="text-caption font-mono tracking-wide uppercase">
+                {ach.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long" })}
+              </span>
+              <span slot="title">{ach.data.title}</span>
+              <p slot="summary">{ach.data.description}</p>
+              <div slot="actions" class="flex items-center gap-4">
+                <span class="text-small text-text-muted bg-surface-subtle border-border-custom flex items-center gap-1.5 rounded-full border px-3 py-1 font-medium">
+                  <Award class="text-primary size-4" />
+                  {ach.data.issuer}
+                </span>
+                {ach.data.evidenceURL && (
+                  <LinkButton
+                    href={ach.data.evidenceURL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    size="sm"
+                    variant="secondary"
+                  >
+                    Verify
+                  </LinkButton>
+                )}
+              </div>
+            </Card>
+          ))
+        }
+      </Grid>
+    </section>
+  </Container>
+</BaseLayout>

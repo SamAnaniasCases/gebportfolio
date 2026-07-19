@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { getEntry } from "astro:content";
 
 interface Props {
   title?: string;
@@ -9,13 +10,40 @@ interface Props {
   type?: "website" | "article";
 }
 
+// Fetch site-wide configuration singletons
+const siteEntry = await getEntry("site", "site-config");
+const navEntry = await getEntry("navigation", "navigation-config");
+
+const siteConfig = siteEntry?.data;
+const navLinks = navEntry?.data?.links ?? [];
+
 const {
-  title = "Sam Ananias - Portfolio",
-  description = "Architecture, design, and engineering handbook of Sam Ananias.",
-  image = "/og-default.png",
-  canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin),
+  title,
+  description = siteConfig?.description ??
+    "Architecture, design, and engineering handbook of Sam Ananias.",
+  image = siteConfig?.defaultImage ?? "/og-default.png",
+  canonicalURL = new URL(Astro.url.pathname, siteConfig?.canonicalURL ?? Astro.url.origin),
   type = "website",
 } = Astro.props;
+
+// Determine tab title using template
+const formattedTitle = title
+  ? siteConfig?.titleTemplate
+    ? siteConfig.titleTemplate.replace("%s", title)
+    : `${title} | Sam Ananias`
+  : (siteConfig?.name ?? "Sam Ananias");
+
+const currentPath = Astro.url.pathname;
+const isCurrent = (href: string) => {
+  if (href === "/") {
+    return currentPath === "/";
+  }
+  // Strip trailing slashes to avoid mismatches
+  const cleanPath =
+    currentPath.endsWith("/") && currentPath.length > 1 ? currentPath.slice(0, -1) : currentPath;
+  const cleanHref = href.endsWith("/") && href.length > 1 ? href.slice(0, -1) : href;
+  return cleanPath === cleanHref || cleanPath.startsWith(cleanHref + "/");
+};
 ---
 
 <!doctype html>
@@ -29,21 +57,21 @@ const {
     <meta name="generator" content={Astro.generator} />
 
     <!-- SEO Meta Tags -->
-    <title>{title}</title>
+    <title>{formattedTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content={type} />
     <meta property="og:url" content={canonicalURL} />
-    <meta property="og:title" content={title} />
+    <meta property="og:title" content={formattedTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={new URL(image, Astro.url.origin)} />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={canonicalURL} />
-    <meta property="twitter:title" content={title} />
+    <meta property="twitter:title" content={formattedTitle} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={new URL(image, Astro.url.origin)} />
 
@@ -94,9 +122,31 @@ const {
           href="/"
           class="text-h4 font-display hover:text-primary duration-fast font-bold transition-colors"
         >
-          Sam Ananias
+          {siteConfig?.name ?? "Sam Ananias"}
         </a>
         <nav class="flex items-center gap-6">
+          {
+            navLinks
+              .filter((link) => link.visibility !== false)
+              .map((link) => {
+                const active = isCurrent(link.href);
+                return (
+                  <a
+                    href={link.href}
+                    target={link.external ? "_blank" : undefined}
+                    rel={link.external ? "noopener noreferrer" : undefined}
+                    class={`text-small duration-fast transition-colors ${
+                      active
+                        ? "text-primary font-semibold"
+                        : "text-text-muted hover:text-text font-medium"
+                    }`}
+                    aria-current={active ? "page" : undefined}
+                  >
+                    {link.label}
+                  </a>
+                );
+              })
+          }
           <slot name="navigation" />
         </nav>
       </div>
@@ -116,7 +166,10 @@ const {
       <div
         class="text-small text-text-muted mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row"
       >
-        <p>&copy; {new Date().getFullYear()} Sam Ananias. All rights reserved.</p>
+        <p>
+          &copy; {new Date().getFullYear()}
+          {siteConfig?.name ?? "Sam Ananias"}. All rights reserved.
+        </p>
         <p class="text-caption font-mono">Official source of truth · Version 1.0.0</p>
       </div>
     </footer>

@@ -1,0 +1,13 @@
+organization: Google
+role: Lead Systems Engineer
+start: "2024-01"
+end: ""
+location: Mountain View, CA
+summary: Architecting distributed telemetry services and performance logging frameworks across internal compute clusters.
+achievements:
+  - Designed zero-alloc log serialization hooks, decreasing system overhead by 18%.
+  - Mentored 5 mid-level developers on Rust systems implementation and lock-free data structures.
+skills:
+  - rust
+  - kubernetes
+order: 1

@@ -1,0 +1,176 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/primitives/Container.astro";
+import LinkButton from "../../components/primitives/LinkButton.astro";
+import { getCollection, render } from "astro:content";
+import { Calendar, Briefcase, Tag, Link as LinkIcon, Award } from "@lucide/astro";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+
+// Fetch skills to map stack references to human-readable names
+const skills = await getCollection("skills");
+const skillMap = new Map(skills.map((s) => [s.id, s.data.name]));
+---
+
+<BaseLayout title={project.data.title} description={project.data.summary}>
+  <Container width="default" class="animate-reveal space-y-12 py-12">
+    <!-- Back to archive link -->
+    <nav>
+      <a
+        href="/projects"
+        class="text-small text-primary hover:text-primary-hover font-semibold transition-colors"
+      >
+        ← Back to Projects
+      </a>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="space-y-6">
+      <div class="flex flex-wrap items-center gap-3">
+        <span
+          class={`text-[10px] font-semibold border rounded-full px-2.5 py-0.5 uppercase tracking-wider ${
+            project.data.status === "completed"
+              ? "bg-green-500/10 border-green-500/20 text-green-600 dark:text-green-400"
+              : project.data.status === "active"
+                ? "bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400"
+                : "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400"
+          }`}
+        >
+          {project.data.status}
+        </span>
+        {
+          project.data.featured && (
+            <span class="bg-primary/10 border-primary/20 text-primary rounded-full border px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase">
+              Featured
+            </span>
+          )
+        }
+      </div>
+
+      <h1 class="text-h1 font-display text-text leading-tight font-extrabold tracking-tight">
+        {project.data.title}
+      </h1>
+      <p class="text-body-large text-text-muted max-w-3xl leading-relaxed">
+        {project.data.summary}
+      </p>
+    </header>
+
+    <!-- Metadata Grid & Details Sidebar -->
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+      <!-- Main Markdown Content -->
+      <div class="space-y-8 lg:col-span-2">
+        <article
+          class="prose-custom text-body text-text-muted max-w-none space-y-6 leading-relaxed"
+        >
+          <Content />
+        </article>
+
+        {
+          project.data.outcomes && project.data.outcomes.length > 0 && (
+            <div class="border-border-custom bg-surface space-y-4 rounded-2xl border p-6">
+              <h3 class="text-h3 font-display text-text flex items-center gap-2 font-bold">
+                <Award class="text-primary size-6" />
+                Key Project Outcomes
+              </h3>
+              <ul class="space-y-3">
+                {project.data.outcomes.map((outcome) => (
+                  <li class="text-body text-text-muted flex items-start gap-2">
+                    <span class="text-primary mt-1 shrink-0 font-bold">•</span>
+                    <span>{outcome}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </div>
+
+      <!-- Sidebar Metadata -->
+      <aside class="space-y-6">
+        <div class="border-border-custom bg-surface space-y-6 rounded-2xl border p-6">
+          <h3 class="text-h4 font-display text-text border-border-custom border-b pb-3 font-bold">
+            Project Metadata
+          </h3>
+
+          <!-- Role -->
+          <div class="flex items-start gap-3">
+            <Briefcase class="text-text-muted mt-1 size-5 shrink-0" />
+            <div>
+              <span class="text-caption text-text-muted block tracking-wider uppercase">Role</span>
+              <span class="text-body text-text font-medium">{project.data.role}</span>
+            </div>
+          </div>
+
+          <!-- Dates -->
+          <div class="flex items-start gap-3">
+            <Calendar class="text-text-muted mt-1 size-5 shrink-0" />
+            <div>
+              <span class="text-caption text-text-muted block tracking-wider uppercase"
+                >Duration</span
+              >
+              <span class="text-body text-text font-medium">{project.data.dates}</span>
+            </div>
+          </div>
+
+          <!-- Tech Stack -->
+          {
+            project.data.stackRefs && project.data.stackRefs.length > 0 && (
+              <div class="flex items-start gap-3">
+                <Tag class="text-text-muted mt-1 size-5 shrink-0" />
+                <div class="space-y-2">
+                  <span class="text-caption text-text-muted block tracking-wider uppercase">
+                    Technology Stack
+                  </span>
+                  <div class="flex flex-wrap gap-1.5">
+                    {project.data.stackRefs.map((ref) => (
+                      <span class="bg-surface-subtle border-border-custom text-caption text-text-muted rounded border px-2 py-0.5 font-mono">
+                        {skillMap.get(ref) || ref}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )
+          }
+
+          <!-- Project Links -->
+          {
+            project.data.links && project.data.links.length > 0 && (
+              <div class="border-border-custom flex items-start gap-3 border-t pt-4">
+                <LinkIcon class="text-text-muted mt-1 size-5 shrink-0" />
+                <div class="w-full space-y-3">
+                  <span class="text-caption text-text-muted block tracking-wider uppercase">
+                    Project Links
+                  </span>
+                  <div class="flex w-full flex-col gap-2">
+                    {project.data.links.map((link) => (
+                      <LinkButton
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant="secondary"
+                        size="sm"
+                        class="w-full justify-center"
+                      >
+                        {link.label}
+                      </LinkButton>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )
+          }
+        </div>
+      </aside>
+    </div>
+  </Container>
+</BaseLayout>

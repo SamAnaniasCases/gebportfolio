@@ -1,0 +1,6 @@
+name: Rust
+category: Languages
+proficiencyEvidence: Used to author the core consensus storage library for our custom distributed logging engine.
+years: 4
+iconKey: cpu
+order: 1

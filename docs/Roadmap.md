@@ -8,12 +8,12 @@ Project phases, priority, complexity, and success metrics.
 
 | Phase                     | Description                                                | Status      | Complexity |
 | ------------------------- | ---------------------------------------------------------- | ----------- | ---------- |
-| **0. Discovery**          | Inventory, metrics, and case studies.                      | In Progress | Medium     |
-| **1. Foundation**         | Setup Astro, TS, tokens, layout, schemas, lint/format, CI. | In Progress | Medium     |
-| **2. Design System**      | Components, primitives, buttons, navigation layout.        | Pending     | High       |
-| **3. Content Platform**   | Keystatic CMS, data configuration.                         | Pending     | High       |
-| **4. MVP Pages**          | Home, About, Projects, Experience, Contact.                | Pending     | High       |
-| **5. Publishing**         | Blog, TOC, RSS, static search.                             | Pending     | Medium     |
+| **0. Discovery**          | Inventory, metrics, and case studies.                      | Completed   | Medium     |
+| **1. Foundation**         | Setup Astro, TS, tokens, layout, schemas, lint/format, CI. | Completed   | Medium     |
+| **2. Design System**      | Components, primitives, buttons, navigation layout.        | Completed   | High       |
+| **3. Content Platform**   | Keystatic CMS, data configuration.                         | Completed   | High       |
+| **4. MVP Pages**          | Home, About, Projects, Experience, Contact.                | Completed   | High       |
+| **5. Publishing**         | Blog, TOC, RSS, static search.                             | In Progress | Medium     |
 | **6. Experiments**        | Lab prototype folder and dark mode.                        | Pending     | Medium     |
 | **7. Launch Preparation** | Playwright, Lighthouse budgets, analytics.                 | Pending     | High       |
 

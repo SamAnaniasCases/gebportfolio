@@ -1,0 +1,13 @@
+organization: Netflix
+role: Senior Developer
+start: "2021-06"
+end: "2023-12"
+location: Los Gatos, CA
+summary: Developed edge routing microservices, dynamic gateway configurations, and cluster orchestration utilities.
+achievements:
+  - Rewrote routing table sync engine in Go, reducing boot memory footprint by 55MB.
+  - Implemented client-side retry logic that decreased request failure rates during region failovers by 8%.
+skills:
+  - typescript
+  - kubernetes
+order: 2

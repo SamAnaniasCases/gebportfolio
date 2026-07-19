@@ -1,0 +1,6 @@
+name: Kubernetes
+category: Systems
+proficiencyEvidence: Configured multi-tenant namespaces, ingress rules, custom resource definitions, and custom scheduling agents in cloud clusters.
+years: 3
+iconKey: server
+order: 3

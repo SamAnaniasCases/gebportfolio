@@ -55,3 +55,55 @@
     transform: translateY(0);
   }
 }
+
+/* Custom Prose class for Markdown layouts */
+.prose-custom {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display text-text mt-8 mb-4 font-bold tracking-tight;
+  }
+  h1 {
+    @apply text-h1;
+  }
+  h2 {
+    @apply text-h2 border-border-custom border-b pb-2;
+  }
+  h3 {
+    @apply text-h3;
+  }
+  h4 {
+    @apply text-h4;
+  }
+  p {
+    @apply mb-4 leading-relaxed;
+  }
+  ul,
+  ol {
+    @apply mb-4 space-y-2 pl-6;
+  }
+  ul {
+    @apply list-disc;
+  }
+  ol {
+    @apply list-decimal;
+  }
+  li {
+    @apply leading-relaxed;
+  }
+  code {
+    @apply font-mono text-small bg-surface-subtle border-border-custom rounded px-1.5 py-0.5;
+  }
+  pre {
+    @apply bg-surface-subtle border-border-custom rounded-xl p-4 overflow-x-auto font-mono text-small mb-6;
+    code {
+      @apply p-0 bg-transparent border-0 rounded-none;
+    }
+  }
+  blockquote {
+    @apply border-primary text-text-muted my-6 border-l-4 pl-4 italic;
+  }
+}

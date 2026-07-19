@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-07-19
+
+### Added
+
+- Main portfolio route page at `src/pages/index.astro`.
+- About credentials page at `src/pages/about.astro`.
+- Project cases index page at `src/pages/projects/index.astro` (with client-side vanilla filter tabs).
+- Project dynamic detailed page at `src/pages/projects/[slug].astro`.
+- Professional timeline history page at `src/pages/experience.astro`.
+- Forms-validated submittal contact page at `src/pages/contact.astro`.
+- Seed markdown, json, and yaml content layer assets for about, projects, skills, experience, and achievements collections.
+- Node.js environment types (`@types/node`) as devDependency.
+- Custom prose class typography styles (`.prose-custom`) in `src/styles/global.css`.
+
+### Changed
+
+- Migrated design system showcase to `src/pages/design-system.astro` to preserve style previews.
+- Modified `src/layouts/BaseLayout.astro` to render site settings dynamically, manage SEO fallbacks, and highlight active header tabs.
+- Removed prohibited `@ts-nocheck` comments in `astro.config.ts`.
+- Removed explicit `any` bindings on `about.astro`'s icons.
+
 ## [0.3.0] - 2026-07-19
 
 ### Added

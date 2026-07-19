@@ -1,0 +1,17 @@
+{
+  "title": "About Sam Ananias",
+  "sections": [
+    {
+      "id": "biography",
+      "heading": "Biography",
+      "content": "Sam Ananias is a systems engineer and software architect. With over a decade of experience designing fault-tolerant distributed engines, cloud computing schedulers, and developer-centric tooling, Sam specializes in combining high-level application orchestration with low-level systems execution.",
+      "order": 1
+    },
+    {
+      "id": "philosophy",
+      "heading": "Philosophy",
+      "content": "I believe in building software that is readable, robust, and highly optimized. Good software systems are invisible—they run quietly, recover automatically, and scale predictably.",
+      "order": 2
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/primitives/Container.astro";
+import { getCollection } from "astro:content";
+import { Briefcase, Calendar, MapPin, CheckCircle2 } from "@lucide/astro";
+
+// Get experience history
+const experiences = await getCollection("experience");
+const sortedExperiences = experiences.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+// Fetch skills to resolve references
+const skills = await getCollection("skills");
+const skillMap = new Map(skills.map((s) => [s.id, s.data.name]));
+---
+
+<BaseLayout title="My Experience">
+  <Container width="default" class="animate-reveal space-y-12 py-12">
+    <!-- Header -->
+    <header class="border-border-custom space-y-3 border-b pb-6">
+      <h1 class="text-h1 font-display text-text font-bold tracking-tight">Professional History</h1>
+      <p class="text-body-large text-text-muted max-w-2xl leading-relaxed">
+        My engineering timeline, systems leadership impact, and technological focus areas.
+      </p>
+    </header>
+
+    <!-- Timeline Wrapper -->
+    <div class="border-border-custom relative ml-4 space-y-12 border-l-2 py-4 pl-6 md:pl-8">
+      {
+        sortedExperiences.map((exp) => (
+          <div class="group relative">
+            {/* Timeline Node Icon dot indicator */}
+            <div class="bg-bg border-primary text-primary duration-fast group-hover:bg-primary absolute top-1.5 -left-[35px] z-10 rounded-full border-2 p-1 transition-colors group-hover:text-white md:-left-[43px]">
+              <Briefcase class="size-4 md:size-5" />
+            </div>
+
+            {/* Timeline Content Card */}
+            <div class="border-border-custom bg-surface duration-normal space-y-4 rounded-2xl border p-6 transition-all hover:shadow-sm">
+              <div class="flex flex-col justify-between gap-2 md:flex-row md:items-start">
+                <div>
+                  <h3 class="text-h3 font-display text-text font-bold">{exp.data.role}</h3>
+                  <span class="text-body text-primary font-bold">{exp.data.organization}</span>
+                </div>
+                <div class="text-small text-text-muted flex flex-wrap gap-x-4 gap-y-1.5">
+                  <span class="flex items-center gap-1.5 font-medium">
+                    <Calendar class="size-4" />
+                    {exp.data.start} — {exp.data.end || "Present"}
+                  </span>
+                  <span class="flex items-center gap-1.5 font-medium">
+                    <MapPin class="size-4" />
+                    {exp.data.location}
+                  </span>
+                </div>
+              </div>
+
+              <p class="text-body text-text-muted leading-relaxed">{exp.data.summary}</p>
+
+              {/* Achievements */}
+              {exp.data.achievements && exp.data.achievements.length > 0 && (
+                <div class="space-y-3 pt-2">
+                  <h4 class="text-caption text-text font-mono font-bold tracking-wider uppercase">
+                    Key Engineering Impacts
+                  </h4>
+                  <ul class="space-y-2">
+                    {exp.data.achievements.map((ach) => (
+                      <li class="text-small text-text-muted flex items-start gap-2">
+                        <CheckCircle2 class="text-primary mt-0.5 size-4 shrink-0" />
+                        <span>{ach}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Technologies used in this role */}
+              {exp.data.skills && exp.data.skills.length > 0 && (
+                <div class="border-border-custom space-y-2 border-t pt-2">
+                  <span class="text-caption text-text-muted block font-mono tracking-wider uppercase">
+                    Applied Technologies
+                  </span>
+                  <div class="flex flex-wrap gap-1.5">
+                    {exp.data.skills.map((skillId) => (
+                      <span class="bg-surface-subtle border-border-custom text-caption text-text-muted rounded border px-2 py-0.5 font-mono">
+                        {skillMap.get(skillId) || skillId}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </Container>
+</BaseLayout>
