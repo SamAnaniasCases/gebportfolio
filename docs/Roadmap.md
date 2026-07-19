@@ -6,16 +6,16 @@ Project phases, priority, complexity, and success metrics.
 
 ## Phases
 
-| Phase                     | Description                                                | Status      | Complexity |
-| ------------------------- | ---------------------------------------------------------- | ----------- | ---------- |
-| **0. Discovery**          | Inventory, metrics, and case studies.                      | Completed   | Medium     |
-| **1. Foundation**         | Setup Astro, TS, tokens, layout, schemas, lint/format, CI. | Completed   | Medium     |
-| **2. Design System**      | Components, primitives, buttons, navigation layout.        | Completed   | High       |
-| **3. Content Platform**   | Keystatic CMS, data configuration.                         | Completed   | High       |
-| **4. MVP Pages**          | Home, About, Projects, Experience, Contact.                | Completed   | High       |
-| **5. Publishing**         | Blog, TOC, RSS, static search.                             | In Progress | Medium     |
-| **6. Experiments**        | Lab prototype folder and dark mode.                        | Pending     | Medium     |
-| **7. Launch Preparation** | Playwright, Lighthouse budgets, analytics.                 | Pending     | High       |
+| Phase                     | Description                                                | Status    | Complexity |
+| ------------------------- | ---------------------------------------------------------- | --------- | ---------- |
+| **0. Discovery**          | Inventory, metrics, and case studies.                      | Completed | Medium     |
+| **1. Foundation**         | Setup Astro, TS, tokens, layout, schemas, lint/format, CI. | Completed | Medium     |
+| **2. Design System**      | Components, primitives, buttons, navigation layout.        | Completed | High       |
+| **3. Content Platform**   | Keystatic CMS, data configuration.                         | Completed | High       |
+| **4. MVP Pages**          | Home, About, Projects, Experience, Contact.                | Completed | High       |
+| **5. Publishing**         | Blog, TOC, RSS, static search.                             | Completed | Medium     |
+| **6. Experiments**        | Lab prototype folder and dark mode.                        | Pending   | Medium     |
+| **7. Launch Preparation** | Playwright, Lighthouse budgets, analytics.                 | Pending   | High       |
 
 ## Success Metrics
 
