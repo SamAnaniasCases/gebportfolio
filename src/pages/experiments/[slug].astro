@@ -1,0 +1,188 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/primitives/Container.astro";
+import { getCollection, render } from "astro:content";
+import { ArrowLeft, Beaker, AlertTriangle, ExternalLink } from "@lucide/astro";
+
+export async function getStaticPaths() {
+  const experiments = await getCollection("experiments");
+  return experiments.map((exp) => ({
+    params: { slug: exp.id },
+    props: { exp },
+  }));
+}
+
+const { exp } = Astro.props;
+const { Content, headings } = await render(exp);
+
+// Status display configuration helper
+const statusStyles = {
+  active: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20",
+  completed: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20",
+  abandoned: "bg-slate-500/10 text-slate-700 dark:text-slate-400 border-slate-500/20",
+};
+
+const statusDotStyles = {
+  active: "bg-emerald-500",
+  completed: "bg-blue-500",
+  abandoned: "bg-slate-500",
+};
+---
+
+<BaseLayout title={exp.data.title} description={`Lab experiment: ${exp.data.title}`}>
+  <Container width="default" class="animate-reveal space-y-12 py-12">
+    <!-- Back Navigation -->
+    <nav>
+      <a
+        href="/experiments"
+        class="text-small text-primary hover:text-primary-hover flex items-center gap-1 font-semibold transition-colors focus-visible:underline"
+      >
+        <ArrowLeft class="size-4" />
+        Back to Laboratory
+      </a>
+    </nav>
+
+    <!-- Header -->
+    <header class="border-border-custom space-y-6 border-b pb-8">
+      <div class="flex flex-wrap items-center gap-4">
+        <div class="text-text-muted flex items-center gap-1.5">
+          <Beaker class="size-4" />
+          <span class="text-caption font-mono tracking-wider uppercase">Experiment</span>
+        </div>
+        <span
+          class={`inline-flex items-center gap-1.5 border px-2.5 py-0.5 rounded-full text-caption font-semibold tracking-wide uppercase ${statusStyles[exp.data.status]}`}
+        >
+          <span class={`h-1.5 w-1.5 rounded-full ${statusDotStyles[exp.data.status]}`}></span>
+          {exp.data.status}
+        </span>
+      </div>
+
+      <h1 class="text-h1 font-display text-text leading-tight font-extrabold tracking-tight">
+        {exp.data.title}
+      </h1>
+
+      {
+        exp.data.technologies && exp.data.technologies.length > 0 && (
+          <div class="flex flex-wrap gap-1.5 pt-2">
+            {exp.data.technologies.map((tech) => (
+              <span class="bg-surface-subtle border-border-custom text-caption text-text-muted rounded border px-2.5 py-0.5 font-medium">
+                {tech}
+              </span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    <!-- Warning / Disclaimer block if present -->
+    {
+      exp.data.warning && (
+        <div class="flex gap-3 rounded-lg border border-amber-500/20 bg-amber-500/10 p-4 text-amber-800 dark:text-amber-300">
+          <AlertTriangle class="mt-0.5 size-5 shrink-0" />
+          <div>
+            <h4 class="text-small mb-1 font-mono font-bold tracking-wider uppercase">
+              Caveats & Disclaimer
+            </h4>
+            <p class="text-small leading-relaxed italic">{exp.data.warning}</p>
+          </div>
+        </div>
+      )
+    }
+
+    <!-- Content Columns -->
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-4">
+      <!-- Main Content -->
+      <div class="lg:col-span-3">
+        <article
+          class="prose-custom text-body text-text-muted max-w-none space-y-6 leading-relaxed"
+        >
+          <Content />
+        </article>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="space-y-8 lg:col-span-1">
+        <!-- Demo / Link cards -->
+        {
+          exp.data.demoLinks && exp.data.demoLinks.length > 0 && (
+            <div class="border-border-custom bg-surface space-y-4 rounded-lg border p-5">
+              <h4 class="text-caption text-text font-mono font-bold tracking-wider uppercase">
+                Demo / Links
+              </h4>
+              <nav class="flex flex-col gap-2.5">
+                {exp.data.demoLinks.map((link) => (
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-small text-primary hover:text-primary-hover flex items-center gap-1.5 font-semibold transition-colors focus-visible:underline"
+                  >
+                    {link.label}
+                    <ExternalLink class="size-3.5" />
+                  </a>
+                ))}
+              </nav>
+            </div>
+          )
+        }
+
+        <!-- Sticky Table of Contents -->
+        {
+          headings.length > 0 && (
+            <aside class="border-border-custom sticky top-8 hidden space-y-4 border-l pl-4 lg:block">
+              <h4 class="text-caption text-text font-mono font-bold tracking-wider uppercase">
+                On this page
+              </h4>
+              <nav class="space-y-2" id="toc-nav">
+                {headings
+                  .filter((h) => h.depth >= 2 && h.depth <= 4)
+                  .map((h) => (
+                    <a
+                      href={`#${h.slug}`}
+                      class="toc-link transition-all"
+                      style={`padding-left: ${(h.depth - 2) * 8}px;`}
+                    >
+                      {h.text}
+                    </a>
+                  ))}
+              </nav>
+            </aside>
+          )
+        }
+      </div>
+    </div>
+  </Container>
+
+  <!-- Table of Contents Active Link Highlighter -->
+  <script is:inline>
+    (() => {
+      const observerOptions = {
+        root: null,
+        rootMargin: "-100px 0px -60% 0px",
+        threshold: 0,
+      };
+
+      const links = document.querySelectorAll("#toc-nav a");
+      const headers = document.querySelectorAll(".prose-custom h2, .prose-custom h3");
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute("id");
+            links.forEach((link) => {
+              if (link.getAttribute("href") === `#${id}`) {
+                link.className = "toc-link toc-link-active";
+              } else {
+                link.className = "toc-link";
+              }
+            });
+          }
+        });
+      }, observerOptions);
+
+      headers.forEach((header) => {
+        observer.observe(header);
+      });
+    })();
+  </script>
+</BaseLayout>

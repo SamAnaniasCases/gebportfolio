@@ -39,6 +39,12 @@
         "external": false
       },
       {
+        "label": "Lab",
+        "href": "/experiments",
+        "visibility": true,
+        "external": false
+      },
+      {
         "label": "Contact",
         "href": "/contact",
         "visibility": true,

@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2026-07-20
+
+### Added
+
+- Lab/Experiments listing page at `src/pages/experiments/index.astro` (with dynamic status and technology filtering).
+- Dynamic detail page for experiments at `src/pages/experiments/[slug].astro` (with warnings, demo links, and scroll-highlighted Table of Contents).
+- Seed experiments content files at `src/content/experiments/css-grid-chess.md` and `src/content/experiments/color-scheme-sandbox.md`.
+
+### Changed
+
+- Integrated `ThemeToggle` into `src/layouts/BaseLayout.astro` global header for flash-free theme switching.
+- Appended "Lab" navigation link pointing to `/experiments` inside `src/content/data/navigation.json`.
+
 ## [0.5.0] - 2026-07-19
 
 ### Added

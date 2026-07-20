@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import { getEntry } from "astro:content";
+import ThemeToggle from "../components/navigation/ThemeToggle.astro";
 
 interface Props {
   title?: string;
@@ -124,31 +125,34 @@ const isCurrent = (href: string) => {
         >
           {siteConfig?.name ?? "Sam Ananias"}
         </a>
-        <nav class="flex items-center gap-6">
-          {
-            navLinks
-              .filter((link) => link.visibility !== false)
-              .map((link) => {
-                const active = isCurrent(link.href);
-                return (
-                  <a
-                    href={link.href}
-                    target={link.external ? "_blank" : undefined}
-                    rel={link.external ? "noopener noreferrer" : undefined}
-                    class={`text-small duration-fast transition-colors ${
-                      active
-                        ? "text-primary font-semibold"
-                        : "text-text-muted hover:text-text font-medium"
-                    }`}
-                    aria-current={active ? "page" : undefined}
-                  >
-                    {link.label}
-                  </a>
-                );
-              })
-          }
-          <slot name="navigation" />
-        </nav>
+        <div class="flex items-center gap-6">
+          <nav class="flex items-center gap-6">
+            {
+              navLinks
+                .filter((link) => link.visibility !== false)
+                .map((link) => {
+                  const active = isCurrent(link.href);
+                  return (
+                    <a
+                      href={link.href}
+                      target={link.external ? "_blank" : undefined}
+                      rel={link.external ? "noopener noreferrer" : undefined}
+                      class={`text-small duration-fast transition-colors ${
+                        active
+                          ? "text-primary font-semibold"
+                          : "text-text-muted hover:text-text font-medium"
+                      }`}
+                      aria-current={active ? "page" : undefined}
+                    >
+                      {link.label}
+                    </a>
+                  );
+                })
+            }
+            <slot name="navigation" />
+          </nav>
+          <ThemeToggle />
+        </div>
       </div>
     </header>
 
