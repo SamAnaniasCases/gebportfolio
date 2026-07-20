@@ -14,6 +14,7 @@ The core technology dependencies, choices, and alternatives.
 - **Language**: TypeScript (strict mode).
 - **Package Manager**: pnpm.
 - **Linting/Formatting**: ESLint + Prettier.
+- **Testing**: Playwright (`@playwright/test` v1.50+) & Axe Core (`@axe-core/playwright` v4.10+) for automated accessibility audits.
 - **CI/CD**: GitHub Actions.
 - **Hosting**: Cloudflare Pages.
 

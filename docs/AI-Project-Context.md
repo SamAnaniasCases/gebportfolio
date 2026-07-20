@@ -15,6 +15,6 @@ You are working on a high-performance personal portfolio project.
   1. No new dependencies without explicit permission.
   2. Write UI components as `.astro` static files. Use React components only for interactive islands requiring client-side state.
   3. Configure design system rules strictly inside the `@theme` directive in `/src/styles/global.css` (never create `tailwind.config.js`).
-  4. Always run verification: `pnpm run check` (typecheck), `pnpm run lint` (ESLint), and `pnpm run build` before considering a task completed.
+  4. Always run verification: `pnpm run check` (typecheck), `pnpm run lint` (ESLint), `pnpm run build` (build compiler), and `pnpm run test:e2e` / `pnpm run test:a11y` (E2E & accessibility tests) before considering a task completed.
 - **Read First**: `/docs/README.md`, `/docs/AI-Guidelines.md`, `/docs/CodingStandards.md`.
 ```

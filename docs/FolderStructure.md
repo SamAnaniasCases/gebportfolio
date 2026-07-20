@@ -11,6 +11,7 @@ The workspace layout and module boundary constraints.
 - [src/components/](../src/components) — Pure UI components separated into `primitives`, `content`, `navigation`, `feedback`, and `forms`.
 - [src/features/](../src/features) — Self-contained domain modules containing private components and types.
 - [src/content/](../src/content) — Markdown and data assets. No UI code.
+- [tests/](../tests) — Playwright E2E and Axe accessibility automated test suites.
 
 ## Import Boundaries
 
