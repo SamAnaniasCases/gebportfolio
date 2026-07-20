@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-07-20
+
+### Added
+
+- Playwright automated browser testing configurations in `playwright.config.ts`.
+- Navigation E2E testing specs in `tests/e2e/navigation.spec.ts`.
+- Light/dark theme toggler and localStorage sync E2E specs in `tests/e2e/theme.spec.ts`.
+- Dynamic client search filtering E2E specs in `tests/e2e/search.spec.ts`.
+- Automated Axe accessibility audits across all major site routes in `tests/accessibility/a11y.spec.ts`.
+- Performance metrics budgets specification in `lighthouse-budget.json`.
+- Cloudflare Pages URL redirects mapping config in `public/_redirects`.
+
+### Changed
+
+- Expanded package config in `package.json` to include `@playwright/test`, `@axe-core/playwright`, and defined test run script tasks.
+
 ## [0.6.0] - 2026-07-20
 
 ### Added

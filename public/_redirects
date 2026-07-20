@@ -1,0 +1,5 @@
+# Preserving URLs: Redirect old blog paths to posts
+/blog/* /posts/:splat 301
+
+# Preserving URLs: Redirect lab paths to experiments
+/lab/* /experiments/:splat 301

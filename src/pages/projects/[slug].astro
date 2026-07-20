@@ -39,10 +39,10 @@ const skillMap = new Map(skills.map((s) => [s.id, s.data.name]));
         <span
           class={`text-[10px] font-semibold border rounded-full px-2.5 py-0.5 uppercase tracking-wider ${
             project.data.status === "completed"
-              ? "bg-green-500/10 border-green-500/20 text-green-600 dark:text-green-400"
+              ? "bg-green-500/10 border-green-500/20 text-green-800 dark:text-green-300"
               : project.data.status === "active"
-                ? "bg-blue-500/10 border-blue-500/20 text-blue-600 dark:text-blue-400"
-                : "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400"
+                ? "bg-blue-500/10 border-blue-500/20 text-blue-800 dark:text-blue-300"
+                : "bg-amber-500/10 border-amber-500/20 text-amber-800 dark:text-amber-300"
           }`}
         >
           {project.data.status}

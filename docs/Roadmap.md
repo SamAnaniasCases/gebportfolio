@@ -15,7 +15,7 @@ Project phases, priority, complexity, and success metrics.
 | **4. MVP Pages**          | Home, About, Projects, Experience, Contact.                | Completed | High       |
 | **5. Publishing**         | Blog, TOC, RSS, static search.                             | Completed | Medium     |
 | **6. Experiments**        | Lab prototype folder and dark mode.                        | Completed | Medium     |
-| **7. Launch Preparation** | Playwright, Lighthouse budgets, analytics.                 | Pending   | High       |
+| **7. Launch Preparation** | Playwright, Lighthouse budgets, analytics.                 | Completed | High       |
 
 ## Success Metrics
 
