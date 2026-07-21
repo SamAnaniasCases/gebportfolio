@@ -8,7 +8,7 @@ Deploy pipelines, environment configs, and rollout procedures.
 
 - **Hosting**: Cloudflare Pages.
 - **Trigger**: Push to the default `main` branch.
-- **Verification Gate**: CI checks (linting, formatting, TS typecheck, build) must pass on GitHub Actions before deployment.
+- **Verification Gate**: CI checks (linting, formatting, TS typecheck, build, Playwright E2E and axe accessibility tests, and Lighthouse performance budgets via `lighthouse-budget.json`) must pass on GitHub Actions before deployment.
 
 ## Environments
 

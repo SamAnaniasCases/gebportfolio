@@ -6,7 +6,7 @@ Always follow these rules strictly before and during any edits to this repositor
 
 - **Prohibited Link Format**: Do **not** use absolute local paths (e.g. `file:///c:/Users/...`) inside repository markdown files.
 - **Permitted Link Format**: Use relative markdown links (e.g. `[Design System](DesignSystem.md)` or `[global.css](../src/styles/global.css)`).
-- **Broken Link Guard**: Any document edits must be validated by running `pnpm run check-links`. The build/check process will fail on broken relative links.
+- **Broken Link Guard**: Any document edits must be validated by running `npx pnpm run check-links`. The build/check process will fail on broken relative links.
 
 ### 2. Definition of Done for Changes
 
@@ -25,11 +25,15 @@ Always follow these rules strictly before and during any edits to this repositor
 - Tailwind v4 is fully CSS-first. All utility configuration, theme variable mapping, and custom style extensions must be written inside `src/styles/global.css` using the `@theme` directive.
 - Do **not** create a `tailwind.config.js` or `tailwind.config.mjs`.
 
-### 5. Verification Command Sequence
+### 5. Verification Command Sequence (Definition of Done)
 
-Before claiming a task is done, you must run:
+Before claiming a task is done, you must run the full verification suite in order:
 
-1. `pnpm run format` (formats the codebase using Prettier).
-2. `pnpm run lint` (checks syntax with ESLint).
-3. `pnpm run check` (runs Astro compiler typechecks and documentation link validation).
-4. `pnpm run build` (verifies the project compiles successfully).
+1. `npx pnpm run format` (formats the codebase using Prettier; CI enforces this via `npx pnpm run format:check`).
+2. `npx pnpm run lint` (checks syntax with ESLint).
+3. `npx pnpm run check` (runs Astro compiler typechecks and documentation link validation).
+4. `npx pnpm run build` (verifies the project compiles successfully).
+5. `npx pnpm run test:e2e` (runs Playwright E2E tests; Playwright auto-starts the app via its `webServer` config).
+6. `npx pnpm run test:a11y` (runs axe-core accessibility audits; Playwright auto-starts the app via its `webServer` config).
+
+CI enforces this same sequence plus a Lighthouse performance budget check on every push and pull request.

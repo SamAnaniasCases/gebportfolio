@@ -2,7 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Container from "../components/primitives/Container.astro";
 import { getCollection } from "astro:content";
-import { Briefcase, Calendar, MapPin, CheckCircle2 } from "@lucide/astro";
+import { Briefcase, Calendar, MapPin, CircleCheck } from "@lucide/astro";
 
 // Get experience history
 const experiences = await getCollection("experience");
@@ -63,7 +63,7 @@ const skillMap = new Map(skills.map((s) => [s.id, s.data.name]));
                   <ul class="space-y-2">
                     {exp.data.achievements.map((ach) => (
                       <li class="text-small text-text-muted flex items-start gap-2">
-                        <CheckCircle2 class="text-primary mt-0.5 size-4 shrink-0" />
+                        <CircleCheck class="text-primary mt-0.5 size-4 shrink-0" />
                         <span>{ach}</span>
                       </li>
                     ))}

@@ -60,4 +60,14 @@ export default defineConfig({
       use: { ...devices["iPhone 12"] },
     },
   ],
+
+  /* Auto-start the app so tests can run without a manually started server.
+     Locally: reuse a running dev server when available.
+     On CI: build the production bundle and serve it via `astro preview`. */
+  webServer: {
+    command: process.env.CI ? "pnpm run build && pnpm run preview" : "pnpm run dev",
+    url: "http://127.0.0.1:4321",
+    reuseExistingServer: !process.env.CI,
+    timeout: 180_000,
+  },
 });

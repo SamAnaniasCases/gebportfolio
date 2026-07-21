@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import { getEntry } from "astro:content";
 import ThemeToggle from "../components/navigation/ThemeToggle.astro";
+import Logo from "../components/primitives/Logo.astro";
 
 interface Props {
   title?: string;
@@ -53,8 +54,7 @@ const isCurrent = (href: string) => {
     <!-- Core Meta Tags -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
     <meta name="generator" content={Astro.generator} />
 
     <!-- SEO Meta Tags -->
@@ -121,9 +121,10 @@ const isCurrent = (href: string) => {
       <div class="mx-auto flex max-w-7xl items-center justify-between">
         <a
           href="/"
-          class="text-h4 font-display hover:text-primary duration-fast font-bold transition-colors"
+          class="text-h4 font-display hover:text-primary duration-fast flex items-center gap-3 font-bold transition-colors"
         >
-          {siteConfig?.name ?? "Sam Ananias"}
+          <Logo class="size-8" />
+          <span>{siteConfig?.name ?? "Sam Ananias"}</span>
         </a>
         <div class="flex items-center gap-6">
           <nav class="flex items-center gap-6">

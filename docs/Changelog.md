@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-07-21
+
+### Added
+
+- Optimized theme-aware vector logo asset file in `src/assets/brand/logo.svg`.
+- Reusable primitive Astro logo component in `src/components/primitives/Logo.astro` supporting CSS theme-aware fills and stroke colors.
+- Custom prefers-color-scheme responsive favicon in `public/favicon.svg` using the goat head chess knight vector paths.
+
+### Changed
+
+- Integrated the dynamic logo in the global header next to the site title in `src/layouts/BaseLayout.astro`.
+- Cleaned up temporary files (`goat_head_chess_knight.svg` and `goat_head_chess_knight.png`) from the root directory.
+- Migrated deprecated `z` imports from `astro:content` to `astro/zod` in `src/content.config.ts`.
+- Migrated deprecated Lucide icons (`CheckCircle2` -> `CircleCheck`, `AlertTriangle` -> `TriangleAlert`) in experience and experiments layout pages.
+
 ## [0.7.0] - 2026-07-20
 
 ### Added

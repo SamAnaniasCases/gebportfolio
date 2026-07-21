@@ -13,7 +13,8 @@
     "check": "astro check && pnpm run check-links",
     "check-links": "node scripts/check-links.js",
     "lint": "eslint .",
-    "format": "prettier --check .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test:e2e": "playwright test tests/e2e",
     "test:a11y": "playwright test tests/accessibility"
   },

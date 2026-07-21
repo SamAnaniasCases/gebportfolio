@@ -2,7 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Container from "../../components/primitives/Container.astro";
 import { getCollection, render } from "astro:content";
-import { ArrowLeft, Beaker, AlertTriangle, ExternalLink } from "@lucide/astro";
+import { ArrowLeft, Beaker, TriangleAlert, ExternalLink } from "@lucide/astro";
 
 export async function getStaticPaths() {
   const experiments = await getCollection("experiments");
@@ -78,7 +78,7 @@ const statusDotStyles = {
     {
       exp.data.warning && (
         <div class="flex gap-3 rounded-lg border border-amber-500/20 bg-amber-500/10 p-4 text-amber-800 dark:text-amber-300">
-          <AlertTriangle class="mt-0.5 size-5 shrink-0" />
+          <TriangleAlert class="mt-0.5 size-5 shrink-0" />
           <div>
             <h4 class="text-small mb-1 font-mono font-bold tracking-wider uppercase">
               Caveats & Disclaimer
