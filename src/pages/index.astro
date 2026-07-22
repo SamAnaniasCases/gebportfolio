@@ -4,6 +4,7 @@ import Container from "../components/primitives/Container.astro";
 import Grid from "../components/primitives/Grid.astro";
 import LinkButton from "../components/primitives/LinkButton.astro";
 import Card from "../components/primitives/Card.astro";
+import DividerChessboard from "../components/primitives/DividerChessboard.astro";
 import { getCollection } from "astro:content";
 
 // Fetch featured projects
@@ -23,11 +24,12 @@ const recentExperiences = experiences
     <Container width="default" class="animate-reveal space-y-8">
       <div class="max-w-3xl space-y-6">
         <h1 class="text-display font-display text-text leading-tight font-extrabold tracking-tight">
-          Designing fault-tolerant <span
-            class="from-primary to-primary-hover bg-gradient-to-r bg-clip-text text-transparent"
-            >systems</span
-          > for scale.
+          Designing fault-tolerant <span class="text-primary">systems</span> for scale.
         </h1>
+        <!-- Gochi Hand catchphrase — the "Scrawl" voice (WoodcutTheme.md §4.1) -->
+        <p class="font-hand text-h4 text-primary inline-block origin-left -rotate-1">
+          think in systems, move like a knight
+        </p>
         <p class="text-body-large text-text-muted leading-relaxed">
           I am a systems engineer and software architect specializing in low-latency distributed
           telemetry platforms, container bin-packing optimization, and custom developer runtimes.
@@ -41,8 +43,9 @@ const recentExperiences = experiences
   </section>
 
   <!-- Featured Projects -->
-  <section class="border-border-custom border-t py-16 lg:py-24">
+  <section class="py-16 lg:py-24">
     <Container width="default" class="space-y-12">
+      <DividerChessboard />
       <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div class="space-y-2">
           <h2 class="text-h2 font-display text-text font-bold tracking-tight">
@@ -84,8 +87,9 @@ const recentExperiences = experiences
   </section>
 
   <!-- Recent Work Experience Timeline preview -->
-  <section class="border-border-custom border-t py-16 lg:py-24">
+  <section class="py-16 lg:py-24">
     <Container width="default" class="space-y-12">
+      <DividerChessboard />
       <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div class="space-y-2">
           <h2 class="text-h2 font-display text-text font-bold tracking-tight">

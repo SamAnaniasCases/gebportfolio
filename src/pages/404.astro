@@ -1,0 +1,27 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/primitives/Container.astro";
+import LinkButton from "../components/primitives/LinkButton.astro";
+import Logo from "../components/primitives/Logo.astro";
+---
+
+<BaseLayout title="Page not found">
+  <Container
+    width="default"
+    class="animate-reveal flex min-h-[65vh] flex-col items-center justify-center gap-12 py-24 text-center"
+  >
+    <!-- Knocked-over knight engraving (WoodcutTheme.md §3.5) -->
+    <Logo class="text-text size-40 rotate-90 md:size-48" />
+
+    <div class="space-y-5">
+      <h1 class="text-display font-display text-text font-extrabold tracking-tight">404</h1>
+      <!-- Gochi Hand caption — sanctioned empty-state usage (WoodcutTheme.md §4.1) -->
+      <p class="font-hand text-h4 text-text-muted">The piece has left the board.</p>
+      <p class="text-body text-text-muted mx-auto max-w-md leading-relaxed">
+        The square you're looking for is empty — the page was captured, resigned, or never played.
+      </p>
+    </div>
+
+    <LinkButton href="/" variant="primary" size="lg"> Return to the board </LinkButton>
+  </Container>
+</BaseLayout>

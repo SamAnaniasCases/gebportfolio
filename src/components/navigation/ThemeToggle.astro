@@ -3,18 +3,20 @@ import { Sun, Moon } from "@lucide/astro";
 import Button from "../primitives/Button.astro";
 
 interface Props {
+  /** Unique id — the layout renders two toggles (sidebar + mobile bar). */
+  id?: string;
   class?: string;
   [key: string]: unknown;
 }
 
-const { class: className = "", ...rest } = Astro.props;
+const { id = "theme-toggle", class: className = "", ...rest } = Astro.props;
 ---
 
 <Button
-  id="theme-toggle"
+  id={id}
   variant="ghost"
   size="sm"
-  class:list={["h-10 w-10 rounded-full p-0 select-none", className]}
+  class:list={["theme-toggle h-10 w-10 rounded-full p-0 select-none", className]}
   aria-label="Toggle theme mode"
   {...rest}
 >
@@ -34,16 +36,16 @@ const { class: className = "", ...rest } = Astro.props;
     document.documentElement.classList.toggle("dark");
   };
 
-  const setupToggle = () => {
-    const toggleBtn = document.getElementById("theme-toggle");
-    if (toggleBtn) {
-      toggleBtn.addEventListener("click", handleToggle);
-    }
+  // Wire every toggle instance on the page (sidebar + mobile top bar).
+  const setupToggles = () => {
+    document.querySelectorAll(".theme-toggle").forEach((btn) => {
+      btn.addEventListener("click", handleToggle);
+    });
   };
 
   // Setup on page load
-  setupToggle();
+  setupToggles();
 
   // Support View Transitions if added later
-  document.addEventListener("astro:after-swap", setupToggle);
+  document.addEventListener("astro:after-swap", setupToggles);
 </script>

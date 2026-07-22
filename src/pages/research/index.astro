@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Container from "../../components/primitives/Container.astro";
 import LinkButton from "../../components/primitives/LinkButton.astro";
+import DividerKnight from "../../components/primitives/DividerKnight.astro";
 import { getCollection } from "astro:content";
 import { BookOpen, User, Calendar, ExternalLink } from "@lucide/astro";
 
@@ -25,71 +26,79 @@ const sortedPublications = publications.sort(
     </header>
 
     <!-- Research List -->
-    <div class="space-y-8">
+    <div class="flex flex-col">
       {
-        sortedPublications.map((pub) => {
+        sortedPublications.map((pub, index) => {
           const primaryLink = pub.data.publicationLinks?.[0];
           return (
-            <div class="border-border-custom bg-surface duration-normal space-y-4 rounded-2xl border p-6 transition-all hover:shadow-sm">
-              <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
-                <div class="space-y-2">
-                  <span class="text-caption text-text-muted flex items-center gap-1.5 font-mono tracking-wider uppercase">
-                    <Calendar class="size-4" />
-                    {pub.data.date.toLocaleDateString("en-US", { year: "numeric", month: "long" })}
-                    <span class="text-border-custom">|</span>
-                    <span class="capitalize">{pub.data.status.replace("_", " ")}</span>
-                  </span>
-                  <h2 class="text-h3 font-display text-text hover:text-primary font-bold transition-colors">
-                    <a href={`/research/${pub.id}`}>{pub.data.title}</a>
-                  </h2>
-                  <div class="text-small text-primary flex items-center gap-1.5 font-medium">
-                    <User class="size-4 shrink-0" />
-                    <span>
-                      Sam Ananias
-                      {pub.data.collaborators.length > 0 &&
-                        `, ${pub.data.collaborators.join(", ")}`}
+            <>
+              {index > 0 && <DividerKnight class="my-6" />}
+              <div class="border-border-custom bg-surface duration-normal space-y-4 rounded-2xl border p-6 transition-all hover:shadow-sm">
+                <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
+                  <div class="space-y-2">
+                    <span class="text-caption text-text-muted flex items-center gap-1.5 font-mono tracking-wider uppercase">
+                      <Calendar class="size-4" />
+                      {pub.data.date.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                      })}
+                      <span class="text-border-custom">|</span>
+                      <span class="capitalize">{pub.data.status.replace("_", " ")}</span>
                     </span>
+                    <h2 class="text-h3 font-display text-text hover:text-primary font-bold transition-colors">
+                      <a href={`/research/${pub.id}`}>{pub.data.title}</a>
+                    </h2>
+                    <div class="text-small text-primary flex items-center gap-1.5 font-medium">
+                      <User class="size-4 shrink-0" />
+                      <span>
+                        Sam Ananias
+                        {pub.data.collaborators.length > 0 &&
+                          `, ${pub.data.collaborators.join(", ")}`}
+                      </span>
+                    </div>
                   </div>
-                </div>
-                {primaryLink && (
-                  <LinkButton
-                    href={primaryLink.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    size="sm"
-                    variant="secondary"
-                    class="shrink-0 self-start"
-                  >
-                    {primaryLink.label}
-                    <ExternalLink class="size-3.5" />
-                  </LinkButton>
-                )}
-              </div>
-
-              <div class="border-border-custom bg-surface-subtle mt-4 border-l-4 py-2 pl-4">
-                <h3 class="text-caption text-text mb-1 flex items-center gap-1.5 font-mono font-semibold tracking-wider uppercase">
-                  <BookOpen class="text-primary size-4" />
-                  Abstract
-                </h3>
-                <p class="text-small text-text-muted leading-relaxed italic">{pub.data.abstract}</p>
-              </div>
-
-              {pub.data.publicationLinks && pub.data.publicationLinks.length > 1 && (
-                <div class="flex flex-wrap items-center gap-2 pt-2">
-                  <span class="text-caption text-text-muted">Additional Links:</span>
-                  {pub.data.publicationLinks.slice(1).map((link) => (
-                    <a
-                      href={link.url}
+                  {primaryLink && (
+                    <LinkButton
+                      href={primaryLink.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="text-caption text-primary font-medium hover:underline"
+                      size="sm"
+                      variant="secondary"
+                      class="shrink-0 self-start"
                     >
-                      {link.label}
-                    </a>
-                  ))}
+                      {primaryLink.label}
+                      <ExternalLink class="size-3.5" />
+                    </LinkButton>
+                  )}
                 </div>
-              )}
-            </div>
+
+                <div class="border-border-custom bg-surface-subtle mt-4 border-l-4 py-2 pl-4">
+                  <h3 class="text-caption text-text mb-1 flex items-center gap-1.5 font-mono font-semibold tracking-wider uppercase">
+                    <BookOpen class="text-primary size-4" />
+                    Abstract
+                  </h3>
+                  <p class="text-small text-text-muted leading-relaxed italic">
+                    {pub.data.abstract}
+                  </p>
+                </div>
+
+                {pub.data.publicationLinks && pub.data.publicationLinks.length > 1 && (
+                  <div class="flex flex-wrap items-center gap-2 pt-2">
+                    <span class="text-caption text-text-muted">Additional Links:</span>
+                    {pub.data.publicationLinks.slice(1).map((link) => (
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-caption text-primary font-medium hover:underline"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </>
           );
         })
       }

@@ -1,6 +1,6 @@
 # Tech Stack
 
-<callout icon="♞">**Status:** Active · **Owner:** Gen · **Last Reviewed:** 2026-07-18</callout>
+<callout icon="♞">**Status:** Active · **Owner:** Gen · **Last Reviewed:** 2026-07-21</callout>
 
 The core technology dependencies, choices, and alternatives.
 
@@ -8,7 +8,7 @@ The core technology dependencies, choices, and alternatives.
 
 - **Framework**: Astro (v7.1.1) - Excellent content routing and performance.
 - **Styling**: Tailwind CSS (v4) - CSS-first theme configuration via `@theme`.
-- **Fonts**: Fontsource Variable Fonts (`Inter Variable`, `Manrope Variable`, `JetBrains Mono`).
+- **Fonts**: Fontsource (`Inter Variable`, `Manrope Variable`, `Fraunces Variable`, `JetBrains Mono`, `Gochi Hand`) — three-voice type system detailed in [DesignSystem.md](DesignSystem.md).
 - **Icons**: `@lucide/astro` (v1.24.0) - SVG icon library.
 - **Editor/CMS**: Keystatic (Local/Git mode) - Visual editor without database overhead.
 - **Language**: TypeScript (strict mode).

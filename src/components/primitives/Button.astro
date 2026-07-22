@@ -16,9 +16,10 @@ const {
   ...rest
 } = Astro.props;
 
-// Base styles including focus-visible configurations
+// Base styles including focus-visible configurations.
+// Woodcut interaction (WoodcutTheme.md §4.2): hard-offset hover shadow + press-into-plate active state.
 const baseStyles =
-  "relative inline-flex items-center justify-center font-sans font-medium transition-colors duration-200 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:opacity-50 disabled:pointer-events-none cursor-pointer";
+  "relative inline-flex items-center justify-center font-sans font-medium transition-[transform,box-shadow,background-color,border-color,color] duration-200 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:opacity-50 disabled:pointer-events-none cursor-pointer hover:shadow-[2px_2px_0_var(--color-text)] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]";
 
 // Size mappings matching 36px, 44px, and 48px heights
 const sizeStyles = {
@@ -27,16 +28,16 @@ const sizeStyles = {
   lg: "h-12 px-6 text-body-large",
 };
 
-// Variant style mappings
+// Variant style mappings (structural 2.5px borders — WoodcutTheme.md §4.2)
 const variantStyles = {
   primary:
-    "bg-primary text-bg hover:bg-primary-hover active:bg-primary-active border border-transparent",
+    "bg-primary text-bg hover:bg-primary-hover active:bg-primary-active border-structural border-text",
   secondary:
-    "bg-surface text-text border border-border-custom hover:bg-surface-subtle active:bg-accent",
+    "bg-surface text-text border-structural border-border-custom hover:bg-surface-subtle active:bg-accent",
   ghost:
-    "bg-transparent text-text hover:bg-surface-subtle active:bg-accent border border-transparent",
+    "bg-transparent text-text hover:bg-surface-subtle active:bg-accent border-structural border-transparent hover:border-current",
   destructive:
-    "bg-red-600 text-white hover:bg-red-700 active:bg-red-800 border border-transparent focus-visible:ring-red-500",
+    "bg-red-600 text-white hover:bg-red-700 active:bg-red-800 border-structural border-text focus-visible:ring-red-500",
   text: "bg-transparent text-primary hover:underline p-0 h-auto min-h-0 min-w-0 border-0 rounded-none focus-visible:ring-0 focus-visible:underline",
 };
 

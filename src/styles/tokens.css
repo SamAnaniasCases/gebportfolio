@@ -26,6 +26,12 @@
   --radius-xl: 20px;
   --radius-pill: 9999px;
 
+  /* Stroke weights — engraving line system (WoodcutTheme.md §1.2) */
+  --stroke-structural: 2.5px; /* outer silhouettes, card frames, section rules */
+  --stroke-detail: 1.5px; /* interior detail lines, secondary contours */
+  --stroke-hatch: 1.3px; /* cross-hatch shading, texture, group dividers */
+  --stroke-fine: 1px; /* ultra-fine decorative marks, grid lines */
+
   /* Semantic - Transitions */
   --transition-instant: 0ms;
   --transition-fast: 120ms;
@@ -51,19 +57,24 @@
   --font-sans-display: "Manrope Variable", "Manrope", Inter, ui-sans-serif, system-ui, sans-serif;
   --font-sans-body: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Woodcut theme voices (WoodcutTheme.md §4.1) */
+  --font-serif-display:
+    "Fraunces Variable", "Fraunces", Georgia, serif; /* Engraver — Display/H1/H2 */
+  --font-hand: "Gochi Hand", cursive; /* Scrawl — catchphrases only */
 }
 
-/* Semantic - Colors (Dark) */
+/* Semantic - Colors (Dark) — true-black woodcut palette (WoodcutTheme.md §2.2) */
 .dark {
-  --color-bg-raw: #261e1a;
-  --color-surface-raw: #342d2a; /* lifted warm charcoal derived from 574f50 & 261e1a */
-  --color-surface-subtle-raw: #2b2522; /* cool charcoal with trace of 4b648a */
-  --color-text-raw: #e2efff; /* near-white tinted with d0dff4 */
-  --color-text-muted-raw: #acb3c2; /* light steel derivative */
-  --color-primary-raw: #84a1cc; /* lightened 4b648a */
-  --color-primary-hover-raw: #a3bcdc;
-  --color-primary-active-raw: #d0dff4;
-  --color-accent-raw: #404f66; /* restrained steel blue */
-  --color-border-raw: #423c39; /* light derivative of 9497a0 */
-  --color-focus-raw: #60a5fa;
+  --color-bg-raw: #000000; /* true black — the "inked plate" ground */
+  --color-surface-raw: #0d0d0f; /* near-black, faintest blue undertone */
+  --color-surface-subtle-raw: #12121a; /* recessed surfaces — blue-black */
+  --color-text-raw: #f0f4ff; /* near-white, pale-blue tint ("white ink") */
+  --color-text-muted-raw: #9aa3b8; /* cool steel — legible on black */
+  --color-primary-raw: #8fb0dc; /* lightened strategic blue — AA on black */
+  --color-primary-hover-raw: #aecae8; /* lifting toward white */
+  --color-primary-active-raw: #d0dff4; /* full pale-blue at press */
+  --color-accent-raw: #1c2c44; /* very dark blue — selection backgrounds */
+  --color-border-raw: #2c2c36; /* visible border on black — blue-charcoal */
+  --color-focus-raw: #60a5fa; /* bright focus ring */
 }

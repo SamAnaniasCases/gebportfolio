@@ -29,7 +29,10 @@ test.describe("Global Navigation & Header Verification", () => {
     expect(href).toBe("#main-content");
   });
 
-  test("should successfully navigate to all primary routes from the header", async ({ page }) => {
+  test("should successfully navigate to all primary routes from the navigation", async ({
+    page,
+    isMobile,
+  }) => {
     const navLinks = [
       { name: "Work", path: "/projects" },
       { name: "About", path: "/about" },
@@ -40,22 +43,37 @@ test.describe("Global Navigation & Header Verification", () => {
       { name: "Contact", path: "/contact" },
     ];
 
+    // Desktop uses the fixed sidebar nav; mobile uses the full-screen overlay
+    // nav, which must be opened via the hamburger before each navigation.
+    const openMenuIfMobile = async () => {
+      if (isMobile) {
+        await page.getByRole("button", { name: "Open navigation menu" }).click();
+      }
+    };
+    const navigation = () =>
+      page.getByRole("navigation", { name: isMobile ? "Mobile navigation" : "Main navigation" });
+
     for (const link of navLinks) {
-      // Find navigation link inside the header
-      const headerNavLink = page.locator("header nav").getByRole("link", { name: link.name });
-      await expect(headerNavLink).toBeVisible();
+      await openMenuIfMobile();
+
+      // Find navigation link inside the active navigation region
+      const navLink = navigation().getByRole("link", { name: link.name, exact: true });
+      await expect(navLink).toBeVisible();
 
       // Click the link and wait for navigation
-      await headerNavLink.click({ force: true });
+      await navLink.click();
       await page.waitForURL(`**${link.path}`);
 
       // Verify URL pathname
       const url = new URL(page.url());
       expect(url.pathname).toBe(link.path);
-
-      // Verify the link is active (has bold/primary styling)
-      await expect(headerNavLink).toHaveClass(/text-primary/);
-      await expect(headerNavLink).toHaveClass(/font-semibold/);
     }
+
+    // Verify the last visited route is marked as the active link
+    await openMenuIfMobile();
+    await expect(navigation().getByRole("link", { name: "Contact", exact: true })).toHaveAttribute(
+      "aria-current",
+      "page"
+    );
   });
 });

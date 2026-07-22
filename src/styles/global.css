@@ -2,6 +2,8 @@
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/manrope";
 @import "@fontsource/jetbrains-mono";
+@import "@fontsource-variable/fraunces/full.css";
+@import "@fontsource/gochi-hand";
 @import "./tokens.css";
 
 @theme {
@@ -25,8 +27,16 @@
   --radius-xl: var(--radius-xl);
   --radius-pill: var(--radius-pill);
 
+  /* Stroke-weight → border-width utilities (WoodcutTheme.md §1.2) */
+  --border-width-structural: var(--stroke-structural);
+  --border-width-detail: var(--stroke-detail);
+  --border-width-hatch: var(--stroke-hatch);
+  --border-width-fine: var(--stroke-fine);
+
   /* Font mapping */
-  --font-display: var(--font-sans-display);
+  --font-display: var(--font-serif-display); /* Fraunces — Engraver voice (Display/H1/H2) */
+  --font-heading: var(--font-sans-display); /* Manrope — H3/H4 subheads */
+  --font-hand: var(--font-hand); /* Gochi Hand — Scrawl voice (catchphrases only) */
   --font-sans: var(--font-sans-body);
   --font-mono: var(--font-mono);
 
@@ -54,6 +64,67 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Fraunces "Engraver" voice — enable WONK hand-cut terminals and automatic
+   optical sizing wherever the display font is applied (WoodcutTheme.md §4.1). */
+.font-display {
+  font-variation-settings:
+    "WONK" 1,
+    "SOFT" 0;
+  font-optical-sizing: auto;
+}
+
+/* Respect prefers-reduced-motion for the reveal animation used by the mobile
+   menu overlay and page entrances (WoodcutTheme.md §5.6). */
+@media (prefers-reduced-motion: reduce) {
+  .animate-reveal {
+    animation: none;
+  }
+}
+
+/* Chessboard background texture (WoodcutTheme.md §3.4). The linear-gradients
+   below are the ONLY permitted exception to the no-gradient rule (§1.1) — they
+   render repeating 1px grid lines, not a visual gradient. Uses semantic tokens so
+   the grid cleanly inverts and maintains crisp contrast in both light and dark modes. */
+.chess-grid {
+  position: relative;
+}
+.chess-grid::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  --chess-grid-color: color-mix(in srgb, var(--color-border-raw) 60%, transparent);
+  background-image:
+    linear-gradient(to right, var(--chess-grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--chess-grid-color) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.dark .chess-grid::before {
+  --chess-grid-color: color-mix(in srgb, var(--color-border-raw) 35%, transparent);
+  filter: blur(0.75px);
+  transform: translateZ(0);
+  -webkit-mask-image: radial-gradient(
+    ellipse 1400px 900px at 50% 30%,
+    transparent 0%,
+    color-mix(in srgb, black 20%, transparent) 30%,
+    color-mix(in srgb, black 55%, transparent) 70%,
+    transparent 98%
+  );
+  mask-image: radial-gradient(
+    ellipse 1400px 900px at 50% 30%,
+    transparent 0%,
+    color-mix(in srgb, black 20%, transparent) 30%,
+    color-mix(in srgb, black 55%, transparent) 70%,
+    transparent 98%
+  );
+}
+
+/* Dark Mode Foreground Card Elevation */
+.dark .bg-surface {
+  box-shadow: 0 20px 48px -16px rgba(0, 0, 0, 0.85);
 }
 
 /* Custom Prose class for Markdown layouts */
@@ -104,7 +175,32 @@
     }
   }
   blockquote {
-    @apply border-primary text-text-muted my-6 border-l-4 pl-4 italic;
+    /* Engraved double-rule left border (2.5px structural + 1.3px inner, §4.2)
+       with a ♛ queen watermark behind the opening line (§3.5). */
+    @apply text-text-muted relative my-6 py-2 pr-4 pl-7 italic;
+    isolation: isolate;
+    border-left: var(--stroke-structural) solid var(--color-primary-raw);
+  }
+  blockquote::after {
+    /* Inner rule of the double-rule border (rotated 90°), offset 4px. */
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--stroke-structural) + 4px);
+    width: var(--stroke-hatch);
+    background: var(--color-primary-raw);
+  }
+  blockquote::before {
+    /* ♛ queen watermark — 48px, painted behind the text via isolation. */
+    content: "♛";
+    position: absolute;
+    z-index: -1;
+    top: 0.5rem;
+    left: 0.75rem;
+    font-size: 48px;
+    line-height: 1;
+    color: color-mix(in srgb, var(--color-primary-raw) 18%, transparent);
   }
 }
 

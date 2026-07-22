@@ -1,7 +1,9 @@
 ---
 import "../styles/global.css";
 import { getEntry } from "astro:content";
+import { Menu, X } from "@lucide/astro";
 import ThemeToggle from "../components/navigation/ThemeToggle.astro";
+import ChessIcons from "../components/navigation/ChessIcons.astro";
 import Logo from "../components/primitives/Logo.astro";
 
 interface Props {
@@ -46,6 +48,26 @@ const isCurrent = (href: string) => {
   const cleanHref = href.endsWith("/") && href.length > 1 ? href.slice(0, -1) : href;
   return cleanPath === cleanHref || cleanPath.startsWith(cleanHref + "/");
 };
+
+// Navigation helpers for the woodcut sidebar (WoodcutTheme.md §5)
+const visibleLinks = navLinks.filter((link) => link.visibility !== false);
+const linkByHref = new Map(visibleLinks.map((link) => [link.href, link]));
+
+// Chess piece icon per content section (WoodcutTheme.md §5.3)
+const pieceByHref: Record<string, "knight" | "rook" | "bishop" | "pawn" | "queen"> = {
+  "/projects": "knight",
+  "/experience": "rook",
+  "/research": "bishop",
+  "/posts": "pawn",
+  "/experiments": "queen",
+};
+
+// Sidebar link groups separated by hatch rules (WoodcutTheme.md §5.1 / §5.4)
+const groupHrefs = [
+  ["/projects", "/experience", "/research"],
+  ["/posts", "/experiments"],
+  ["/about", "/contact", "/search"],
+];
 ---
 
 <!doctype html>
@@ -106,77 +128,242 @@ const isCurrent = (href: string) => {
     </script>
   </head>
   <body
-    class="bg-bg text-text selection:bg-accent selection:text-text duration-normal ease-standard flex min-h-screen flex-col font-sans antialiased transition-colors"
+    class="bg-bg text-text selection:bg-accent selection:text-text duration-normal ease-standard chess-grid font-sans antialiased transition-colors"
   >
     <!-- Accessible Skip Link -->
     <a
       href="#main-content"
-      class="bg-primary focus:outline-focus sr-only rounded-md px-4 py-2 text-white focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:outline focus:outline-2 focus:outline-offset-2"
+      class="bg-primary focus:outline-focus sr-only rounded-md px-4 py-2 text-white focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[70] focus:outline focus:outline-2 focus:outline-offset-2"
     >
       Skip to content
     </a>
 
-    <!-- Global Header -->
-    <header class="border-border-custom bg-surface border-b px-6 py-4 md:px-8">
-      <div class="mx-auto flex max-w-7xl items-center justify-between">
+    <!-- Mobile Top Bar (< lg) -->
+    <div class="border-border-custom bg-surface border-b-structural sticky top-0 z-50 lg:hidden">
+      <div class="flex h-[52px] items-center justify-between px-4">
         <a
           href="/"
-          class="text-h4 font-display hover:text-primary duration-fast flex items-center gap-3 font-bold transition-colors"
+          class="font-display hover:text-primary duration-fast flex items-center gap-2.5 font-bold transition-colors"
         >
-          <Logo class="size-8" />
-          <span>{siteConfig?.name ?? "Sam Ananias"}</span>
+          <Logo class="size-7" />
+          <span class="text-sm">{siteConfig?.name ?? "Sam Ananias"}</span>
         </a>
-        <div class="flex items-center gap-6">
-          <nav class="flex items-center gap-6">
-            {
-              navLinks
-                .filter((link) => link.visibility !== false)
-                .map((link) => {
-                  const active = isCurrent(link.href);
-                  return (
-                    <a
-                      href={link.href}
-                      target={link.external ? "_blank" : undefined}
-                      rel={link.external ? "noopener noreferrer" : undefined}
-                      class={`text-small duration-fast transition-colors ${
-                        active
-                          ? "text-primary font-semibold"
-                          : "text-text-muted hover:text-text font-medium"
-                      }`}
-                      aria-current={active ? "page" : undefined}
-                    >
-                      {link.label}
-                    </a>
-                  );
-                })
-            }
-            <slot name="navigation" />
-          </nav>
-          <ThemeToggle />
+        <div class="flex items-center gap-1">
+          <ThemeToggle id="theme-toggle-mobile" />
+          <button
+            id="menu-open"
+            type="button"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            aria-label="Open navigation menu"
+            class="text-text hover:bg-surface-subtle focus-visible:ring-focus flex size-11 items-center justify-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+          >
+            <Menu class="size-5" stroke-width={1.6} />
+          </button>
         </div>
       </div>
-    </header>
+    </div>
 
-    <!-- Main Content Container -->
-    <main
-      id="main-content"
-      class="mx-auto w-full max-w-7xl flex-grow px-6 py-8 focus:outline-none md:px-8"
-      tabindex="-1"
+    <!-- Mobile Overlay Menu (< lg) -->
+    <div
+      id="mobile-menu"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Navigation menu"
+      class="bg-bg animate-reveal fixed inset-0 z-[60] hidden lg:hidden"
     >
-      <slot />
-    </main>
-
-    <!-- Global Footer -->
-    <footer class="border-border-custom bg-surface mt-auto border-t px-6 py-6 md:px-8">
       <div
-        class="text-small text-text-muted mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row"
+        class="border-border-custom border-b-hatch flex h-[52px] items-center justify-between px-4"
       >
-        <p>
-          &copy; {new Date().getFullYear()}
-          {siteConfig?.name ?? "Sam Ananias"}. All rights reserved.
-        </p>
-        <p class="text-caption font-mono">Official source of truth · Version 1.0.0</p>
+        <a href="/" class="font-display flex items-center gap-2.5 font-bold">
+          <Logo class="size-7" />
+          <span class="text-sm">{siteConfig?.name ?? "Sam Ananias"}</span>
+        </a>
+        <button
+          id="menu-close"
+          type="button"
+          aria-label="Close navigation menu"
+          class="text-text hover:bg-surface-subtle focus-visible:ring-focus flex size-11 items-center justify-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+        >
+          <X class="size-5" stroke-width={1.6} />
+        </button>
       </div>
-    </footer>
+      <nav aria-label="Mobile navigation" class="flex flex-col gap-1 px-4 py-6">
+        {
+          visibleLinks.map((link) => {
+            const active = isCurrent(link.href);
+            const piece = pieceByHref[link.href];
+            return (
+              <a
+                href={link.href}
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "noopener noreferrer" : undefined}
+                class={`flex items-center gap-3 rounded-md px-3 py-3 font-mono text-base transition-colors duration-150 ${
+                  active ? "text-text font-semibold" : "text-text-muted hover:text-text font-medium"
+                }`}
+                aria-current={active ? "page" : undefined}
+              >
+                {piece ? (
+                  <ChessIcons piece={piece} class="text-lg" />
+                ) : (
+                  <span class="w-[18px]" aria-hidden="true" />
+                )}
+                <span>{link.label}</span>
+              </a>
+            );
+          })
+        }
+      </nav>
+    </div>
+
+    <!-- Desktop Sidebar (≥ lg) -->
+    <aside
+      class="border-border-custom bg-surface border-r-structural fixed inset-y-0 left-0 z-50 hidden w-56 flex-col px-7 py-8 lg:flex"
+    >
+      <a
+        href="/"
+        class="text-h4 font-display hover:text-primary duration-fast flex items-center gap-3 font-bold transition-colors"
+      >
+        <Logo class="size-8" />
+        <span>{siteConfig?.name ?? "Sam Ananias"}</span>
+      </a>
+
+      <div class="bg-border-custom my-6 h-[var(--stroke-hatch)] w-full" aria-hidden="true"></div>
+
+      <nav aria-label="Main navigation" class="flex flex-1 flex-col gap-4">
+        {
+          groupHrefs.map((hrefs, groupIndex) => (
+            <>
+              {groupIndex > 0 && (
+                <div class="bg-border-custom h-[var(--stroke-hatch)] w-full" aria-hidden="true" />
+              )}
+              <ul class="flex flex-col gap-2.5">
+                {hrefs.map((href) => {
+                  const link = linkByHref.get(href);
+                  if (!link) return null;
+                  const active = isCurrent(link.href);
+                  const piece = pieceByHref[href];
+                  return (
+                    <li>
+                      <a
+                        href={link.href}
+                        target={link.external ? "_blank" : undefined}
+                        rel={link.external ? "noopener noreferrer" : undefined}
+                        class={`relative flex items-center gap-2.5 rounded-sm py-1.5 pr-2 pl-6 font-mono text-[13px] transition-colors duration-150 ${
+                          active
+                            ? "text-text font-semibold"
+                            : "text-text-muted hover:text-text font-medium"
+                        }`}
+                        aria-current={active ? "page" : undefined}
+                      >
+                        {active && (
+                          <span
+                            class="absolute top-1/2 left-0 -translate-y-1/2 text-xs leading-none"
+                            aria-hidden="true"
+                          >
+                            ♞
+                          </span>
+                        )}
+                        {piece ? (
+                          <ChessIcons piece={piece} class="text-[15px]" />
+                        ) : (
+                          <span class="w-[15px]" aria-hidden="true" />
+                        )}
+                        <span>{link.label}</span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          ))
+        }
+      </nav>
+
+      <div class="mt-6">
+        <div class="bg-border-custom mb-6 h-[var(--stroke-hatch)] w-full" aria-hidden="true"></div>
+        <ThemeToggle />
+        <p class="text-caption text-text-muted mt-4 font-mono">
+          &copy; {new Date().getFullYear()} · v1.0.0
+        </p>
+      </div>
+    </aside>
+
+    <!-- Content Column (offset by sidebar on desktop) -->
+    <div class="relative z-1 flex min-h-screen flex-col lg:pl-56">
+      <main
+        id="main-content"
+        class="mx-auto w-full max-w-7xl flex-grow px-6 py-8 focus:outline-none md:px-8"
+        tabindex="-1"
+      >
+        <slot />
+      </main>
+
+      <!-- Global Footer -->
+      <footer class="border-border-custom bg-surface mt-auto border-t px-6 py-6 md:px-8">
+        <div
+          class="text-small text-text-muted mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row"
+        >
+          <p>
+            &copy; {new Date().getFullYear()}
+            {siteConfig?.name ?? "Sam Ananias"}. All rights reserved.
+          </p>
+          <p class="text-caption font-mono">Official source of truth · Version 1.0.0</p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Mobile menu: open/close, focus trap, scroll lock (WoodcutTheme.md §5.6 / §5.8) -->
+    <script is:inline>
+      (function () {
+        const overlay = document.getElementById("mobile-menu");
+        const openBtn = document.getElementById("menu-open");
+        const closeBtn = document.getElementById("menu-close");
+        if (!overlay || !openBtn || !closeBtn) return;
+
+        const FOCUSABLE = "a[href], button:not([disabled])";
+
+        function openMenu() {
+          overlay.classList.remove("hidden");
+          openBtn.setAttribute("aria-expanded", "true");
+          document.body.style.overflow = "hidden";
+          closeBtn.focus();
+        }
+
+        function closeMenu() {
+          overlay.classList.add("hidden");
+          openBtn.setAttribute("aria-expanded", "false");
+          document.body.style.overflow = "";
+          openBtn.focus();
+        }
+
+        openBtn.addEventListener("click", openMenu);
+        closeBtn.addEventListener("click", closeMenu);
+
+        overlay.addEventListener("keydown", function (event) {
+          if (event.key === "Escape") {
+            closeMenu();
+            return;
+          }
+          if (event.key === "Tab") {
+            const focusable = Array.prototype.slice.call(overlay.querySelectorAll(FOCUSABLE));
+            if (focusable.length === 0) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+              event.preventDefault();
+              last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+              event.preventDefault();
+              first.focus();
+            }
+          }
+        });
+
+        Array.prototype.slice.call(overlay.querySelectorAll("a[href]")).forEach(function (anchor) {
+          anchor.addEventListener("click", closeMenu);
+        });
+      })();
+    </script>
   </body>
 </html>

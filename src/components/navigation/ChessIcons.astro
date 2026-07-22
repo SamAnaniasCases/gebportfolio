@@ -1,0 +1,28 @@
+---
+/**
+ * Chess piece icon (WoodcutTheme.md §5.3).
+ * Renders a monochrome chess glyph that inherits `currentColor`, so it
+ * auto-inverts between light and dark mode. Unicode glyphs are sanctioned
+ * for icon sizes ≤ 20px (§3.1); swap the map below for custom stroke SVGs
+ * (2.5 / 1.5 / 1.3px system) if larger or more detailed pieces are needed.
+ */
+interface Props {
+  piece: "king" | "knight" | "rook" | "bishop" | "pawn" | "queen";
+  class?: string;
+}
+
+const { piece, class: className = "" } = Astro.props;
+
+const glyphs: Record<Props["piece"], string> = {
+  king: "♔",
+  knight: "♘",
+  rook: "♖",
+  bishop: "♗",
+  pawn: "♙",
+  queen: "♕",
+};
+
+const classes = ["inline-block select-none leading-none", className].filter(Boolean).join(" ");
+---
+
+<span class={classes} aria-hidden="true">{glyphs[piece]}</span>

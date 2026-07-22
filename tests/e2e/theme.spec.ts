@@ -13,7 +13,7 @@ test.describe("Theme Toggling & Dark Mode Integration (System Light Preference)"
     await expect(htmlElement).not.toHaveClass(/dark/);
 
     // 2. Toggle to Dark Mode
-    const themeBtn = page.locator("#theme-toggle");
+    const themeBtn = page.locator(".theme-toggle:visible");
     await expect(themeBtn).toBeVisible();
     await themeBtn.click({ force: true });
 
@@ -43,7 +43,7 @@ test.describe("Theme Toggling & Dark Mode Integration (System Dark Preference)",
     await expect(htmlElement).toHaveClass(/dark/);
 
     // 2. Toggle to Light Mode
-    const themeBtn = page.locator("#theme-toggle");
+    const themeBtn = page.locator(".theme-toggle:visible");
     await themeBtn.click({ force: true });
 
     // Verify dark class is removed

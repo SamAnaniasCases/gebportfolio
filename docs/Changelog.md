@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-07-21
+
+### Added
+
+- Woodcut & engraving visual theme specification and phased roadmap in `docs/WoodcutTheme.md` and `docs/WoodcutThemeRoadmap.md`.
+- True-black dark mode palette (ground `#000000`, surface `#0d0d0f`, text `#f0f4ff`, primary `#8fb0dc`) in `src/styles/tokens.css`.
+- Engraving stroke-weight tokens (`--stroke-structural` 2.5px, `--stroke-detail` 1.5px, `--stroke-hatch` 1.3px, `--stroke-fine` 1px) in `src/styles/tokens.css`.
+- Classical typography voices — Fraunces Variable (display, WONK) and Gochi Hand (decorative scrawl) via `@fontsource-variable/fraunces` and `@fontsource/gochi-hand`.
+- Engraved section divider primitives `DividerChessboard.astro` and `DividerKnight.astro` in `src/components/primitives/`.
+- Chess piece icon component `ChessIcons.astro` in `src/components/navigation/`.
+- Fixed left-sidebar navigation (desktop) with a full-screen overlay menu, focus trap, and scroll lock (mobile) in `src/layouts/BaseLayout.astro`.
+- Themed 404 page featuring a knocked-over knight engraving at `src/pages/404.astro`.
+- Mode-aware `.chess-grid` repeating chessboard background texture utility in `src/styles/global.css`.
+
+### Fixed
+
+- Updated `.chess-grid` CSS variable mixing in `src/styles/global.css` to use `var(--color-border-raw)` for clear grid visibility in both dark and light mode.
+- Enhanced Dark Mode background texture in `src/styles/global.css` with an optical 3D depth effect using `filter: blur(0.75px)`, 4-stop radial `mask-image` dual vignette decay, and dark surface card ambient elevation shadows (`box-shadow`), allowing foreground UI elements to float cleanly above a soft, distant background environment.
+
+### Changed
+
+- Rebuilt `Card.astro`, `Button.astro`, and `LinkButton.astro` with structural stroke borders, hard-offset shadows, and tight `rounded-sm` corners.
+- Restyled `.prose-custom blockquote` with an engraved double-rule border and ♛ queen watermark.
+- Replaced the hero text gradient with a solid `text-primary` emphasis and added a Gochi Hand catchphrase (no-gradient rule, WoodcutTheme.md §1.1).
+- Updated navigation and theme E2E specs for the sidebar/overlay DOM and the multi-instance theme toggle.
+
 ## [0.8.0] - 2026-07-21
 
 ### Added

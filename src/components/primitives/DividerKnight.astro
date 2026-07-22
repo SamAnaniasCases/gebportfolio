@@ -1,0 +1,21 @@
+---
+/**
+ * Piece-silhouette rule divider (WoodcutTheme.md §3.3).
+ * A small knight glyph centred on a 1.3px hatch rule. Used between list
+ * items (experience / research). Purely decorative — hidden from assistive
+ * technology.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+
+const classes = ["flex items-center gap-3", className].filter(Boolean).join(" ");
+---
+
+<div aria-hidden="true" class={classes}>
+  <span class="bg-border-custom h-[var(--stroke-hatch)] flex-1"></span>
+  <span class="text-text-muted text-base leading-none select-none">♞</span>
+  <span class="bg-border-custom h-[var(--stroke-hatch)] flex-1"></span>
+</div>
