@@ -18,6 +18,8 @@ Welcome to the documentation home for the personal portfolio project.
 - [Architecture](Architecture.md) — System boundaries, data flow, rendering model.
 - [Tech Stack](TechStack.md) — Current packages, versions, and stack selection rationale.
 - [Design System](DesignSystem.md) — Typography, semantic tokens, radius, motion, design constraints.
+- [Chess Icon System](ChessIconSystem.md) — Specification for chess navigation icons and move evaluation badges.
+- [SVG & Image Rules](SVGRules.md) — Cropping standards, stroke weights, dark mode SVG binding, and asset specs.
 - [Folder Structure](FolderStructure.md) — Directory map, naming, and dependency flow rules.
 - [Coding Standards](CodingStandards.md) — TypeScript guidelines, component contracts, error boundaries, testing.
 - [Content Management](ContentManagement.md) — Content collections, schemas, Keystatic configuration.

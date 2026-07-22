@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+  <!-- best: Star — best/engine move -->
+  <circle cx="12" cy="12" r="11" fill="#66b833" />
+  <polygon points="12,4 13.8,8.6 18.7,8.8 14.9,11.9 16.1,16.7 12,14 7.9,16.7 9.1,11.9 5.3,8.8 10.2,8.6" fill="white" />
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+  <!-- brilliant: Double exclamation (!!) — exceptional move -->
+  <circle cx="12" cy="12" r="11" fill="#3bb5a0" />
+  <rect x="7.2" y="5.5" width="2.8" height="7.5" rx="1.4" fill="white" />
+  <circle cx="8.6" cy="16.5" r="1.5" fill="white" />
+  <rect x="14" y="5.5" width="2.8" height="7.5" rx="1.4" fill="white" />
+  <circle cx="15.4" cy="16.5" r="1.5" fill="white" />
+</svg>

@@ -34,6 +34,7 @@ test.describe("Global Navigation & Header Verification", () => {
     isMobile,
   }) => {
     const navLinks = [
+      { name: "Home", path: "/" },
       { name: "Work", path: "/projects" },
       { name: "About", path: "/about" },
       { name: "Writing", path: "/posts" },

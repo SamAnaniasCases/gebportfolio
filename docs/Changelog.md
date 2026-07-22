@@ -18,15 +18,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed left-sidebar navigation (desktop) with a full-screen overlay menu, focus trap, and scroll lock (mobile) in `src/layouts/BaseLayout.astro`.
 - Themed 404 page featuring a knocked-over knight engraving at `src/pages/404.astro`.
 - Mode-aware `.chess-grid` repeating chessboard background texture utility in `src/styles/global.css`.
+- Dedicated SVG & image asset rules specification in `docs/SVGRules.md` establishing tight cropping standards, engraving stroke-weight hierarchy, and dark-mode high-contrast binding patterns.
+- Integrated complete set of 12 hand-drawn woodcut chess piece SVGs (king, queen, rook, bishop, knight, pawn in black and white styles) inside `src/assets/chess/`.
+- Replaced legacy navigation glyphs in `src/components/navigation/ChessIcons.astro` and `src/layouts/BaseLayout.astro` with custom theme-adaptive SVGs (black SVGs in Light Mode, white SVGs in Dark Mode) and updated active navigation indicator to the Pawn SVG.
+- Completed Phase A of Sidebar Refinement (`docs/SidebarRefinement.md`): restored `Home` (`/`) route with King piece (♔), implemented stroke-only 12px Knight SVG active indicator (`src/assets/chess-nav/knight.svg`), added 44px min-height touch targets, and configured explicit `focus-visible` focus rings.
+- Completed Phases C & D of Sidebar Refinement (`docs/SidebarRefinement.md`): added `tracking-wide` letter spacing on navigation links, 1px horizontal icon hover shift micro-interactions (`group-hover:translate-x-px`), and `active:scale-[0.92]` press feedback on the theme toggle button. Finalized Checkpoint 1.
+- Completed Phase B of Sidebar Refinement (`docs/SidebarRefinement.md`): created 24×24 simplified stroke-only piece SVGs in `src/assets/chess-nav/`, refactored `ChessIcons.astro` to single-render using `currentColor` auto-inversion, and resized icons to 15px (desktop) and 18px (mobile). Finalized Checkpoint 2.
+- Completed Phase E of Sidebar Refinement (`docs/SidebarRefinement.md`): added 10px uppercase mono group labels (`WORK`, `WRITING`, `META`), integrated `DividerChessboard.astro` for the primary group divider strip, and configured `@custom-variant short` (`max-height: 768px`) for responsive label visibility. Finalized Checkpoint 3.
+- Completed Phase F of Sidebar Refinement (`docs/SidebarRefinement.md`): created hand-drawn Sun/Moon SVGs in `src/assets/theme-icons/`, updated `ThemeToggle.astro` button to 44px (`h-11 w-11`), and added a 40px knight watermark at 20% opacity above the sidebar footer divider. Finalized Checkpoint 4.
+- Completed Phase G of Sidebar Refinement (`docs/SidebarRefinement.md`): tokenized hardcoded `#0d0d0f` dark-mode colors in `Logo.astro` with `var(--color-surface-raw, #0d0d0f)`. Finalized Checkpoint 5.
+- Completed Phase H of Sidebar Refinement (`docs/SidebarRefinement.md`): implemented 200ms `mobile-menu-out` exit animation, per-link 30ms staggered entry delays (`--i`), and `prefers-reduced-motion` animation fallbacks in `BaseLayout.astro` and `global.css`. Finalized Checkpoint 6.
+- Isolated desktop sidebar vertical scrolling to the primary navigation section (`Home` → `Lab`), pinning the logo header, utility links (`About`, `Contact`, `Search`), theme toggle, and footer permanently in fixed position.
 
 ### Fixed
 
+- Added `@variant dark (&:where(.dark, .dark *));` class selector strategy to `src/styles/global.css` for Tailwind CSS v4, fixing `dark:hidden` and `dark:flex` Sun/Moon icon swapping when toggling dark mode via JavaScript.
 - Updated `.chess-grid` CSS variable mixing in `src/styles/global.css` to use `var(--color-border-raw)` for clear grid visibility in both dark and light mode.
 - Enhanced Dark Mode background texture in `src/styles/global.css` with an optical 3D depth effect using `filter: blur(0.75px)`, 4-stop radial `mask-image` dual vignette decay, and dark surface card ambient elevation shadows (`box-shadow`), allowing foreground UI elements to float cleanly above a soft, distant background environment.
+- Cropped SVG `viewBox` in `src/components/primitives/Logo.astro`, `public/favicon.svg`, and `src/assets/brand/logo.svg` to focus directly on the goat knight head and horns (`120 40 400 360`), making the logo prominent, bold, and readable at small sizes (favicons and topbar headers).
 
-### Changed
-
-- Rebuilt `Card.astro`, `Button.astro`, and `LinkButton.astro` with structural stroke borders, hard-offset shadows, and tight `rounded-sm` corners.
+- Updated active navigation link indicator in `src/layouts/BaseLayout.astro` to use `src/assets/chess-icons/correct.svg` instead of `knight.svg`.
+- Redesigned `king.svg` and `knight.svg` in `src/assets/chess-nav/` for improved clarity at 15px render size.
+- Created 10 chess move evaluation annotation badges in `src/assets/chess-icons/` (`brilliant`, `great`, `best`, `good`, `correct`, `book`, `inaccuracy`, `mistake`, `blunder`, `miss`).
 - Restyled `.prose-custom blockquote` with an engraved double-rule border and ♛ queen watermark.
 - Replaced the hero text gradient with a solid `text-primary` emphasis and added a Gochi Hand catchphrase (no-gradient rule, WoodcutTheme.md §1.1).
 - Updated navigation and theme E2E specs for the sidebar/overlay DOM and the multi-instance theme toggle.

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+  <!-- miss: Double question mark (??) — severe blunder -->
+  <circle cx="12" cy="12" r="11" fill="#c23535" />
+  <!-- Left ? -->
+  <path d="M3.5 8.5c0-1.8 1.2-3 2.7-3s2.7 1.2 2.7 3c0 1.2-.8 2-1.5 2.5-.5.3-1 .8-1 1.5" stroke="white" stroke-width="2" stroke-linecap="round" fill="none" />
+  <circle cx="6.4" cy="16.5" r="1.2" fill="white" />
+  <!-- Right ? -->
+  <path d="M13 8.5c0-1.8 1.2-3 2.7-3s2.7 1.2 2.7 3c0 1.2-.8 2-1.5 2.5-.5.3-1 .8-1 1.5" stroke="white" stroke-width="2" stroke-linecap="round" fill="none" />
+  <circle cx="15.9" cy="16.5" r="1.2" fill="white" />
+</svg>

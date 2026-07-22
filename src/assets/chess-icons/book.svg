@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+  <!-- book: Open book — book/theory move -->
+  <circle cx="12" cy="12" r="11" fill="#a18860" />
+  <rect x="4.5" y="6" width="6.5" height="12" rx="1.2" fill="white" />
+  <rect x="13" y="6" width="6.5" height="12" rx="1.2" fill="white" />
+</svg>

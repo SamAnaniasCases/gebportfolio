@@ -6,6 +6,9 @@
 @import "@fontsource/gochi-hand";
 @import "./tokens.css";
 
+@custom-variant short (@media (max-height: 768px));
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* Mapping Tailwind color theme variables to our CSS tokens */
   --color-bg: var(--color-bg-raw);
@@ -210,4 +213,48 @@
 }
 .toc-link-active {
   @apply text-primary border-primary border-l-2 pl-2 font-semibold;
+}
+
+/* Mobile Overlay Exit & Stagger Utilities (SidebarRefinement.md Phase H) */
+@keyframes mobile-menu-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+#mobile-menu.is-closing {
+  animation: mobile-menu-out 200ms ease-in forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mobile-menu.is-closing {
+    animation: none;
+  }
+  .mobile-nav-link {
+    animation-delay: 0ms !important;
+  }
+}
+
+/* Primary Navigation Custom Scrollbar Utility */
+.nav-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.nav-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.nav-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-raw);
+  border-radius: 9999px;
+}
+.nav-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-primary-raw);
+}
+.nav-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-raw) transparent;
 }

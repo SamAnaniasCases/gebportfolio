@@ -1,5 +1,6 @@
 ---
-import { Sun, Moon } from "@lucide/astro";
+import sunSvg from "../../assets/theme-icons/sun.svg?raw";
+import moonSvg from "../../assets/theme-icons/moon.svg?raw";
 import Button from "../primitives/Button.astro";
 
 interface Props {
@@ -16,29 +17,42 @@ const { id = "theme-toggle", class: className = "", ...rest } = Astro.props;
   id={id}
   variant="ghost"
   size="sm"
-  class:list={["theme-toggle h-10 w-10 rounded-full p-0 select-none", className]}
+  class:list={[
+    "theme-toggle group h-11 w-11 rounded-full p-0 transition-transform select-none active:scale-[0.92]",
+    className,
+  ]}
   aria-label="Toggle theme mode"
   {...rest}
 >
   <!-- Moon icon visible in light mode -->
   <span class="flex items-center justify-center dark:hidden">
-    <Moon class="h-5 w-5 transition-transform duration-300 group-hover:rotate-12" />
+    <span
+      class="size-5 transition-transform duration-300 group-hover:rotate-12 [&>svg]:size-full"
+      set:html={moonSvg}
+    />
   </span>
 
   <!-- Sun icon visible in dark mode -->
   <span class="hidden items-center justify-center dark:flex">
-    <Sun class="h-5 w-5 transition-transform duration-300 group-hover:rotate-45" />
+    <span
+      class="size-5 transition-transform duration-300 group-hover:rotate-45 [&>svg]:size-full"
+      set:html={sunSvg}
+    />
   </span>
 </Button>
 
 <script>
   const handleToggle = () => {
-    document.documentElement.classList.toggle("dark");
+    const isDark = document.documentElement.classList.toggle("dark");
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    }
   };
 
   // Wire every toggle instance on the page (sidebar + mobile top bar).
   const setupToggles = () => {
     document.querySelectorAll(".theme-toggle").forEach((btn) => {
+      btn.removeEventListener("click", handleToggle);
       btn.addEventListener("click", handleToggle);
     });
   };

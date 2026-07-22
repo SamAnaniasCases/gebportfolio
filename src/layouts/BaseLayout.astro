@@ -5,6 +5,9 @@ import { Menu, X } from "@lucide/astro";
 import ThemeToggle from "../components/navigation/ThemeToggle.astro";
 import ChessIcons from "../components/navigation/ChessIcons.astro";
 import Logo from "../components/primitives/Logo.astro";
+import DividerChessboard from "../components/primitives/DividerChessboard.astro";
+import knightMarker from "../assets/chess-nav/knight.svg?raw";
+import navIndicator from "../assets/chess-icons/correct.svg?raw";
 
 interface Props {
   title?: string;
@@ -54,7 +57,8 @@ const visibleLinks = navLinks.filter((link) => link.visibility !== false);
 const linkByHref = new Map(visibleLinks.map((link) => [link.href, link]));
 
 // Chess piece icon per content section (WoodcutTheme.md §5.3)
-const pieceByHref: Record<string, "knight" | "rook" | "bishop" | "pawn" | "queen"> = {
+const pieceByHref: Record<string, "king" | "knight" | "rook" | "bishop" | "pawn" | "queen"> = {
+  "/": "king",
   "/projects": "knight",
   "/experience": "rook",
   "/research": "bishop",
@@ -64,10 +68,12 @@ const pieceByHref: Record<string, "knight" | "rook" | "bishop" | "pawn" | "queen
 
 // Sidebar link groups separated by hatch rules (WoodcutTheme.md §5.1 / §5.4)
 const groupHrefs = [
-  ["/projects", "/experience", "/research"],
+  ["/", "/projects", "/experience", "/research"],
   ["/posts", "/experiments"],
   ["/about", "/contact", "/search"],
 ];
+
+const groupLabels = ["WORK", "WRITING", "META"];
 ---
 
 <!doctype html>
@@ -190,7 +196,7 @@ const groupHrefs = [
       </div>
       <nav aria-label="Mobile navigation" class="flex flex-col gap-1 px-4 py-6">
         {
-          visibleLinks.map((link) => {
+          visibleLinks.map((link, index) => {
             const active = isCurrent(link.href);
             const piece = pieceByHref[link.href];
             return (
@@ -198,13 +204,14 @@ const groupHrefs = [
                 href={link.href}
                 target={link.external ? "_blank" : undefined}
                 rel={link.external ? "noopener noreferrer" : undefined}
-                class={`flex items-center gap-3 rounded-md px-3 py-3 font-mono text-base transition-colors duration-150 ${
+                style={`--i: ${index}; animation-delay: calc(var(--i) * 30ms);`}
+                class={`mobile-nav-link animate-reveal flex items-center gap-3 rounded-md px-3 py-3 font-mono text-base transition-colors duration-150 ${
                   active ? "text-text font-semibold" : "text-text-muted hover:text-text font-medium"
                 }`}
                 aria-current={active ? "page" : undefined}
               >
                 {piece ? (
-                  <ChessIcons piece={piece} class="text-lg" />
+                  <ChessIcons piece={piece} class="size-[18px]" />
                 ) : (
                   <span class="w-[18px]" aria-hidden="true" />
                 )}
@@ -218,26 +225,32 @@ const groupHrefs = [
 
     <!-- Desktop Sidebar (≥ lg) -->
     <aside
-      class="border-border-custom bg-surface border-r-structural fixed inset-y-0 left-0 z-50 hidden w-56 flex-col px-7 py-8 lg:flex"
+      class="border-border-custom bg-surface border-r-structural fixed inset-y-0 left-0 z-50 hidden w-56 flex-col overflow-hidden px-7 py-6 lg:flex"
     >
-      <a
-        href="/"
-        class="text-h4 font-display hover:text-primary duration-fast flex items-center gap-3 font-bold transition-colors"
+      <!-- Fixed Header Zone -->
+      <div class="shrink-0 mb-6">
+        <a
+          href="/"
+          class="text-h4 font-display hover:text-primary duration-fast flex items-center gap-3 font-bold transition-colors"
+        >
+          <Logo class="size-8" />
+          <span>{siteConfig?.name ?? "Sam Ananias"}</span>
+        </a>
+      </div>
+
+      <!-- Primary Scrollable Navigation Zone (Home -> Lab / Work & Writing) -->
+      <nav
+        aria-label="Main navigation"
+        class="nav-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto min-h-0 pr-1"
       >
-        <Logo class="size-8" />
-        <span>{siteConfig?.name ?? "Sam Ananias"}</span>
-      </a>
-
-      <div class="bg-border-custom my-6 h-[var(--stroke-hatch)] w-full" aria-hidden="true"></div>
-
-      <nav aria-label="Main navigation" class="flex flex-1 flex-col gap-4">
         {
-          groupHrefs.map((hrefs, groupIndex) => (
-            <>
-              {groupIndex > 0 && (
-                <div class="bg-border-custom h-[var(--stroke-hatch)] w-full" aria-hidden="true" />
-              )}
-              <ul class="flex flex-col gap-2.5">
+          groupHrefs.slice(0, 2).map((hrefs, groupIndex) => (
+            <div class="flex flex-col gap-1.5">
+              {groupIndex === 1 && <DividerChessboard class="my-1.5 opacity-70" />}
+              <span class="text-text-muted short:hidden hidden px-1 py-0.5 font-mono text-[10px] font-semibold tracking-wider uppercase select-none lg:block">
+                {groupLabels[groupIndex]}
+              </span>
+              <ul class="flex flex-col gap-1.5">
                 {hrefs.map((href) => {
                   const link = linkByHref.get(href);
                   if (!link) return null;
@@ -249,7 +262,7 @@ const groupHrefs = [
                         href={link.href}
                         target={link.external ? "_blank" : undefined}
                         rel={link.external ? "noopener noreferrer" : undefined}
-                        class={`relative flex items-center gap-2.5 rounded-sm py-1.5 pr-2 pl-6 font-mono text-[13px] transition-colors duration-150 ${
+                        class={`group focus-visible:ring-focus relative flex min-h-[36px] items-center gap-2.5 rounded-sm py-1 pr-2 pl-6 font-mono text-[13px] tracking-wide transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
                           active
                             ? "text-text font-semibold"
                             : "text-text-muted hover:text-text font-medium"
@@ -258,14 +271,16 @@ const groupHrefs = [
                       >
                         {active && (
                           <span
-                            class="absolute top-1/2 left-0 -translate-y-1/2 text-xs leading-none"
+                            class="absolute top-1/2 left-0 size-3 -translate-y-1/2 [&>svg]:size-full"
                             aria-hidden="true"
-                          >
-                            ♞
-                          </span>
+                            set:html={navIndicator}
+                          />
                         )}
                         {piece ? (
-                          <ChessIcons piece={piece} class="text-[15px]" />
+                          <ChessIcons
+                            piece={piece}
+                            class="size-[15px] transition-transform duration-150 group-hover:translate-x-px motion-reduce:transform-none"
+                          />
                         ) : (
                           <span class="w-[15px]" aria-hidden="true" />
                         )}
@@ -275,15 +290,76 @@ const groupHrefs = [
                   );
                 })}
               </ul>
-            </>
+            </div>
           ))
         }
       </nav>
 
-      <div class="mt-6">
-        <div class="bg-border-custom mb-6 h-[var(--stroke-hatch)] w-full" aria-hidden="true"></div>
+      <!-- Fixed Bottom Utility & Footer Zone (Meta links, ThemeToggle, Footer) -->
+      <div class="shrink-0 mt-auto pt-2">
+        <div class="bg-border-custom mb-3 h-[var(--stroke-hatch)] w-full" aria-hidden="true"></div>
+        {
+          groupHrefs.slice(2).map((hrefs, groupOffset) => {
+            const groupIndex = 2 + groupOffset;
+            return (
+              <div class="flex flex-col gap-1.5 mb-2">
+                <span class="text-text-muted short:hidden hidden px-1 py-0.5 font-mono text-[10px] font-semibold tracking-wider uppercase select-none lg:block">
+                  {groupLabels[groupIndex]}
+                </span>
+                <ul class="flex flex-col gap-1.5">
+                  {hrefs.map((href) => {
+                    const link = linkByHref.get(href);
+                    if (!link) return null;
+                    const active = isCurrent(link.href);
+                    const piece = pieceByHref[href];
+                    return (
+                      <li>
+                        <a
+                          href={link.href}
+                          target={link.external ? "_blank" : undefined}
+                          rel={link.external ? "noopener noreferrer" : undefined}
+                          class={`group focus-visible:ring-focus relative flex min-h-[36px] items-center gap-2.5 rounded-sm py-1 pr-2 pl-6 font-mono text-[13px] tracking-wide transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                            active
+                              ? "text-text font-semibold"
+                              : "text-text-muted hover:text-text font-medium"
+                          }`}
+                          aria-current={active ? "page" : undefined}
+                        >
+                          {active && (
+                            <span
+                              class="absolute top-1/2 left-0 size-3 -translate-y-1/2 [&>svg]:size-full"
+                              aria-hidden="true"
+                              set:html={navIndicator}
+                            />
+                          )}
+                          {piece ? (
+                            <ChessIcons
+                              piece={piece}
+                              class="size-[15px] transition-transform duration-150 group-hover:translate-x-px motion-reduce:transform-none"
+                            />
+                          ) : (
+                            <span class="w-[15px]" aria-hidden="true" />
+                          )}
+                          <span>{link.label}</span>
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          })
+        }
+
+        <div
+          class="pointer-events-none my-2 flex justify-center opacity-20 select-none"
+          aria-hidden="true"
+        >
+          <span class="size-8 [&>svg]:size-full" set:html={knightMarker} />
+        </div>
+        <div class="bg-border-custom mb-3 h-[var(--stroke-hatch)] w-full" aria-hidden="true"></div>
         <ThemeToggle />
-        <p class="text-caption text-text-muted mt-4 font-mono">
+        <p class="text-caption text-text-muted mt-2 font-mono">
           &copy; {new Date().getFullYear()} · v1.0.0
         </p>
       </div>
@@ -331,10 +407,25 @@ const groupHrefs = [
         }
 
         function closeMenu() {
-          overlay.classList.add("hidden");
-          openBtn.setAttribute("aria-expanded", "false");
-          document.body.style.overflow = "";
-          openBtn.focus();
+          if (overlay.classList.contains("hidden")) return;
+
+          const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          if (reduceMotion) {
+            overlay.classList.add("hidden");
+            openBtn.setAttribute("aria-expanded", "false");
+            document.body.style.overflow = "";
+            openBtn.focus();
+            return;
+          }
+
+          overlay.classList.add("is-closing");
+          setTimeout(function () {
+            overlay.classList.remove("is-closing");
+            overlay.classList.add("hidden");
+            openBtn.setAttribute("aria-expanded", "false");
+            document.body.style.overflow = "";
+            openBtn.focus();
+          }, 200);
         }
 
         openBtn.addEventListener("click", openMenu);

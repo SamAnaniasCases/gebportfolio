@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 388" width="200" height="388"
+     role="img" aria-label="Hand-drawn rook chess piece on manila paper">
+  <title>rook</title>
+  <defs>
+  <filter id="wobble" x="-25%" y="-25%" width="150%" height="150%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.045 0.06" numOctaves="2" seed="7" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <filter id="wobble2" x="-25%" y="-25%" width="150%" height="150%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.05 0.07" numOctaves="2" seed="17" result="n2"/>
+    <feDisplacementMap in="SourceGraphic" in2="n2" scale="4.2" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <filter id="grain" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="23" result="noise"/>
+    <feColorMatrix in="noise" type="matrix"
+      values="0 0 0 0 0.18  0 0 0 0 0.13  0 0 0 0 0.06  0 0 0 0.35 0" result="tinted"/>
+    <feComposite in="tinted" in2="SourceAlpha" operator="in" result="grainShape"/>
+    <feBlend in="SourceGraphic" in2="grainShape" mode="multiply"/>
+  </filter>
+</defs>
+  <g transform="translate(0,68)" filter="url(#grain)">
+
+    <path d="M 26.0,306.0 Q 23.0,298.0 31.0,293.5 Q 39.0,289.0 43.0,277.5 Q 47.0,266.0 53.0,259.0 Q 59.0,252.0 56.0,249.0 Q 53.0,246.0 59.0,242.0 Q 65.0,238.0 71.0,221.5 Q 77.0,205.0 75.0,188.5 Q 73.0,172.0 70.0,161.0 Q 67.0,150.0 63.0,146.0 Q 59.0,142.0 64.5,138.0 Q 70.0,134.0 100.0,134.0 Q 130.0,134.0 135.5,138.0 Q 141.0,142.0 137.0,146.0 Q 133.0,150.0 130.0,161.0 Q 127.0,172.0 125.0,188.5 Q 123.0,205.0 129.0,221.5 Q 135.0,238.0 141.0,242.0 Q 147.0,246.0 144.0,249.0 Q 141.0,252.0 147.0,259.0 Q 153.0,266.0 157.0,277.5 Q 161.0,289.0 169.0,293.5 Q 177.0,298.0 175.5,302.0 L 174.0,306.0 Z" fill="#4a3624" stroke="#efe2bd" stroke-width="3.2"
+          stroke-linejoin="round" stroke-linecap="round" filter="url(#wobble)" />
+    <path d="M 26.0,306.0 Q 23.0,298.0 31.0,293.5 Q 39.0,289.0 43.0,277.5 Q 47.0,266.0 53.0,259.0 Q 59.0,252.0 56.0,249.0 Q 53.0,246.0 59.0,242.0 Q 65.0,238.0 71.0,221.5 Q 77.0,205.0 75.0,188.5 Q 73.0,172.0 70.0,161.0 Q 67.0,150.0 63.0,146.0 Q 59.0,142.0 64.5,138.0 Q 70.0,134.0 100.0,134.0 Q 130.0,134.0 135.5,138.0 Q 141.0,142.0 137.0,146.0 Q 133.0,150.0 130.0,161.0 Q 127.0,172.0 125.0,188.5 Q 123.0,205.0 129.0,221.5 Q 135.0,238.0 141.0,242.0 Q 147.0,246.0 144.0,249.0 Q 141.0,252.0 147.0,259.0 Q 153.0,266.0 157.0,277.5 Q 161.0,289.0 169.0,293.5 Q 177.0,298.0 175.5,302.0 L 174.0,306.0 Z" fill="none" stroke="#f6efd6" stroke-width="1.5" opacity="0.35"
+          stroke-linejoin="round" stroke-linecap="round" filter="url(#wobble2)"/>
+
+    <path d="M 70.0,134.0 Q 66.0,118.0 64.5,109.0 Q 63.0,100.0 62.5,95.0 Q 62.0,90.0 100.0,90.0 Q 138.0,90.0 137.5,95.0 Q 137.0,100.0 135.5,109.0 Q 134.0,118.0 132.0,126.0 L 130.0,134.0 Z" fill="#4a3624" stroke="#efe2bd" stroke-width="3.2"
+          stroke-linejoin="round" stroke-linecap="round" filter="url(#wobble)" />
+    <path d="M 70.0,134.0 Q 66.0,118.0 64.5,109.0 Q 63.0,100.0 62.5,95.0 Q 62.0,90.0 100.0,90.0 Q 138.0,90.0 137.5,95.0 Q 137.0,100.0 135.5,109.0 Q 134.0,118.0 132.0,126.0 L 130.0,134.0 Z" fill="none" stroke="#f6efd6" stroke-width="1.5" opacity="0.35"
+          stroke-linejoin="round" stroke-linecap="round" filter="url(#wobble2)"/>
+
+    <path d="M 62.0,90.0 L 62.0,50.0 L 76.0,50.0 L 76.0,70.0 L 84.0,70.0 L 84.0,50.0 L 98.0,50.0 L 98.0,70.0 L 106.0,70.0 L 106.0,50.0 L 120.0,50.0 L 120.0,70.0 L 128.0,70.0 L 128.0,50.0 L 138.0,50.0 L 138.0,90.0 Z" fill="#4a3624" stroke="#efe2bd" stroke-width="3.2"
+          stroke-linejoin="round" stroke-linecap="round" filter="url(#wobble)" />
+    <path d="M 62.0,90.0 L 62.0,50.0 L 76.0,50.0 L 76.0,70.0 L 84.0,70.0 L 84.0,50.0 L 98.0,50.0 L 98.0,70.0 L 106.0,70.0 L 106.0,50.0 L 120.0,50.0 L 120.0,70.0 L 128.0,70.0 L 128.0,50.0 L 138.0,50.0 L 138.0,90.0 Z" fill="none" stroke="#f6efd6" stroke-width="1.5" opacity="0.35"
+          stroke-linejoin="round" stroke-linecap="round" filter="url(#wobble2)"/>
+<path d="M 53.0,246 Q 100.0,252 147.0,246" fill="none" stroke="#efe2bd" stroke-width="2.2" opacity="0.85"
+          stroke-linejoin="round" stroke-linecap="round" filter="url(#wobble)"/><path d="M 69.0,142 Q 100.0,148 131.0,142" fill="none" stroke="#efe2bd" stroke-width="2.2" opacity="0.85"
+          stroke-linejoin="round" stroke-linecap="round" filter="url(#wobble)"/><path d="M 39.0,292 Q 100.0,298 161.0,292" fill="none" stroke="#efe2bd" stroke-width="2.0" opacity="0.7"
+          stroke-linejoin="round" stroke-linecap="round" filter="url(#wobble)"/>
+    <path d="M 34.0,296 l -6,7" stroke="#efe2bd" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M 30.0,292 l -5,4" stroke="#efe2bd" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.7"/>
+    <path d="M 170.0,294 l 7,8" stroke="#efe2bd" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M 174.0,290 l 5,3" stroke="#efe2bd" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.7"/>
+<path d="M 84.0,96 L 84.0,130" fill="none" stroke="#efe2bd" stroke-width="1.6" opacity="0.5"
+          stroke-linejoin="round" stroke-linecap="round" filter="url(#wobble)"/><path d="M 116.0,96 L 116.0,130" fill="none" stroke="#efe2bd" stroke-width="1.6" opacity="0.5"
+          stroke-linejoin="round" stroke-linecap="round" filter="url(#wobble)"/>
+  </g>
+</svg>

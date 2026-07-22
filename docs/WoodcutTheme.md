@@ -350,23 +350,24 @@ Gochi Hand is a **decorative accent**, not a structural typeface. Strict limits:
 
 ```
 ┌─────────────────────┐
-│  [♞ logo] Sam A.    │  ← Brand lockup: logo SVG 32 px + name in Fraunces WONK
+│  [♞ logo] Sam A.    │  ← Brand lockup (Fixed Header, mb-6 whitespace, divider removed)
 │                     │
-│  ─────────────────  │  ← 1.3 px hatch-weight rule
-│  ♟ Home             │
-│  ♘ Projects         │  ← Group 1: content sections
-│  ♖ Experience       │
-│  ♗ Research         │
+│ ┌─────────────────┐ │
+│ │  ♟ Home         │ │
+│ │  ♘ Projects     │ │  ← Scrollable Primary Nav Container (Option A)
+│ │  ♖ Experience   │ │     (Home → Lab / Work & Writing)
+│ │  ♗ Research     │ │     overflow-y-auto, invisible scrollbar
+│ │  ═══ Chessboard ══ │
+│ │  ♙ Posts        │ │
+│ │  ♕ Experiments  │ │
+│ └─────────────────┘ │
 │  ─────────────────  │
-│  Posts              │  ← Group 2: writing
-│  Experiments        │
-│  ─────────────────  │
-│  About              │  ← Group 3: meta
+│  About              │  ← Fixed Utility Links & Footer Zone
 │  Contact            │
-│  Search (Alt+K)     │
-│                     │
+│  Search             │
+│  [♞ watermark]      │
 │  ─────────────────  │
-│  [☀/☾ theme toggle] │  ← Sidebar footer
+│  [☀/☾ theme toggle] │
 │  © 2026 · v1.0.0    │
 └─────────────────────┘
 ```
@@ -405,32 +406,33 @@ Gochi Hand is a **decorative accent**, not a structural typeface. Strict limits:
 
 > Icons are optional per link — group dividers + monospace labels carry the design even without icons. Implement icons as a shared `ChessIcons.astro` component or inline SVG sprite.
 
-### 5.4 Group Dividers
+### 5.4 Group Dividers & Section Labels
 
-- **1.3 px** horizontal rule (`--stroke-hatch` weight), `var(--color-border-custom)`, full sidebar width minus padding.
-- `gap-4` (16 px) between groups, `gap-2.5` (10 px) between links within a group.
-- Optionally alternate: divider → mini chessboard strip (4 squares, 6 px each) for the primary group only.
+- **Group Labels**: 10px uppercase monospace labels (`WORK`, `WRITING`, `META`) positioned above each navigation group. On viewports with height ≤ 768px (`@custom-variant short`), labels hide automatically (`short:hidden`) to ensure vertical accessibility without scrolling.
+- **Primary Group Divider**: Anchored with the engraved `DividerChessboard.astro` component (alternating ink-filled/outlined squares on a 1.3px hatch rule) between primary work links and writing links.
+- **Secondary Group Dividers**: 1.3px horizontal rule (`--stroke-hatch` weight), `var(--color-border-custom)` for remaining groups.
 
 ### 5.5 Sidebar Footer
 
-- **Theme toggle**: circular button (32 px, `1.3 px` border), sun/moon stroke icon. Positioned above the copyright.
+- **Theme toggle**: 44px (`h-11 w-11`) circular button (`1.3px` border), custom hand-drawn stroke-only Sun (`sun.svg`) and Moon (`moon.svg`) icons. Toggles `.dark` class on `<html class="dark">` and persists preference in `localStorage`.
 - **Copyright line**: `text-caption`, `font-mono`, `var(--color-text-muted-raw)`.
-- Optionally a small knight engraving (logo at 40 px, 20 % `color-mix`) as a colophon watermark above the footer.
+- **Colophon mark**: Centered standing knight SVG watermark (`knight.svg`, 40px) at 20% opacity (`opacity-20 pointer-events-none select-none`) above the footer divider line.
 
 ### 5.6 Mobile Pattern (< 1024 px)
 
-| Element           | Spec                                                                                                                                                                   |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Top bar**       | `sticky top-0 z-50`, `bg-surface`, bottom border `2.5 px` structural. Brand left (logo + name, 14 px Fraunces), hamburger right                                        |
-| **Hamburger**     | 3-line SVG (20 px, `stroke-width: 1.6`, round caps, `currentColor`). No border/background on the button; 28 px tap target minimum (44 px recommended)                  |
-| **Overlay menu**  | `fixed inset-0 z-[60]`, solid `var(--color-bg-raw)` (no backdrop-blur — violates no-soft-effects rule). Own header row: brand + `✕` close button, `1.3 px` bottom rule |
-| **Overlay links** | Same monospace style at **16 px**, chess-piece icons at 18 px, `gap-3`. Full-width tap targets, `py-3` per link                                                        |
-| **Animation**     | Overlay enters with `reveal` keyframe (opacity + 4 px translateY, 200 ms). Respects `prefers-reduced-motion`                                                           |
-| **Scroll lock**   | `overflow: hidden` on `<body>` while overlay is open                                                                                                                   |
+| Element           | Spec                                                                                                                                                                       |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Top bar**       | `sticky top-0 z-50`, `bg-surface`, bottom border `2.5 px` structural. Brand left (logo + name, 14 px Fraunces), hamburger right                                            |
+| **Hamburger**     | 3-line SVG (20 px, `stroke-width: 1.6`, round caps, `currentColor`). 44 px min tap target                                                                                  |
+| **Overlay menu**  | `fixed inset-0 z-[60]`, solid `var(--color-bg-raw)` (no backdrop-blur — violates no-soft-effects rule). Own header row: brand + `✕` close button, `1.3 px` bottom rule     |
+| **Overlay links** | Same monospace style at **16 px**, chess-piece icons at 18 px (`size-[18px]`), `gap-3`. Staggered entry (`animation-delay: calc(var(--i) * 30ms)`). Full-width tap targets |
+| **Animation**     | Overlay enters with `reveal` keyframe and exits with 200ms `mobile-menu-out` keyframe. Respects `prefers-reduced-motion`                                                   |
+| **Scroll lock**   | `overflow: hidden` on `<body>` while overlay is open                                                                                                                       |
 
 ### 5.7 Dark-Mode Sidebar Notes
 
 - Sidebar background becomes `#0d0d0f` (surface token) against the `#000000` page — a subtle lifted panel, like a black-on-black engraving plate.
+- Tailwind CSS v4 class strategy: declared via `@variant dark (&:where(.dark, .dark *));` in `src/styles/global.css` so class toggles on `<html class="dark">` reliably apply `dark:` utility variants (such as `dark:hidden` and `dark:flex`).
 - The 2.5 px right border (`#2c2c36`) reads as the plate edge catching light.
 - Active `♞` marker inherits `currentColor` — no override needed.
 - All piece icons auto-invert via `currentColor`.
