@@ -25,30 +25,32 @@ The Chess Icon Design System establishes a unified, thematic iconography languag
 ## 3. Move Evaluation Badges Specification (`src/assets/chess-icons/`)
 
 All move evaluation badges share the following technical structure:
+
 - **ViewBox**: `0 0 24 24`
 - **Background Shape**: `<circle cx="12" cy="12" r="11" fill="[HEX_COLOR]" />`
 - **Foreground Glyphs**: White (`fill="white"` or `stroke="white"`), centered within the badge.
 
 ### Palette & Notation Inventory
 
-| Badge Name | File | Notation Symbol | Palette Color | Hex Value | Meaning / Usage |
-|---|---|---|---|---|---|
-| **Brilliant** | `brilliant.svg` | `!!` | Teal | `#3bb5a0` | Exceptional, creative accomplishment or standout project |
-| **Great** | `great.svg` | `!` | Blue | `#4a90c2` | High-impact achievement or featured article |
-| **Best** | `best.svg` | `★` | Engine Green | `#66b833` | Preferred solution or optimal tech choice |
-| **Good** | `good.svg` | `👍` | Leaf Green | `#5eb85e` | Solid execution or positive outcome |
-| **Correct** | `correct.svg` | `✓` | Sage Green | `#8ec440` | Active route indicator, verified test/gate |
-| **Book** | `book.svg` | `📖` | Theory Brown | `#a18860` | Standard documentation or reference material |
-| **Inaccuracy** | `inaccuracy.svg` | `?!` | Gold / Yellow | `#f0b830` | Suboptimal pattern or caution flag |
-| **Mistake** | `mistake.svg` | `?` | Orange | `#e88835` | Deprecated approach or known limitation |
-| **Blunder** | `blunder.svg` | `✗` | Coral Red | `#e56b5b` | Major failure, breaking change, or error state |
-| **Miss** | `miss.svg` | `??` | Dark Red | `#c23535` | Critical issue or missed opportunity |
+| Badge Name     | File             | Notation Symbol | Palette Color | Hex Value | Meaning / Usage                                          |
+| -------------- | ---------------- | --------------- | ------------- | --------- | -------------------------------------------------------- |
+| **Brilliant**  | `brilliant.svg`  | `!!`            | Teal          | `#3bb5a0` | Exceptional, creative accomplishment or standout project |
+| **Great**      | `great.svg`      | `!`             | Blue          | `#4a90c2` | High-impact achievement or featured article              |
+| **Best**       | `best.svg`       | `★`             | Engine Green  | `#66b833` | Preferred solution or optimal tech choice                |
+| **Good**       | `good.svg`       | `👍`            | Leaf Green    | `#5eb85e` | Solid execution or positive outcome                      |
+| **Correct**    | `correct.svg`    | `✓`             | Sage Green    | `#8ec440` | Active route indicator, verified test/gate               |
+| **Book**       | `book.svg`       | `📖`            | Theory Brown  | `#a18860` | Standard documentation or reference material             |
+| **Inaccuracy** | `inaccuracy.svg` | `?!`            | Gold / Yellow | `#f0b830` | Suboptimal pattern or caution flag                       |
+| **Mistake**    | `mistake.svg`    | `?`             | Orange        | `#e88835` | Deprecated approach or known limitation                  |
+| **Blunder**    | `blunder.svg`    | `✗`             | Coral Red     | `#e56b5b` | Major failure, breaking change, or error state           |
+| **Miss**       | `miss.svg`       | `??`            | Dark Red      | `#c23535` | Critical issue or missed opportunity                     |
 
 ---
 
 ## 4. Navigation Piece Icon Specification (`src/assets/chess-nav/`)
 
 Used strictly inside navigation links (`ChessIcons.astro` and `BaseLayout.astro`):
+
 - **ViewBox**: `0 0 24 24`
 - **Stroke**: `currentColor` (auto-inverts between Light and Dark mode)
 - **Stroke Width**: `2.5px`
@@ -57,14 +59,14 @@ Used strictly inside navigation links (`ChessIcons.astro` and `BaseLayout.astro`
 
 ### Piece Route Mapping
 
-| Route | Piece SVG | Meaning |
-|---|---|---|
-| `/` | `king.svg` | Home — King of the board |
-| `/projects` | `knight.svg` | Projects — Tactical maneuver / signature piece |
-| `/experience` | `rook.svg` | Experience — Solid structural foundation |
-| `/research` | `bishop.svg` | Research — Diagonal insight / deep study |
-| `/posts` | `pawn.svg` | Posts — Incremental steps / writing |
-| `/experiments` | `queen.svg` | Experiments — Versatile exploration |
+| Route          | Piece SVG    | Meaning                                        |
+| -------------- | ------------ | ---------------------------------------------- |
+| `/`            | `king.svg`   | Home — King of the board                       |
+| `/projects`    | `knight.svg` | Projects — Tactical maneuver / signature piece |
+| `/experience`  | `rook.svg`   | Experience — Solid structural foundation       |
+| `/research`    | `bishop.svg` | Research — Diagonal insight / deep study       |
+| `/posts`       | `pawn.svg`   | Posts — Incremental steps / writing            |
+| `/experiments` | `queen.svg`  | Experiments — Versatile exploration            |
 
 ---
 

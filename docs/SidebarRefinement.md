@@ -197,8 +197,8 @@ All findings below have been verified against source code, not assumed.
 
 ## Improvement Opportunities (Ranked)
 
-| #   | Opportunity                                                                           | Impact | Difficulty | Priority              | Status         |
-| --- | ------------------------------------------------------------------------------------- | ------ | ---------- | --------------------- | -------------- |
+| #   | Opportunity                                                                           | Impact | Difficulty | Priority              | Status       |
+| --- | ------------------------------------------------------------------------------------- | ------ | ---------- | --------------------- | ------------ |
 | 1   | Active state: simplified stroke-only knight SVG at 12px replaces pawn marker          | High   | Medium     | P0                    | ✅ Completed |
 | 2   | Add explicit `focus-visible:ring-2` to desktop nav links                              | High   | Low        | P0                    | ✅ Completed |
 | 3   | Increase touch targets to ≥44px (`min-h-[44px]` + `items-center`)                     | High   | Low        | P0                    | ✅ Completed |

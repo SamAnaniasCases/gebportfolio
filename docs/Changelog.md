@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed Lighthouse CI GitHub Actions workflow step by creating `lighthouserc.json` configuration file (`staticDistDir: ./dist`, `budgetFile: ./lighthouse-budget.json`) and configuring `treosh/lighthouse-ci-action@v12` with `configPath`, resolving `No URLs provided to collect` CI failure.
 - Added `@variant dark (&:where(.dark, .dark *));` class selector strategy to `src/styles/global.css` for Tailwind CSS v4, fixing `dark:hidden` and `dark:flex` Sun/Moon icon swapping when toggling dark mode via JavaScript.
 - Updated `.chess-grid` CSS variable mixing in `src/styles/global.css` to use `var(--color-border-raw)` for clear grid visibility in both dark and light mode.
 - Enhanced Dark Mode background texture in `src/styles/global.css` with an optical 3D depth effect using `filter: blur(0.75px)`, 4-stop radial `mask-image` dual vignette decay, and dark surface card ambient elevation shadows (`box-shadow`), allowing foreground UI elements to float cleanly above a soft, distant background environment.

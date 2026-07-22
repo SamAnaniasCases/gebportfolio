@@ -126,4 +126,3 @@ See [ChessIconSystem.md](ChessIconSystem.md) for full system specifications.
 - [ ] Interactive or standalone image SVGs set `role="img"` and `aria-label`.
 - [ ] Zero unminified inline base64 strings in SVG files.
 - [ ] All relative links inside documentation point to local files using relative paths.
-
