@@ -49,27 +49,28 @@ Build the Hero section with the woodcut SVG to PNG portrait hover-reveal compone
 
 ---
 
-### Phase 3: Core Engineering Mindset Section `[PENDING ⏳]`
+### Phase 3: Strategy Before Code Section `[COMPLETED ✅]`
 
-Build the 4 principle cards demonstrating problem-solving methodology.
+Build the 5 Opening Principle cards demonstrating engineering philosophy and chess-inspired discipline.
 
-- [ ] **Task 3.1**: Build `src/sections/HeroMindset.astro` component:
-  - Card 1: _Design & Spec First_
-  - Card 2: _AI as a Development Partner_
-  - Card 3: _Evidence Over Assumptions_
-  - Card 4: _Continuous Craftsmanship_
-- [ ] **Task 3.2**: Style cards with `bg-surface`, `--stroke-structural` linework, and hard offset shadows.
-- 🏁 **Checkpoint 3 Gate**: Run full verification suite.
+- [x] **Task 3.1**: Build `src/components/sections/CoreMindset.astro` component with 5 layered principle cards:
+  - Card 1: _Strategy Before Code_ (`01 · Calculation`)
+  - Card 2: _Context Over Memory_ (`02 · Record Keeping`)
+  - Card 3: _AI as a Partner, Not a Crutch_ (`03 · Force Multiplier`)
+  - Card 4: _Evidence Over Assumptions_ (`04 · Position Validation`)
+  - Card 5: _Continuous Refinement_ (`05 · Post-Game Analysis`)
+- [x] **Task 3.2**: Style cards with `bg-surface`, `--stroke-structural` linework, hard offset shadows, mono chess badges, and layered titles/summaries/descriptions.
+- 🏁 **Checkpoint 3 Gate**: `cmd /c "npx pnpm run format"`, `cmd /c "npx pnpm run lint"`, `cmd /c "npx pnpm run check"`, `cmd /c "npx pnpm run build"` (All passed 100% clean).
 
 ---
 
-### Phase 4: Featured Case Studies Section `[PENDING ⏳]`
+### Phase 4: Featured Case Studies Section `[COMPLETED ✅]`
 
 Display dynamic case study highlights from Astro v5 `projects` collection.
 
-- [ ] **Task 4.1**: Build `src/sections/FeaturedProjects.astro` querying Astro v5 `projects` collection (`featured: true`, hard cap of 3).
-- [ ] **Task 4.2**: Render project cards with problem summary, tech tags, trade-off notes, and _"View All Projects →"_ link.
-- 🏁 **Checkpoint 4 Gate**: Run full verification suite.
+- [x] **Task 4.1**: Build `src/components/sections/FeaturedProjects.astro` querying Astro v5 `projects` collection (`featured: true`, hard cap of 3).
+- [x] **Task 4.2**: Render project cards with title, problem summary, key outcome bullets, tech tags, and case study links.
+- 🏁 **Checkpoint 4 Gate**: `cmd /c "npx pnpm run format"`, `cmd /c "npx pnpm run lint"`, `cmd /c "npx pnpm run check"`, `cmd /c "npx pnpm run build"` (All passed 100% clean).
 
 ---
 

@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Created `src/components/sections/Hero.astro` consuming authentic data from `src/content/data/site.json` (Display name, headline, location, and CTA links).
   - Integrated `sharp` dev dependency for high-efficiency image optimization (reducing portrait image footprint from 1.4 MB to 10 kB webp).
   - Extended Astro v5 Content Collection schema for `site` in `src/content.config.ts` with optional `headline` and `location` fields.
+- Implemented **Phase 3: Strategy Before Code Section** on the Home page (`/`):
+  - Created `src/components/sections/CoreMindset.astro` with 5 chess-inspired layered principle cards (_Strategy Before Code_, _Context Over Memory_, _AI as a Partner, Not a Crutch_, _Evidence Over Assumptions_, _Continuous Refinement_).
+  - Integrated zero-jargon conversational copy emphasizing human engineering values, documentation context, and responsible AI collaboration.
+- Implemented **Phase 4: Featured Case Studies Section** on the Home page (`/`):
+  - Created `src/components/sections/FeaturedProjects.astro` querying Astro v5 `projects` content collection (`featured: true`, hard cap of 3).
+  - Rendered project cards with structural stroke borders, hard offset shadows, outcome bullet points, tech stack tags, and case study links.
 
 ## [0.9.0] - 2026-07-21
 

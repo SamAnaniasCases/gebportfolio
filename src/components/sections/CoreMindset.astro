@@ -1,0 +1,116 @@
+---
+import Container from "../primitives/Container.astro";
+import Grid from "../primitives/Grid.astro";
+import DividerChessboard from "../primitives/DividerChessboard.astro";
+
+interface MindsetPrinciple {
+  id: string;
+  number: string;
+  badge: string;
+  title: string;
+  summary: string;
+  description: string;
+}
+
+const principles: MindsetPrinciple[] = [
+  {
+    id: "strategy-first",
+    number: "01",
+    badge: "Calculation",
+    title: "Strategy Before Code",
+    summary:
+      "Great software is built by thinking several moves ahead before touching the keyboard.",
+    description:
+      "Before writing a single line of code, I take the time to understand the problem, define clear requirements, and plan the architecture. Thinking ahead prevents wasted effort and ensures every component has a purpose.",
+  },
+  {
+    id: "documentation-context",
+    number: "02",
+    badge: "Record Keeping",
+    title: "Context Over Memory",
+    summary: "Clear documentation turns individual knowledge into lasting team clarity.",
+    description:
+      "I document architectural choices, trade-offs, and implementation plans as I build. Preserving context ensures that future collaborators—whether human teammates or AI partners—understand the reasoning behind every decision.",
+  },
+  {
+    id: "responsible-ai",
+    number: "03",
+    badge: "Force Multiplier",
+    title: "AI as a Partner, Not a Crutch",
+    summary: "AI accelerates research and iteration, but human judgement owns the outcome.",
+    description:
+      "I use modern AI tools to explore ideas, draft specifications, and refine implementation quality. However, I remain fully accountable for evaluating trade-offs, validating code, and making final engineering decisions.",
+  },
+  {
+    id: "evidence-validation",
+    number: "04",
+    badge: "Position Validation",
+    title: "Evidence Over Assumptions",
+    summary: "A feature is only complete when it has been tested and verified to work reliably.",
+    description:
+      "I don't assume a solution works just because it compiles. I rely on automated test suites, accessibility audits, and real-world validation to ensure software is robust, accessible, and dependable.",
+  },
+  {
+    id: "continuous-growth",
+    number: "05",
+    badge: "Post-Game Analysis",
+    title: "Continuous Refinement",
+    summary: "Every project is an opportunity to learn, adapt, and refine the craft.",
+    description:
+      "I view every obstacle and code review as a chance to grow. By analyzing past decisions, staying curious, and welcoming feedback, I work to make each project better constructed than the last.",
+  },
+];
+---
+
+<section class="bg-surface-subtle/50 border-ink/10 border-y py-12 md:py-16 lg:py-20">
+  <Container width="default" class="space-y-12">
+    <DividerChessboard />
+
+    <!-- Section Header -->
+    <div class="max-w-2xl space-y-3">
+      <div class="inline-flex items-center gap-2">
+        <span class="text-caption text-primary font-mono font-semibold tracking-widest uppercase">
+          Opening Principles
+        </span>
+      </div>
+      <h2 class="text-h2 font-display text-text font-bold tracking-tight">Strategy Before Code</h2>
+      <p class="text-body text-text-muted leading-relaxed">
+        The core principles that guide how I plan, document, and build software with discipline and
+        long-term clarity.
+      </p>
+    </div>
+
+    <!-- 5 Mindset Cards Grid -->
+    <Grid cols="1 md:2 lg:3" gap="6">
+      {
+        principles.map((p) => (
+          <article
+            class="group bg-surface border-ink relative flex flex-col justify-between space-y-6 rounded-xl border-[2.5px] p-6 transition-all duration-200 hover:-translate-y-1"
+            style="box-shadow: 3px 3px 0 var(--color-ink);"
+          >
+            <div class="space-y-5">
+              <div class="flex items-center justify-between">
+                <span class="text-caption text-primary bg-primary/10 border-primary/20 rounded border px-2 py-0.5 font-mono font-bold">
+                  {p.number}
+                </span>
+                <span class="text-text-muted bg-surface-subtle border-ink/15 rounded border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+                  {p.badge}
+                </span>
+              </div>
+
+              <div class="space-y-3">
+                <h3 class="text-h4 font-display text-text group-hover:text-primary font-bold transition-colors">
+                  {p.title}
+                </h3>
+                <p class="text-small text-text leading-snug font-semibold">{p.summary}</p>
+                <p class="text-small text-text-muted leading-relaxed">{p.description}</p>
+              </div>
+            </div>
+
+            <div class="bg-ink/10 group-hover:bg-primary h-1 w-full rounded-full transition-colors" />
+          </article>
+        ))
+      }
+    </Grid>
+  </Container>
+</section>

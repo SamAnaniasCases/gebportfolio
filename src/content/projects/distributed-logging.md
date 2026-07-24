@@ -1,6 +1,6 @@
 ---
 title: Distributed Logging Engine
-summary: A high-performance systems engineering project that implements structured logs aggregation across edge nodes with under 5ms replication latency.
+summary: A lightweight logging system designed to collect, process, and synchronize system activity records across multiple servers instantaneously.
 role: Lead Architect & Developer
 dates: 2025 - 2026
 status: completed
@@ -11,15 +11,15 @@ stackRefs:
 tags:
   - Systems
   - Rust
-  - Networking
+  - Telemetry
 links:
   - label: Source Code
     url: https://github.com
   - label: Whitepaper
     url: https://github.com
 outcomes:
-  - Designed custom Raft consensus mechanism tailored for high-volume telemetry ingestion.
-  - Achieved sustained throughput of 2.5 million structured log lines per second on single nodes.
+  - Processes over 2 million log records per second with minimal memory usage.
+  - Synchronizes activity logs across global servers in less than 5 milliseconds.
   - Reduced edge infrastructure footprint by 40% compared to legacy collection daemons.
 seo:
   title: Distributed Logging Engine Case Study

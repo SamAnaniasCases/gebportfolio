@@ -1,0 +1,97 @@
+---
+import Container from "../primitives/Container.astro";
+import Grid from "../primitives/Grid.astro";
+import LinkButton from "../primitives/LinkButton.astro";
+import DividerChessboard from "../primitives/DividerChessboard.astro";
+import { getCollection } from "astro:content";
+
+// Fetch featured projects from content collections
+const projects = await getCollection("projects");
+const featuredProjects = projects.filter((p) => p.data.featured).slice(0, 3);
+---
+
+<section class="bg-background border-ink/10 border-b py-12 md:py-16 lg:py-20">
+  <Container width="default" class="space-y-12">
+    <DividerChessboard />
+
+    <!-- Section Header -->
+    <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+      <div class="max-w-2xl space-y-3">
+        <span class="text-caption text-primary font-mono font-semibold tracking-widest uppercase">
+          Proof of Work
+        </span>
+        <h2 class="text-h2 font-display text-text font-bold tracking-tight">
+          Featured Case Studies
+        </h2>
+        <p class="text-body text-text-muted leading-relaxed">
+          Real projects where I planned the approach, documented key decisions, and built for
+          long-term reliability.
+        </p>
+      </div>
+      <div>
+        <LinkButton href="/projects" variant="ghost" class="text-primary font-semibold">
+          See all projects →
+        </LinkButton>
+      </div>
+    </div>
+
+    <!-- Featured Projects Grid -->
+    <Grid cols="1 md:2 lg:3" gap="6">
+      {
+        featuredProjects.map((project) => (
+          <article
+            class="group bg-surface border-ink relative flex flex-col justify-between space-y-6 rounded-xl border-[2.5px] p-6 transition-all duration-200 hover:-translate-y-1"
+            style="box-shadow: 3px 3px 0 var(--color-ink);"
+          >
+            <div class="space-y-5">
+              <div class="flex items-center justify-between">
+                <span class="text-caption text-text-muted font-mono">{project.data.dates}</span>
+                <span class="text-primary bg-primary/10 border-primary/20 rounded border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+                  {project.data.role || "Case Study"}
+                </span>
+              </div>
+
+              <div class="space-y-2">
+                <h3 class="text-h4 font-display text-text group-hover:text-primary font-bold transition-colors">
+                  <a href={`/projects/${project.id}`} class="focus:underline focus:outline-none">
+                    {project.data.title}
+                  </a>
+                </h3>
+                <p class="text-small text-text-muted leading-relaxed">{project.data.summary}</p>
+              </div>
+
+              {project.data.outcomes && project.data.outcomes.length > 0 && (
+                <ul class="border-ink/10 space-y-1.5 border-t pt-2">
+                  {project.data.outcomes.slice(0, 2).map((outcome) => (
+                    <li class="text-small text-text flex items-start gap-2">
+                      <span class="text-primary font-bold">✓</span>
+                      <span>{outcome}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <div class="flex flex-wrap gap-1.5 pt-2">
+                {project.data.tags.map((tag) => (
+                  <span class="text-text-muted bg-surface-subtle border-ink/15 rounded border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div class="border-ink/10 flex items-center justify-between border-t pt-4">
+              <a
+                href={`/projects/${project.id}`}
+                class="text-small text-primary flex items-center gap-1 font-semibold group-hover:underline"
+              >
+                <span>Read Case Study</span>
+                <span class="transition-transform group-hover:translate-x-1">→</span>
+              </a>
+            </div>
+          </article>
+        ))
+      }
+    </Grid>
+  </Container>
+</section>

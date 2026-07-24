@@ -67,15 +67,16 @@ graph TD
   - **Action Buttons**: `Explore Case Studies` (`/projects`) and `Read Engineering Specs` (`/docs/plans/`).
 - **Data Source**: Static configuration in `src/content/data/site.json` (pointing to SVG asset `src/assets/brand/avatar.svg` and photo asset `src/assets/brand/portrait.png`).
 
-### Section 2: Core Engineering Mindset (Value Proposition)
+### Section 2: Strategy Before Code (Opening Principles)
 
-- **Why It Exists**: Demonstrates _how_ problems are approached before visitors inspect individual projects.
-- **Content Requirements (4 Principle Cards)**:
-  1. **Design & Spec First**: Writing specifications, defining schemas, and planning architecture before writing code.
-  2. **AI as a Development Partner**: Using AI for rapid prototyping, syntax generation, and documentation, while retaining full human ownership of architecture and trade-offs.
-  3. **Evidence Over Assumptions**: Verifying every line of code through automated linting, compiler checks, accessibility audits, and E2E tests.
-  4. **Continuous Craftsmanship**: Treating every project as a laboratory for learning software engineering standards.
-- **Data Source**: Structural Astro component (`src/sections/HeroMindset.astro`) backed by `site.json`.
+- **Why It Exists**: Demonstrates _how_ problems are approached and solved before visitors inspect individual projects, connecting software engineering discipline to chess opening principles.
+- **Content Requirements (5 Layered Principle Cards)**:
+  1. **Strategy Before Code** (`01 · Calculation`): Great software is built by thinking several moves ahead before touching the keyboard.
+  2. **Context Over Memory** (`02 · Record Keeping`): Clear documentation turns individual knowledge into lasting team clarity and preserves context for human teammates & AI partners.
+  3. **AI as a Partner, Not a Crutch** (`03 · Force Multiplier`): AI accelerates research and iteration, but human judgement owns architectural decisions and trade-offs.
+  4. **Evidence Over Assumptions** (`04 · Position Validation`): A feature is only complete when it has been tested and verified to work reliably.
+  5. **Continuous Refinement** (`05 · Post-Game Analysis`): Every project is an opportunity to learn, adapt, and refine the craft.
+- **Data Source**: Structural Astro component (`src/components/sections/CoreMindset.astro`).
 
 ### Section 3: Featured Case Studies (Proof of Work)
 

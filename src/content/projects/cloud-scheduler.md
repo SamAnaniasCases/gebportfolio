@@ -1,23 +1,23 @@
 ---
 title: Cloud Compute Scheduler
-summary: An intelligent container scheduling agent designed to optimize bin-packing density of spot instances inside large-scale Kubernetes clusters.
+summary: An intelligent scheduling system built to optimize server usage and reduce cloud hosting costs without sacrificing reliability.
 role: Systems Designer
 dates: 2026 - Present
 status: active
-featured: false
+featured: true
 stackRefs:
   - kubernetes
   - typescript
 tags:
   - Cloud
   - Automation
-  - Go
+  - Optimization
 links:
   - label: Demo Platform
     url: https://github.com
 outcomes:
-  - Developed customized bin-packing algorithms achieving 92% average hardware utilization.
-  - Mitigated spot instance preemption impacts using predictive machine learning hooks.
+  - Cut server infrastructure costs by over 35% through smarter resource allocation.
+  - Automated workload placement to maintain high system reliability and uptime.
 seo:
   title: Cloud Compute Scheduler Project Details
   description: Kubernetes container scheduler optimizer focusing on resource bin-packing density.

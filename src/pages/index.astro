@@ -1,16 +1,12 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Container from "../components/primitives/Container.astro";
-import Grid from "../components/primitives/Grid.astro";
 import LinkButton from "../components/primitives/LinkButton.astro";
-import Card from "../components/primitives/Card.astro";
 import DividerChessboard from "../components/primitives/DividerChessboard.astro";
 import Hero from "../components/sections/Hero.astro";
+import CoreMindset from "../components/sections/CoreMindset.astro";
+import FeaturedProjects from "../components/sections/FeaturedProjects.astro";
 import { getCollection } from "astro:content";
-
-// Fetch featured projects
-const projects = await getCollection("projects");
-const featuredProjects = projects.filter((p) => p.data.featured).slice(0, 3);
 
 // Fetch recent experience
 const experiences = await getCollection("experience");
@@ -23,49 +19,11 @@ const recentExperiences = experiences
   <!-- Hero Section -->
   <Hero />
 
-  <!-- Featured Projects -->
-  <section class="py-16 lg:py-24">
-    <Container width="default" class="space-y-12">
-      <DividerChessboard />
-      <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-        <div class="space-y-2">
-          <h2 class="text-h2 font-display text-text font-bold tracking-tight">
-            Featured Case Studies
-          </h2>
-          <p class="text-body text-text-muted">
-            High-performance solutions designed and deployed in production environments.
-          </p>
-        </div>
-        <div>
-          <LinkButton href="/projects" variant="ghost" class="text-primary font-semibold">
-            See all work →
-          </LinkButton>
-        </div>
-      </div>
+  <!-- Core Mindset Section -->
+  <CoreMindset />
 
-      <Grid cols="1 md:2 lg:3" gap="8">
-        {
-          featuredProjects.map((project) => (
-            <Card href={`/projects/${project.id}`}>
-              <span slot="eyebrow" class="text-caption tracking-wide uppercase">
-                {project.data.dates}
-              </span>
-              <span slot="title">{project.data.title}</span>
-              <p slot="summary">{project.data.summary}</p>
-              {project.data.tags.slice(0, 3).map((tag) => (
-                <span
-                  slot="metadata"
-                  class="bg-surface-subtle border-border-custom text-caption text-text-muted rounded border px-2 py-0.5"
-                >
-                  {tag}
-                </span>
-              ))}
-            </Card>
-          ))
-        }
-      </Grid>
-    </Container>
-  </section>
+  <!-- Featured Projects -->
+  <FeaturedProjects />
 
   <!-- Recent Work Experience Timeline preview -->
   <section class="py-16 lg:py-24">
