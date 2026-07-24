@@ -1,0 +1,95 @@
+---
+import Container from "../primitives/Container.astro";
+import Grid from "../primitives/Grid.astro";
+import LinkButton from "../primitives/LinkButton.astro";
+import DividerChessboard from "../primitives/DividerChessboard.astro";
+import { getCollection } from "astro:content";
+
+// Fetch published posts
+const posts = await getCollection("posts");
+const latestPosts = posts
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.publishedDate.valueOf() - a.data.publishedDate.valueOf())
+  .slice(0, 3);
+---
+
+<section class="bg-surface-subtle/50 border-ink/10 border-b py-12 md:py-16 lg:py-20">
+  <Container width="default" class="space-y-12">
+    <DividerChessboard />
+
+    <!-- Section Header -->
+    <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+      <div class="max-w-2xl space-y-3">
+        <span class="text-caption text-primary font-mono font-semibold tracking-widest uppercase">
+          Active Research & Lab Work
+        </span>
+        <h2 class="text-h2 font-display text-text font-bold tracking-tight">
+          Lab & Learning Explorations
+        </h2>
+        <p class="text-body text-text-muted leading-relaxed">
+          Hands-on experiments, architectural notes, and deep dives into modern web standards and
+          software patterns.
+        </p>
+      </div>
+      <div>
+        <LinkButton href="/posts" variant="ghost" class="text-primary font-semibold">
+          See all writings →
+        </LinkButton>
+      </div>
+    </div>
+
+    <!-- Posts & Lab Grid -->
+    <Grid cols="1 md:2 lg:3" gap="6">
+      {
+        latestPosts.map((post) => (
+          <article
+            class="group bg-surface border-ink relative flex flex-col justify-between space-y-6 rounded-xl border-[2.5px] p-6 transition-all duration-200 hover:-translate-y-1"
+            style="box-shadow: 3px 3px 0 var(--color-ink);"
+          >
+            <div class="space-y-5">
+              <div class="flex items-center justify-between">
+                <span class="text-caption text-text-muted font-mono">
+                  {post.data.publishedDate.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </span>
+                <span class="text-text-muted bg-surface-subtle border-ink/15 rounded border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+                  Research Note
+                </span>
+              </div>
+
+              <div class="space-y-2">
+                <h3 class="text-h4 font-display text-text group-hover:text-primary font-bold transition-colors">
+                  <a href={`/posts/${post.id}`} class="focus:underline focus:outline-none">
+                    {post.data.title}
+                  </a>
+                </h3>
+                <p class="text-small text-text-muted leading-relaxed">{post.data.excerpt}</p>
+              </div>
+
+              <div class="flex flex-wrap gap-1.5 pt-2">
+                {post.data.tags.map((tag) => (
+                  <span class="text-text-muted bg-surface-subtle border-ink/15 rounded border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div class="border-ink/10 flex items-center justify-between border-t pt-4">
+              <a
+                href={`/posts/${post.id}`}
+                class="text-small text-primary flex items-center gap-1 font-semibold group-hover:underline"
+              >
+                <span>Read Deep Dive</span>
+                <span class="transition-transform group-hover:translate-x-1">→</span>
+              </a>
+            </div>
+          </article>
+        ))
+      }
+    </Grid>
+  </Container>
+</section>

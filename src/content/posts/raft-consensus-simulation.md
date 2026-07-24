@@ -1,6 +1,6 @@
 ---
 title: Simulating Raft Consensus in Rust
-excerpt: A deep-dive exploration into implementing and testing Raft replication consensus safety invariants inside memory-simulated cluster configurations.
+excerpt: A hands-on exploration of how distributed systems maintain consistency across multiple servers during network interruptions.
 publishedDate: 2026-07-18
 draft: false
 tags:

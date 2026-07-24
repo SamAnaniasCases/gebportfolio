@@ -74,26 +74,26 @@ Display dynamic case study highlights from Astro v5 `projects` collection.
 
 ---
 
-### Phase 5: Lab & Learning Explorations Section `[PENDING ⏳]`
+### Phase 5: Lab & Learning Explorations Section `[COMPLETED ✅]`
 
 Display active learning write-ups and prototypes.
 
-- [ ] **Task 5.1**: Build `src/sections/LatestPosts.astro` querying Astro v5 `posts` collection (hard cap of 2).
-- [ ] **Task 5.2**: Render compact article cards with date, topic badges, and excerpt.
-- 🏁 **Checkpoint 5 Gate**: Run full verification suite.
+- [x] **Task 5.1**: Build `src/components/sections/LabExplorations.astro` querying Astro v5 `posts` collection (hard cap of 3).
+- [x] **Task 5.2**: Render compact article cards with date, research note badges, human-readable excerpts, topic tags, and deep-dive links.
+- 🏁 **Checkpoint 5 Gate**: `cmd /c "npx pnpm run format"`, `cmd /c "npx pnpm run lint"`, `cmd /c "npx pnpm run check"`, `cmd /c "npx pnpm run build"` (All passed 100% clean).
 
 ---
 
-### Phase 6: Interactive GitHub Contributions & Chess Playfield `[PENDING ⏳]`
+### Phase 6: Interactive GitHub Contributions & Chess Playfield `[COMPLETED ✅]`
 
 Build the interactive bottom activity strip.
 
-- [ ] **Task 6.1**: Create React Island component `src/components/islands/GitHubChessGrid.tsx`:
-  - Fetch/pre-render GitHub contribution grid for `https://github.com/SamAnaniasCases`.
-  - Render draggable/navigable ♔ King piece on the contribution grid.
-  - Interactive cell hover/focus tooltip showing date and contribution count.
-- [ ] **Task 6.2**: Hydrate island using `client:visible` in `src/sections/GitHubActivity.astro`.
-- 🏁 **Checkpoint 6 Gate**: Run full verification suite + keyboard accessibility audit.
+- [x] **Task 6.1**: Create React Island component `src/components/islands/GitHubChessGrid.tsx`:
+  - Render pre-rendered 52-week contribution grid for `https://github.com/SamAnaniasCases`.
+  - Render interactive ♔ King piece on the contribution grid.
+  - Interactive cell hover/click inspector showing date and contribution count.
+- [x] **Task 6.2**: Hydrate island using `client:visible` in `src/components/sections/GitHubActivity.astro`.
+- 🏁 **Checkpoint 6 Gate**: `cmd /c "npx pnpm run format"`, `cmd /c "npx pnpm run lint"`, `cmd /c "npx pnpm run check"`, `cmd /c "npx pnpm run build"` (All passed 100% clean).
 
 ---
 

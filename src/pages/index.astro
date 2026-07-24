@@ -6,6 +6,8 @@ import DividerChessboard from "../components/primitives/DividerChessboard.astro"
 import Hero from "../components/sections/Hero.astro";
 import CoreMindset from "../components/sections/CoreMindset.astro";
 import FeaturedProjects from "../components/sections/FeaturedProjects.astro";
+import LabExplorations from "../components/sections/LabExplorations.astro";
+import GitHubActivity from "../components/sections/GitHubActivity.astro";
 import { getCollection } from "astro:content";
 
 // Fetch recent experience
@@ -24,6 +26,9 @@ const recentExperiences = experiences
 
   <!-- Featured Projects -->
   <FeaturedProjects />
+
+  <!-- Lab & Learning Explorations -->
+  <LabExplorations />
 
   <!-- Recent Work Experience Timeline preview -->
   <section class="py-16 lg:py-24">
@@ -65,4 +70,7 @@ const recentExperiences = experiences
       </div>
     </Container>
   </section>
+
+  <!-- GitHub Activity & Playfield (Bottom Strip) -->
+  <GitHubActivity />
 </BaseLayout>

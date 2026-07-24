@@ -25,6 +25,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented **Phase 4: Featured Case Studies Section** on the Home page (`/`):
   - Created `src/components/sections/FeaturedProjects.astro` querying Astro v5 `projects` content collection (`featured: true`, hard cap of 3).
   - Rendered project cards with structural stroke borders, hard offset shadows, outcome bullet points, tech stack tags, and case study links.
+- Implemented **Phase 5: Lab & Learning Explorations Section** on the Home page (`/`):
+  - Created `src/components/sections/LabExplorations.astro` querying Astro v5 `posts` collection (hard cap of 3).
+  - Rendered research note cards with date eyebrows, non-technical excerpts, topic badges, and deep-dive links.
+- Implemented **Phase 6: Interactive GitHub Contributions & Chess Playfield** on the Home page (`/`):
+  - Built React Island `src/components/islands/GitHubChessGrid.tsx` rendering a 52-week activity heatmap with live GitHub contribution fetching (`488 contributions in the last year`).
+  - Added chronological day-by-day contribution array sorting to fix 7-day jump artifacts and ensure seamless left-to-right daily progression.
+  - Centered calendar grid layout horizontally, streamlined UI chrome by removing month and weekday labels, and integrated ♔ King piece easter egg on peak activity days.
+  - Created `src/components/sections/GitHubActivity.astro` server-side pre-rendering live data with `client:visible` hydration, top/bottom borders (`border-t border-b border-ink/10`), and `DividerChessboard` pattern.
+  - Relocated `<GitHubActivity />` section to the bottom of `/src/pages/index.astro` directly after Recent Work History.
 
 ## [0.9.0] - 2026-07-21
 

@@ -1,6 +1,6 @@
 ---
 title: Welcome to Astro v7
-excerpt: A comprehensive look into Astro v7's architecture, including Content Layer loaders, Vite integrations, and performance benchmarks.
+excerpt: A practical look into building zero-JavaScript static websites that load instantly for every user.
 publishedDate: 2026-07-15
 draft: false
 tags:
