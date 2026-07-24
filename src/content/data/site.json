@@ -1,26 +1,28 @@
 [
   {
     "id": "site-config",
-    "name": "Sam Ananias",
-    "titleTemplate": "%s | Sam Ananias - Portfolio",
-    "description": "Professional engineering portfolio and architecture handbook of Sam Ananias.",
-    "canonicalURL": "https://samananias.com",
+    "name": "Sam Ananias Cases",
+    "titleTemplate": "%s | Sam Ananias Cases",
+    "headline": "Bachelor of Industrial Technology (Computer)",
+    "location": "Cebu, Philippines",
+    "description": "Personal engineering portfolio and content architecture of Sam Ananias Cases, Industrial Technology (Computer) major based in Cebu, Philippines.",
+    "canonicalURL": "https://github.com/SamAnaniasCases",
     "locale": "en_US",
     "socialLinks": [
       {
         "platform": "github",
-        "url": "https://github.com",
+        "url": "https://github.com/SamAnaniasCases",
         "label": "GitHub"
       },
       {
-        "platform": "linkedin",
-        "url": "https://linkedin.com",
-        "label": "LinkedIn"
+        "platform": "viber",
+        "url": "https://github.com/SamAnaniasCases",
+        "label": "Viber (09925731056)"
       }
     ],
     "defaultImage": "/og-default.png",
     "contactSettings": {
-      "email": "sam@samananias.com"
+      "email": "samananiascases@gmail.com"
     }
   }
 ]

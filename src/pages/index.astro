@@ -5,6 +5,7 @@ import Grid from "../components/primitives/Grid.astro";
 import LinkButton from "../components/primitives/LinkButton.astro";
 import Card from "../components/primitives/Card.astro";
 import DividerChessboard from "../components/primitives/DividerChessboard.astro";
+import Hero from "../components/sections/Hero.astro";
 import { getCollection } from "astro:content";
 
 // Fetch featured projects
@@ -20,27 +21,7 @@ const recentExperiences = experiences
 
 <BaseLayout>
   <!-- Hero Section -->
-  <section class="relative overflow-hidden py-20 lg:py-32">
-    <Container width="default" class="animate-reveal space-y-8">
-      <div class="max-w-3xl space-y-6">
-        <h1 class="text-display font-display text-text leading-tight font-extrabold tracking-tight">
-          Designing fault-tolerant <span class="text-primary">systems</span> for scale.
-        </h1>
-        <!-- Gochi Hand catchphrase — the "Scrawl" voice (WoodcutTheme.md §4.1) -->
-        <p class="font-hand text-h4 text-primary inline-block origin-left -rotate-1">
-          think in systems, move like a knight
-        </p>
-        <p class="text-body-large text-text-muted leading-relaxed">
-          I am a systems engineer and software architect specializing in low-latency distributed
-          telemetry platforms, container bin-packing optimization, and custom developer runtimes.
-        </p>
-      </div>
-      <div class="flex flex-wrap gap-4 pt-4">
-        <LinkButton href="/projects" variant="primary" size="lg"> View Cases Study </LinkButton>
-        <LinkButton href="/contact" variant="secondary" size="lg"> Get in Touch </LinkButton>
-      </div>
-    </Container>
-  </section>
+  <Hero />
 
   <!-- Featured Projects -->
   <section class="py-16 lg:py-24">

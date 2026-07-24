@@ -13,9 +13,35 @@ Welcome to the documentation home for the personal portfolio project.
 5. Implementation patterns
 6. Code comments
 
-## Documents
+---
 
-### System Architecture & Operations
+## Directory & Category Map
+
+Understanding what each directory inside `/docs` is for:
+
+- **[`docs/architecture/`](architecture/Architecture.md)** — **System Infrastructure & Framework Rules**  
+  Contains system boundaries, Astro content collection schemas, directory maps, stack choices, and Cloudflare Pages deployment configs.
+
+- **[`docs/design/`](design/DesignSystem.md)** — **Visual Identity, Tokens & Asset Rules**  
+  Contains design token specifications (`tokens.css`, `global.css`), Woodcut/engraving theme rules, typography voices, SVG cropping standards, and chess icon specs.
+
+- **[`docs/engineering/`](engineering/CodingStandards.md)** — **Engineering Policies & AI Guidelines**  
+  Contains strict TypeScript rules, component contracts, error boundaries, automated testing guidelines, and operational preflight rules for AI coding assistants.
+
+- **[`docs/decisions/`](decisions/README.md)** — **Architecture Decision Records (ADRs)**  
+  Contains immutable decision records documenting durable architectural choices (e.g. adopting Astro, Keystatic Git CMS, CSS-first Tailwind v4).
+
+- **[`docs/plans/`](plans/README.md)** — **Feature Specifications & Execution Roadmaps**  
+  Contains specifications, blueprints, and phased execution roadmaps for specific features and pages (e.g., Home Page Information Architecture & Implementation Roadmap).
+
+- **Root `docs/`** — **Global Index & Release Logs**  
+  Houses project-wide documentation entry points (`README.md`), overall timeline (`Roadmap.md`), and release history (`Changelog.md`).
+
+---
+
+## Document Inventory
+
+### System Architecture & Operations (`docs/architecture/`)
 
 - [Architecture](architecture/Architecture.md) — System boundaries, data flow, rendering model.
 - [Tech Stack](architecture/TechStack.md) — Current packages, versions, and stack selection rationale.
@@ -23,7 +49,7 @@ Welcome to the documentation home for the personal portfolio project.
 - [Content Management](architecture/ContentManagement.md) — Content collections, schemas, Keystatic configuration.
 - [Deployment](architecture/Deployment.md) — CI/CD pipelines, environments, Cloudflare Pages config.
 
-### Design System & Assets
+### Design System & Assets (`docs/design/`)
 
 - [Design System](design/DesignSystem.md) — Typography, semantic tokens, radius, motion, design constraints.
 - [SVG & Image Rules](design/SVGRules.md) — Cropping standards, stroke weights, dark mode SVG binding, and asset specs.
@@ -32,13 +58,13 @@ Welcome to the documentation home for the personal portfolio project.
 - [Woodcut Theme Roadmap](design/WoodcutThemeRoadmap.md) — Phased rollout strategy for woodcut theme.
 - [Sidebar Refinement](design/SidebarRefinement.md) — Phased execution log for left-sidebar navigation.
 
-### Engineering & Guidelines
+### Engineering & Guidelines (`docs/engineering/`)
 
 - [Coding Standards](engineering/CodingStandards.md) — TypeScript guidelines, component contracts, error boundaries, testing.
 - [AI Guidelines](engineering/AI-Guidelines.md) — Preflight checks and workflow instructions for AI assistants.
 - [AI Project Context](engineering/AI-Project-Context.md) — Copy-pasteable bootstrap prompt for new AI sessions.
 
-### Governance & Planning
+### Governance & Planning (`docs/decisions/` & `docs/plans/`)
 
 - [Architecture Decisions (ADRs)](decisions/README.md) — Architecture Decision Records.
 - [Feature Plans & Specs](plans/README.md) — Technical feature plans, design specifications, and RFC proposals.

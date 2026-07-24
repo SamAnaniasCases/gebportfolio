@@ -35,6 +35,8 @@ For quick iteration, copy the standard template from [0000-template.md](0000-tem
 
 ## Index of Plans
 
-| ID     | Title                                              | Status   | Date       |
-| ------ | -------------------------------------------------- | -------- | ---------- |
-| `0000` | [Standard Feature Plan Template](0000-template.md) | `Active` | 2026-07-24 |
+| ID     | Title                                                                                      | Status        | Date       |
+| ------ | ------------------------------------------------------------------------------------------ | ------------- | ---------- |
+| `0000` | [Standard Feature Plan Template](0000-template.md)                                         | `Active`      | 2026-07-24 |
+| `0001` | [Home Page IA & Content Specification](0001-home-page-specification.md)                    | `Approved`    | 2026-07-24 |
+| `0002` | [Home Page Implementation Roadmap & Checkpoints](0002-home-page-implementation-roadmap.md) | `In Progress` | 2026-07-24 |

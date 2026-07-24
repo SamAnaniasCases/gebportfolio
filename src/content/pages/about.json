@@ -1,16 +1,16 @@
 {
-  "title": "About Sam Ananias",
+  "title": "About Sam Ananias Cases",
   "sections": [
     {
       "id": "biography",
       "heading": "Biography",
-      "content": "Sam Ananias is a systems engineer and software architect. With over a decade of experience designing fault-tolerant distributed engines, cloud computing schedulers, and developer-centric tooling, Sam specializes in combining high-level application orchestration with low-level systems execution.",
+      "content": "Sam Ananias Cases is a Bachelor of Industrial Technology major in Computer based in Cebu, Philippines. He focuses on software engineering fundamentals, problem decomposition, web standards, and leveraging AI as an interactive development partner.",
       "order": 1
     },
     {
       "id": "philosophy",
       "heading": "Philosophy",
-      "content": "I believe in building software that is readable, robust, and highly optimized. Good software systems are invisible—they run quietly, recover automatically, and scale predictably.",
+      "content": "I believe in building software thoughtfully—writing clear specifications, planning maintainable architecture, evaluating trade-offs, and verifying every build through rigorous automated testing.",
       "order": 2
     }
   ]

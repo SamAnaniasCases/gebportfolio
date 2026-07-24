@@ -8,6 +8,8 @@ const site = defineCollection({
   schema: z.object({
     name: z.string(),
     titleTemplate: z.string(),
+    headline: z.string().optional(),
+    location: z.string().optional(),
     description: z.string(),
     canonicalURL: z.string().url(),
     locale: z.string(),

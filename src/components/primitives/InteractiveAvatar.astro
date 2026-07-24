@@ -1,0 +1,73 @@
+---
+import { Image } from "astro:assets";
+import portraitImage from "../../assets/brand/portrait.png";
+import Logo from "./Logo.astro";
+
+interface Props {
+  class?: string;
+  size?: "sm" | "md" | "lg";
+}
+
+const { class: className = "", size = "md" } = Astro.props;
+
+const sizeClasses = {
+  sm: "w-36 h-36 md:w-40 md:h-40",
+  md: "w-44 h-44 md:w-52 md:h-52",
+  lg: "w-52 h-52 md:w-64 md:h-64",
+};
+
+// Generate 16 chessboard grid tiles with precise 4x4 clip-path inset regions
+const gridTiles = Array.from({ length: 16 }, (_, i) => {
+  const row = Math.floor(i / 4);
+  const col = i % 4;
+  const top = row * 25;
+  const right = (3 - col) * 25;
+  const bottom = (3 - row) * 25;
+  const left = col * 25;
+  const clipPath = `inset(${top}% ${right}% ${bottom}% ${left}%)`;
+  const delayMs = (row + col) * 40;
+  return { id: i, clipPath, delayMs };
+});
+---
+
+<button
+  type="button"
+  class:list={[
+    "group bg-surface border-ink relative block cursor-pointer overflow-hidden rounded-xl border-[2.5px] p-0 text-left transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-600",
+    sizeClasses[size],
+    className,
+  ]}
+  style="box-shadow: 3px 3px 0 var(--color-ink);"
+  aria-label="Interactive profile avatar of Sam Ananias Cases. Hover or focus to reveal portrait photo via chessboard grid wipe."
+>
+  <!-- Background Layer: Revealed Portrait Photo -->
+  <div class="bg-surface absolute inset-0">
+    <Image
+      src={portraitImage}
+      alt="Portrait photo of Sam Ananias Cases"
+      class="h-full w-full origin-top scale-110 object-cover object-[center_20%] transition-transform duration-500 ease-out group-hover:scale-105"
+      loading="eager"
+      width={400}
+      height={400}
+    />
+  </div>
+
+  <!-- Foreground Layer: 16 Chessboard Clip-Path Grid Tiles forming the SVG Logo -->
+  <div class="pointer-events-none absolute inset-0 z-10">
+    {
+      gridTiles.map((tile) => (
+        <div
+          class="bg-surface absolute inset-0 flex transform items-center justify-center p-4 transition-all duration-300 ease-in-out group-hover:scale-0 group-hover:opacity-0 group-focus-visible:scale-0 group-focus-visible:opacity-0"
+          style={`clip-path: ${tile.clipPath}; transition-delay: ${tile.delayMs}ms;`}
+        >
+          <Logo class="h-full w-full object-contain" />
+        </div>
+      ))
+    }
+    <span
+      class="text-muted bg-surface/90 border-ink/20 absolute bottom-2 left-1/2 z-20 -translate-x-1/2 rounded border px-2 py-0.5 font-mono text-[10px] tracking-widest uppercase shadow-sm transition-opacity duration-200 group-hover:opacity-0 group-focus-visible:opacity-0"
+    >
+      Hover for Photo
+    </span>
+  </div>
+</button>

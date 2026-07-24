@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dedicated `docs/plans/` directory with `README.md` index and `0000-template.md` feature plan template for technical design specs and RFC proposals.
 - Added explicit Windows CLI command execution rule requiring `cmd /c` (e.g. `cmd /c "npx pnpm run format"`) across `AGENTS.md`, `.agents/AGENTS.md`, `docs/AI-Guidelines.md`, and `docs/AI-Project-Context.md` to bypass PowerShell script execution restrictions.
 - Reorganized `docs/` repository documentation into structured subdirectories (`docs/architecture/`, `docs/design/`, `docs/engineering/`), updating all relative markdown links and maintaining 100% link portability.
+- Created official Home Page Information Architecture & Content Strategy specification in `docs/plans/0001-home-page-specification.md`.
+- Created 7-phase Home Page Implementation Roadmap & Verification Checkpoints document in `docs/plans/0002-home-page-implementation-roadmap.md`.
+- Implemented **Phase 2: Hero Section & Interactive Avatar** on the Home page (`/`):
+  - Created `src/components/primitives/InteractiveAvatar.astro` featuring a 16-tile staggered chessboard `clip-path` wipe animation that reveals the portrait photo on hover/focus.
+  - Created `src/components/sections/Hero.astro` consuming authentic data from `src/content/data/site.json` (Display name, headline, location, and CTA links).
+  - Integrated `sharp` dev dependency for high-efficiency image optimization (reducing portrait image footprint from 1.4 MB to 10 kB webp).
+  - Extended Astro v5 Content Collection schema for `site` in `src/content.config.ts` with optional `headline` and `location` fields.
 
 ## [0.9.0] - 2026-07-21
 
