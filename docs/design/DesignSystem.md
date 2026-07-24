@@ -6,7 +6,7 @@ Details of the tokens, scales, layouts, and constraints.
 
 ## Tokens & Theme Variables
 
-Our design tokens are declared in [tokens.css](../src/styles/tokens.css) and mapped to Tailwind colors inside [global.css](../src/styles/global.css).
+Our design tokens are declared in [tokens.css](../../src/styles/tokens.css) and mapped to Tailwind colors inside [global.css](../../src/styles/global.css).
 
 ### Color Palette Roles
 

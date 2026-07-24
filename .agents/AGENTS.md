@@ -29,11 +29,15 @@ Always follow these rules strictly before and during any edits to this repositor
 
 Before claiming a task is done, you must run the full verification suite in order:
 
-1. `npx pnpm run format` (formats the codebase using Prettier; CI enforces this via `npx pnpm run format:check`).
-2. `npx pnpm run lint` (checks syntax with ESLint).
-3. `npx pnpm run check` (runs Astro compiler typechecks and documentation link validation).
-4. `npx pnpm run build` (verifies the project compiles successfully).
-5. `npx pnpm run test:e2e` (runs Playwright E2E tests; Playwright auto-starts the app via its `webServer` config).
-6. `npx pnpm run test:a11y` (runs axe-core accessibility audits; Playwright auto-starts the app via its `webServer` config).
+1. `cmd /c "npx pnpm run format"` (formats the codebase using Prettier; CI enforces this via `npx pnpm run format:check`).
+2. `cmd /c "npx pnpm run lint"` (checks syntax with ESLint).
+3. `cmd /c "npx pnpm run check"` (runs Astro compiler typechecks and documentation link validation).
+4. `cmd /c "npx pnpm run build"` (verifies the project compiles successfully).
+5. `cmd /c "npx pnpm run test:e2e"` (runs Playwright E2E tests; Playwright auto-starts the app via its `webServer` config).
+6. `cmd /c "npx pnpm run test:a11y"` (runs axe-core accessibility audits; Playwright auto-starts the app via its `webServer` config).
 
 CI enforces this same sequence plus a Lighthouse performance budget check on every push and pull request.
+
+### 6. Terminal & Command Execution Rule
+
+- Always wrap CLI commands on Windows with `cmd /c` (e.g. `cmd /c "npx pnpm run format"`) to bypass PowerShell script execution policy restrictions (`.ps1` disabled), unless another terminal is explicitly requested.

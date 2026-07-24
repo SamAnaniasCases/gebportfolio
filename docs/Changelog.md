@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Dedicated `docs/plans/` directory with `README.md` index and `0000-template.md` feature plan template for technical design specs and RFC proposals.
+- Added explicit Windows CLI command execution rule requiring `cmd /c` (e.g. `cmd /c "npx pnpm run format"`) across `AGENTS.md`, `.agents/AGENTS.md`, `docs/AI-Guidelines.md`, and `docs/AI-Project-Context.md` to bypass PowerShell script execution restrictions.
+- Reorganized `docs/` repository documentation into structured subdirectories (`docs/architecture/`, `docs/design/`, `docs/engineering/`), updating all relative markdown links and maintaining 100% link portability.
+
 ## [0.9.0] - 2026-07-21
 
 ### Added

@@ -2,7 +2,7 @@
 
 <callout icon="♞">**Status:** Implemented · **Owner:** Gen · **Created:** 2026-07-21</callout>
 
-This document defines the visual language for the site's redesign: a **black-ink woodcut / engraving** aesthetic derived directly from the brand logo (goat-head chess knight SVG). It supplements — does not replace — [DesignSystem.md](./DesignSystem.md). All token names below map to existing CSS custom properties in [`tokens.css`](../src/styles/tokens.css) and [`global.css`](../src/styles/global.css).
+This document defines the visual language for the site's redesign: a **black-ink woodcut / engraving** aesthetic derived directly from the brand logo (goat-head chess knight SVG). It supplements — does not replace — [DesignSystem.md](./DesignSystem.md). All token names below map to existing CSS custom properties in [`tokens.css`](../../src/styles/tokens.css) and [`global.css`](../../src/styles/global.css).
 
 ---
 
@@ -468,4 +468,4 @@ Gochi Hand is a **decorative accent**, not a structural typeface. Strict limits:
 
 ---
 
-_This document is a design specification. All code changes must still pass the full verification suite before merging (see [AI-Guidelines.md](./AI-Guidelines.md))._
+_This document is a design specification. All code changes must still pass the full verification suite before merging (see [AI-Guidelines.md](../engineering/AI-Guidelines.md))._
