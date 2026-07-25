@@ -1,38 +1,90 @@
 ---
-import bishop from "../../assets/chess-nav/bishop.svg?raw";
-import king from "../../assets/chess-nav/king.svg?raw";
-import knight from "../../assets/chess-nav/knight.svg?raw";
-import pawn from "../../assets/chess-nav/pawn.svg?raw";
-import queen from "../../assets/chess-nav/queen.svg?raw";
-import rook from "../../assets/chess-nav/rook.svg?raw";
+// Navigation Icons (Simplified)
+import bishopNav from "../../assets/chess-nav/bishop.svg?raw";
+import kingNav from "../../assets/chess-nav/king.svg?raw";
+import knightNav from "../../assets/chess-nav/knight.svg?raw";
+import pawnNav from "../../assets/chess-nav/pawn.svg?raw";
+import queenNav from "../../assets/chess-nav/queen.svg?raw";
+import rookNav from "../../assets/chess-nav/rook.svg?raw";
+
+// Detailed Woodcut White Icons (Light Mode)
+import bishopWhite from "../../assets/chess/white-bishop.svg?raw";
+import kingWhite from "../../assets/chess/white-king.svg?raw";
+import knightWhite from "../../assets/chess/white-knight.svg?raw";
+import pawnWhite from "../../assets/chess/white-pawn.svg?raw";
+import queenWhite from "../../assets/chess/white-queen.svg?raw";
+import rookWhite from "../../assets/chess/white-rook.svg?raw";
+
+// Detailed Woodcut Black Icons (Dark Mode)
+import bishopBlack from "../../assets/chess/black-bishop.svg?raw";
+import kingBlack from "../../assets/chess/black-king.svg?raw";
+import knightBlack from "../../assets/chess/black-knight.svg?raw";
+import pawnBlack from "../../assets/chess/black-pawn.svg?raw";
+import queenBlack from "../../assets/chess/black-queen.svg?raw";
+import rookBlack from "../../assets/chess/black-rook.svg?raw";
 
 interface Props {
   piece: "king" | "knight" | "rook" | "bishop" | "pawn" | "queen";
+  variant?: "nav" | "woodcut";
   class?: string;
 }
 
-const { piece, class: className = "" } = Astro.props;
+const { piece, variant = "nav", class: className = "" } = Astro.props;
 
-const svgMap: Record<Props["piece"], string> = {
-  bishop,
-  king,
-  knight,
-  pawn,
-  queen,
-  rook,
+const navSvgMap: Record<Props["piece"], string> = {
+  bishop: bishopNav,
+  king: kingNav,
+  knight: knightNav,
+  pawn: pawnNav,
+  queen: queenNav,
+  rook: rookNav,
 };
 
-const svgContent = svgMap[piece];
+const woodcutWhiteMap: Record<Props["piece"], string> = {
+  bishop: bishopWhite,
+  king: kingWhite,
+  knight: knightWhite,
+  pawn: pawnWhite,
+  queen: queenWhite,
+  rook: rookWhite,
+};
+
+const woodcutBlackMap: Record<Props["piece"], string> = {
+  bishop: bishopBlack,
+  king: kingBlack,
+  knight: knightBlack,
+  pawn: pawnBlack,
+  queen: queenBlack,
+  rook: rookBlack,
+};
+
+const isWoodcut = variant === "woodcut";
+const navSvgContent = navSvgMap[piece];
+const whiteSvgContent = woodcutWhiteMap[piece];
+const blackSvgContent = woodcutBlackMap[piece];
 ---
 
-<span
-  class={`chess-piece-icon inline-flex items-center justify-center select-none align-middle [&>svg]:size-full ${className}`}
-  aria-hidden="true"
-  set:html={svgContent}
-/>
+{
+  !isWoodcut ? (
+    <span
+      class={`chess-piece-icon inline-flex items-center justify-center select-none align-middle [&>svg]:size-full [&>svg]:w-full [&>svg]:h-full ${className}`}
+      aria-hidden="true"
+      set:html={navSvgContent}
+    />
+  ) : (
+    <span
+      class={`chess-piece-icon-woodcut inline-flex items-center justify-center select-none align-middle ${className}`}
+      aria-hidden="true"
+    >
+      <span class="block size-full dark:hidden [&>svg]:h-full [&>svg]:w-full [&>svg]:size-full" set:html={whiteSvgContent} />
+      <span class="hidden size-full dark:block [&>svg]:h-full [&>svg]:w-full [&>svg]:size-full" set:html={blackSvgContent} />
+    </span>
+  )
+}
 
 <style is:global>
-  .chess-piece-icon svg {
+  .chess-piece-icon svg,
+  .chess-piece-icon-woodcut svg {
     width: 100%;
     height: 100%;
     max-width: 100%;

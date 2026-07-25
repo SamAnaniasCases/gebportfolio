@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Official **Content & Writing Style Guide** in `docs/engineering/ContentStyleGuide.md` establishing author positioning, voice, tone boundaries, surface copy standards, authenticity criteria, and AI collaboration rules (renamed from `docs/still-noname.md`).
 - Updated `docs/README.md`, `docs/engineering/AI-Guidelines.md`, and `docs/engineering/AI-Project-Context.md` to reference `ContentStyleGuide.md`.
+- Rebuilt Work Index Page (`src/pages/projects/index.astro`) and Case Study Detail Template (`src/pages/projects/[slug].astro`) following [work-page-visual.html](file:///c:/Users/Sam/Sam%20Folder/Repo/work-page-visual.html) and [0002-work-page-specification.md](file:///c:/Users/Sam/Sam%20Folder/Repo/docs/plans/0002-work-page-specification.md).
+- Restructured featured showcase into a 2-column grid featuring the author's 2 signature projects: **BITS (Biometrics Integrated Timekeeping System)** (`bits-timekeeping.md` - ♔ Signature System) and **Portfolio Architecture & Content System** (`portfolio-architecture.md` - ♛ Technical Powerhouse).
+- Integrated real project screenshots (`/images/projects/bits/dashboard.png`, `devices.png`, and `/images/projects/portfolio-architecture.png`) into frontmatter, markdown narratives, and card preview banners with `grayscale contrast-105 group-hover:grayscale-0` hover transitions.
+- Added clean font chess character background watermarks (`♔`, `♛`, `♞`) matching `work-page-visual.html` (`font-serif text-[145px] rotate-[-7deg]`).
+- Placed **Legacy Personal Web Portfolio** (`legacy-portfolio.md`) into the **All Projects Archive** list below (`featured: false`).
+- Removed 3 fake dummy project files (`cloud-scheduler.md`, `distributed-logging.md`, `edge-telemetry-agent.md`).
+- Omitted `1st`, `2nd`, `3rd` ranking numbers from all project badges and eyebrows.
+- Streamlined featured card design by removing Key Decision blockquotes and Tech Stack tag pills, focusing on clean image banners, bold titles, and concise 1-sentence summaries.
+- Updated Work Page Information Architecture Specification ([0002-work-page-specification.md](file:///c:/Users/Sam/Sam%20Folder/Repo/docs/plans/0002-work-page-specification.md)) and Implementation Roadmap ([0002.1-work-page-implementation-roadmap.md](file:///c:/Users/Sam/Sam%20Folder/Repo/docs/plans/0002.1-work-page-implementation-roadmap.md)).
 
 ### Changed
 

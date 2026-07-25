@@ -1,122 +1,396 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Container from "../../components/primitives/Container.astro";
-import Grid from "../../components/primitives/Grid.astro";
-import Card from "../../components/primitives/Card.astro";
 import { getCollection } from "astro:content";
 
 // Retrieve all projects
 const projects = await getCollection("projects");
+
+// Categorize projects
+const featuredProjects = projects.filter((p) => p.data.featured);
+const kingProject = featuredProjects.find((p) => p.data.chessPiece === "king");
+const queenProject = featuredProjects.find((p) => p.data.chessPiece === "queen");
+const knightProject = featuredProjects.find((p) => p.data.chessPiece === "knight");
+
+const topFeatured = [kingProject, queenProject, knightProject].filter((p): p is typeof projects[0] => Boolean(p));
+const topFeaturedIds = new Set(topFeatured.map((p) => p.id));
+const secondaryProjects = projects.filter((p) => !topFeaturedIds.has(p.id));
+
+// Quick Stats
+const totalCount = projects.length;
+const activeCount = projects.filter((p) => p.data.status === "active").length;
+const featuredCount = topFeatured.length;
 ---
 
-<BaseLayout title="My Projects">
-  <Container width="default" class="animate-reveal space-y-12 py-12">
-    <!-- Header -->
-    <header class="border-border-custom space-y-3 border-b pb-6">
-      <h1 class="text-h1 font-display text-text font-bold tracking-tight">
-        Case Studies & Projects
-      </h1>
-      <p class="text-body-large text-text-muted max-w-2xl leading-relaxed">
-        A catalog of distributed telemetry nodes, container optimization libraries, and cloud
-        schedulers.
-      </p>
+<BaseLayout
+  title="Case Studies & Projects"
+  description="Curated case studies, software systems, and architectural specifications built by Sam Ananias Cases."
+>
+  <Container width="default" class="animate-reveal space-y-12 py-10 md:py-14">
+    <!-- Header & Quick Stats Bar -->
+    <header class="space-y-6">
+      <div class="space-y-3">
+        <span class="text-caption text-primary font-mono font-semibold tracking-widest uppercase">
+          01 · Proof of Work
+        </span>
+        <h1 class="text-h1 font-display text-text font-bold tracking-tight">
+          Case Studies & Projects
+        </h1>
+        <p class="text-body-large text-text-muted max-w-3xl leading-relaxed">
+          A curated catalog of software systems, web applications, and architectural
+          specifications—built with specification discipline, trade-off analysis, and automated
+          verification.
+        </p>
+      </div>
+
+      <!-- Quick Stats Pills -->
+      <div class="flex flex-wrap items-center gap-3 pt-2 font-mono text-xs">
+        <span
+          class="border-ink/20 bg-surface-subtle text-text inline-flex items-center gap-2 rounded-full border px-3 py-1 font-semibold"
+        >
+          <span class="text-primary font-bold">●</span>
+          <span>{totalCount} Total Projects</span>
+        </span>
+        <span
+          class="border-ink/20 bg-surface-subtle text-text inline-flex items-center gap-2 rounded-full border px-3 py-1 font-semibold"
+        >
+          <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+          <span>{activeCount} Active Systems</span>
+        </span>
+        <span
+          class="border-ink/20 bg-surface-subtle text-text inline-flex items-center gap-2 rounded-full border px-3 py-1 font-semibold"
+        >
+          <span class="text-primary font-bold">♔</span>
+          <span>{featuredCount} Signature Featured Cases</span>
+        </span>
+      </div>
     </header>
 
-    <!-- Interactive Filters -->
-    <div class="flex flex-wrap gap-2" id="filter-container">
-      <button
-        data-filter="all"
-        class="text-small duration-fast bg-primary cursor-pointer rounded-full px-4 py-1.5 font-medium text-white shadow-sm transition-all"
-      >
-        All Projects
-      </button>
-      <button
-        data-filter="active"
-        class="text-small duration-fast bg-surface-subtle border-border-custom text-text-muted hover:text-text cursor-pointer rounded-full border px-4 py-1.5 font-medium transition-all"
-      >
-        Active
-      </button>
-      <button
-        data-filter="completed"
-        class="text-small duration-fast bg-surface-subtle border-border-custom text-text-muted hover:text-text cursor-pointer rounded-full border px-4 py-1.5 font-medium transition-all"
-      >
-        Completed
-      </button>
-      <button
-        data-filter="planning"
-        class="text-small duration-fast bg-surface-subtle border-border-custom text-text-muted hover:text-text cursor-pointer rounded-full border px-4 py-1.5 font-medium transition-all"
-      >
-        Planning
-      </button>
-    </div>
+    <!-- Interactive Filter & Search Controls Bar -->
+    <section class="bg-surface border-ink/20 space-y-4 rounded-xl border p-4 shadow-xs md:p-5">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <!-- Category Filter Tabs -->
+        <div class="flex flex-wrap items-center gap-2" id="category-tabs">
+          <button
+            data-category="all"
+            class="filter-tab active bg-primary text-surface cursor-pointer rounded-full px-3.5 py-1.5 font-mono text-xs font-bold transition-all"
+          >
+            All Work
+          </button>
+          <button
+            data-category="architecture"
+            class="filter-tab bg-surface-subtle border-ink/15 text-text-muted hover:text-text cursor-pointer rounded-full border px-3.5 py-1.5 font-mono text-xs font-semibold transition-all"
+          >
+            Architecture
+          </button>
+          <button
+            data-category="web"
+            class="filter-tab bg-surface-subtle border-ink/15 text-text-muted hover:text-text cursor-pointer rounded-full border px-3.5 py-1.5 font-mono text-xs font-semibold transition-all"
+          >
+            Web Apps
+          </button>
+        </div>
 
-    <!-- Projects Grid -->
-    <Grid cols="1 md:2 lg:3" gap="8" id="projects-grid">
-      {
-        projects.map((project) => (
-          <div data-project-status={project.data.status} class="duration-normal transition-all">
-            <Card href={`/projects/${project.id}`}>
-              <span
-                slot="eyebrow"
-                class="text-caption flex items-center justify-between font-mono tracking-wider uppercase"
+        <!-- Real-time Search Input -->
+        <div class="relative min-w-[240px] md:w-72">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search projects, tags, tools..."
+            class="bg-surface-subtle border-ink/20 text-text placeholder:text-text-muted/60 text-small w-full rounded-lg border py-1.5 pr-3 pl-8 font-mono focus:border-primary focus:outline-none"
+          />
+          <span class="text-text-muted absolute top-2 left-2.5 font-mono text-xs select-none"
+            >🔍</span
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Top Featured Showcase Section -->
+    <section class="space-y-6" id="featured-showcase-section">
+      <div class="flex items-center justify-between border-ink/10 border-b pb-3">
+        <h2 class="text-h3 font-display text-text font-bold tracking-tight">
+          Featured Case Studies
+        </h2>
+        <span class="text-caption text-text-muted font-mono uppercase tracking-wider">
+          Top Signature Work
+        </span>
+      </div>
+
+      <!-- Responsive Grid for Featured Projects -->
+      <div class="grid grid-cols-1 gap-6 pt-2 pb-2 md:grid-cols-2 items-stretch">
+        {/* King Signature Hero Card (BITS) */}
+        {
+          kingProject && (
+            <article
+              data-project-card
+              data-category={kingProject.data.category}
+              data-status={kingProject.data.status}
+              data-search-text={`${kingProject.data.title} ${kingProject.data.summary} ${kingProject.data.tags.join(" ")}`}
+              class="group bg-surface border-primary relative flex flex-col justify-between overflow-hidden rounded-xl border-[3px] p-5 transition-all duration-200 hover:-translate-y-1.5 md:p-6"
+              style="box-shadow: 4px 4px 0 var(--color-ink);"
+            >
+              <div class="relative z-10 space-y-4">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2 font-mono text-xs">
+                    <span class="bg-primary text-surface inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 font-bold uppercase tracking-wider shadow-xs">
+                      <span class="font-serif text-sm">♔</span>
+                      <span>Signature System</span>
+                    </span>
+                  </div>
+                  <span
+                    class={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider shrink-0 ${
+                      kingProject.data.status === "completed"
+                        ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300"
+                        : kingProject.data.status === "active"
+                          ? "border-blue-500/20 bg-blue-500/10 text-blue-800 dark:text-blue-300"
+                          : "border-amber-500/20 bg-amber-500/10 text-amber-800 dark:text-amber-300"
+                    }`}
+                  >
+                    {kingProject.data.status}
+                  </span>
+                </div>
+
+                {kingProject.data.heroImage && (
+                  <div class="border-ink/20 relative overflow-hidden rounded-lg border aspect-video w-full shadow-xs">
+                    <img
+                      src={kingProject.data.heroImage}
+                      alt={kingProject.data.title}
+                      class="size-full object-cover grayscale contrast-105 transition-all duration-300 group-hover:grayscale-0 group-hover:scale-102"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+
+                <div class="space-y-2">
+                  <h3 class="text-h3 font-display text-text group-hover:text-primary leading-tight font-bold transition-colors line-clamp-2">
+                    <a
+                      href={`/projects/${kingProject.id}`}
+                      class="focus:underline focus:outline-none"
+                    >
+                      {kingProject.data.title}
+                    </a>
+                  </h3>
+                  <p class="text-small text-text-muted leading-relaxed">
+                    {kingProject.data.summary}
+                  </p>
+                </div>
+              </div>
+
+              <div class="relative z-10 border-ink/10 flex items-center justify-between border-t pt-4 mt-4">
+                <a
+                  href={`/projects/${kingProject.id}`}
+                  class="text-small text-primary flex items-center gap-1.5 font-bold group-hover:underline"
+                >
+                  <span>Read case study</span>
+                  <span class="transition-transform group-hover:translate-x-1">→</span>
+                </a>
+              </div>
+
+              {/* Clean Chess Icon Watermark (Matching work-page-visual.html) */}
+              <div
+                class="text-primary/10 dark:text-primary/15 pointer-events-none absolute -right-2 -bottom-4 select-none font-serif text-[155px] leading-none transform rotate-[-7deg] origin-bottom-right transition-transform group-hover:scale-105 group-hover:rotate-[-4deg]"
+                aria-hidden="true"
               >
-                <span>{project.data.dates}</span>
-                <span
-                  class={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                    project.data.status === "completed"
-                      ? "border-green-500/20 bg-green-500/10 text-green-800 dark:text-green-300"
-                      : project.data.status === "active"
-                        ? "border-blue-500/20 bg-blue-500/10 text-blue-800 dark:text-blue-300"
-                        : "border-amber-500/20 bg-amber-500/10 text-amber-800 dark:text-amber-300"
-                  }`}
+                ♔
+              </div>
+            </article>
+          )
+        }
+
+        {/* Queen Card (Portfolio Architecture) */}
+        {
+          queenProject && (
+            <article
+              data-project-card
+              data-category={queenProject.data.category}
+              data-status={queenProject.data.status}
+              data-search-text={`${queenProject.data.title} ${queenProject.data.summary} ${queenProject.data.tags.join(" ")}`}
+              class="group bg-surface border-ink relative flex flex-col justify-between overflow-hidden rounded-xl border-[2.5px] p-5 transition-all duration-200 hover:-translate-y-1 md:p-6"
+              style="box-shadow: 4px 4px 0 var(--color-ink);"
+            >
+              <div class="relative z-10 space-y-4">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2 font-mono text-xs">
+                    <span class="text-primary bg-primary/10 border-primary/20 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 font-bold uppercase tracking-wider">
+                      <span class="text-primary font-serif text-sm">♛</span>
+                      <span>Technical Powerhouse</span>
+                    </span>
+                  </div>
+                  <span
+                    class={`rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider shrink-0 ${
+                      queenProject.data.status === "completed"
+                        ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300"
+                        : queenProject.data.status === "active"
+                          ? "border-blue-500/20 bg-blue-500/10 text-blue-800 dark:text-blue-300"
+                          : "border-amber-500/20 bg-amber-500/10 text-amber-800 dark:text-amber-300"
+                    }`}
+                  >
+                    {queenProject.data.status}
+                  </span>
+                </div>
+
+                {queenProject.data.heroImage && (
+                  <div class="border-ink/20 relative overflow-hidden rounded-lg border aspect-video w-full shadow-xs">
+                    <img
+                      src={queenProject.data.heroImage}
+                      alt={queenProject.data.title}
+                      class="size-full object-cover grayscale contrast-105 transition-all duration-300 group-hover:grayscale-0 group-hover:scale-102"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+
+                <div class="space-y-2">
+                  <h3 class="text-h3 font-display text-text group-hover:text-primary leading-tight font-bold transition-colors line-clamp-2">
+                    <a
+                      href={`/projects/${queenProject.id}`}
+                      class="focus:underline focus:outline-none"
+                    >
+                      {queenProject.data.title}
+                    </a>
+                  </h3>
+                  <p class="text-small text-text-muted leading-relaxed">
+                    {queenProject.data.summary}
+                  </p>
+                </div>
+              </div>
+
+              <div class="relative z-10 border-ink/10 flex items-center justify-between border-t pt-4 mt-4">
+                <a
+                  href={`/projects/${queenProject.id}`}
+                  class="text-small text-primary flex items-center gap-1 font-bold group-hover:underline"
                 >
-                  {project.data.status}
-                </span>
-              </span>
-              <span slot="title">{project.data.title}</span>
-              <p slot="summary">{project.data.summary}</p>
-              {project.data.tags.map((tag) => (
-                <span
-                  slot="metadata"
-                  class="bg-surface-subtle border-border-custom text-caption text-text-muted rounded border px-2 py-0.5 font-medium"
-                >
-                  {tag}
-                </span>
-              ))}
-            </Card>
-          </div>
-        ))
-      }
-    </Grid>
+                  <span>Read case study</span>
+                  <span class="transition-transform group-hover:translate-x-1">→</span>
+                </a>
+              </div>
+
+              {/* Clean Chess Icon Watermark (Matching work-page-visual.html) */}
+              <div
+                class="text-primary/10 dark:text-primary/15 pointer-events-none absolute -right-2 -bottom-4 select-none font-serif text-[145px] leading-none transform rotate-[-7deg] origin-bottom-right transition-transform group-hover:scale-105 group-hover:rotate-[-4deg]"
+                aria-hidden="true"
+              >
+                ♛
+              </div>
+            </article>
+          )
+        }
+      </div>
+    </section>
+
+    <!-- Secondary Projects Archive (Vertical List Layout) -->
+    <section class="space-y-6" id="secondary-archive-section">
+      <div class="flex items-center justify-between border-ink/10 border-b pb-3">
+        <h2 class="text-h3 font-display text-text font-bold tracking-tight">
+          All Projects Archive
+        </h2>
+        <span class="text-caption text-text-muted font-mono uppercase tracking-wider">
+          Scannable Archive List
+        </span>
+      </div>
+
+      <div class="border-ink/20 divide-ink/10 bg-surface divide-y rounded-xl border">
+        {
+          secondaryProjects.length === 0 ? (
+            <div class="p-6 text-center text-text-muted font-mono text-small">
+              No additional secondary projects cataloged.
+            </div>
+          ) : (
+            secondaryProjects.map((project) => (
+              <article
+                data-project-card
+                data-category={project.data.category}
+                data-status={project.data.status}
+                data-search-text={`${project.data.title} ${project.data.summary} ${project.data.tags.join(" ")}`}
+                class="group flex flex-col justify-between gap-4 p-4 transition-colors hover:bg-surface-subtle/60 md:flex-row md:items-center md:p-5"
+              >
+                <div class="space-y-1.5 md:max-w-2xl">
+                  <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
+                    <span class="text-text-muted">{project.data.dates}</span>
+                    <span class="text-primary bg-primary/10 border-primary/20 rounded border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                      {project.data.category}
+                    </span>
+                    <span
+                      class={`rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider ${
+                        project.data.status === "completed"
+                          ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300"
+                          : project.data.status === "active"
+                            ? "border-blue-500/20 bg-blue-500/10 text-blue-800 dark:text-blue-300"
+                            : "border-amber-500/20 bg-amber-500/10 text-amber-800 dark:text-amber-300"
+                      }`}
+                    >
+                      {project.data.status}
+                    </span>
+                  </div>
+
+                  <h3 class="text-h4 font-display text-text group-hover:text-primary font-bold transition-colors">
+                    <a href={`/projects/${project.id}`} class="focus:underline focus:outline-none">
+                      {project.data.title}
+                    </a>
+                  </h3>
+                  <p class="text-small text-text-muted leading-relaxed line-clamp-1">
+                    {project.data.summary}
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-4 shrink-0">
+                  <a
+                    href={`/projects/${project.id}`}
+                    class="text-small text-primary flex items-center gap-1 font-bold group-hover:underline"
+                  >
+                    <span>Read case study</span>
+                    <span class="transition-transform group-hover:translate-x-1">→</span>
+                  </a>
+                </div>
+              </article>
+            ))
+          )
+        }
+      </div>
+    </section>
   </Container>
 
-  <!-- Client-side script for lightweight filtering -->
+  <!-- Client-side Script for Live Filtering & Real-time Search -->
   <script is:inline>
-    const buttons = document.querySelectorAll("[data-filter]");
-    const cards = document.querySelectorAll("[data-project-status]");
+    const tabs = document.querySelectorAll("#category-tabs .filter-tab");
+    const searchInput = document.getElementById("search-input");
+    const cards = document.querySelectorAll("[data-project-card]");
 
-    buttons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const filter = btn.getAttribute("data-filter");
+    let activeCategory = "all";
 
-        // Toggle active button style
-        buttons.forEach((b) => {
-          b.className =
-            "text-small rounded-full px-4 py-1.5 font-medium transition-all duration-fast bg-surface-subtle border-border-custom text-text-muted border hover:text-text cursor-pointer";
+    function filterProjects() {
+      const query = (searchInput?.value || "").toLowerCase().trim();
+
+      cards.forEach((card) => {
+        const category = card.getAttribute("data-category");
+        const searchText = (card.getAttribute("data-search-text") || "").toLowerCase();
+
+        const matchesCategory = activeCategory === "all" || category === activeCategory;
+        const matchesSearch = !query || searchText.includes(query);
+
+        if (matchesCategory && matchesSearch) {
+          card.classList.remove("hidden");
+        } else {
+          card.classList.add("hidden");
+        }
+      });
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((t) => {
+          t.className =
+            "filter-tab bg-surface-subtle border-ink/15 text-text-muted hover:text-text cursor-pointer rounded-full border px-3.5 py-1.5 font-mono text-xs font-semibold transition-all";
         });
-        btn.className =
-          "text-small rounded-full px-4 py-1.5 font-medium transition-all duration-fast bg-primary text-white cursor-pointer shadow-sm";
+        tab.className =
+          "filter-tab active bg-primary text-surface cursor-pointer rounded-full px-3.5 py-1.5 font-mono text-xs font-bold transition-all";
 
-        // Filter cards in grid
-        cards.forEach((card) => {
-          const status = card.getAttribute("data-project-status");
-          if (filter === "all" || status === filter) {
-            card.classList.remove("hidden");
-          } else {
-            card.classList.add("hidden");
-          }
-        });
+        activeCategory = tab.getAttribute("data-category") || "all";
+        filterProjects();
       });
     });
+
+    searchInput?.addEventListener("input", filterProjects);
   </script>
 </BaseLayout>

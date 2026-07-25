@@ -56,6 +56,10 @@ const projects = defineCollection({
     stackRefs: z.array(z.string()).default([]), // References to skills
     tags: z.array(z.string()).default([]),
     heroImage: z.string().optional(),
+    chessPiece: z.enum(["king", "queen", "knight"]).optional(),
+    chessRoleReason: z.string().optional(),
+    keyTakeaway: z.string().optional(),
+    category: z.enum(["architecture", "systems", "web", "tools"]).default("web"),
     links: z
       .array(
         z.object({

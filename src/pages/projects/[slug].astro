@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Container from "../../components/primitives/Container.astro";
 import LinkButton from "../../components/primitives/LinkButton.astro";
+import ChessIcons from "../../components/navigation/ChessIcons.astro";
 import { getCollection, render } from "astro:content";
 import { Calendar, Briefcase, Tag, Link as LinkIcon, Award } from "@lucide/astro";
 
@@ -16,30 +17,44 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 
+// Fetch all projects to compute Next/Prev links
+const allProjects = await getCollection("projects");
+const currentIndex = allProjects.findIndex((p) => p.id === project.id);
+const prevProject = currentIndex > 0 ? allProjects[currentIndex - 1] : null;
+const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : null;
+
 // Fetch skills to map stack references to human-readable names
 const skills = await getCollection("skills");
 const skillMap = new Map(skills.map((s) => [s.id, s.data.name]));
+
+// Chess Piece Meta Mapping
+const chessRoleTitles: Record<string, string> = {
+  king: "♔ Signature System",
+  queen: "♛ Technical Powerhouse",
+  knight: "♞ Creative Optimization",
+};
 ---
 
 <BaseLayout title={project.data.title} description={project.data.summary}>
-  <Container width="default" class="animate-reveal space-y-12 py-12">
-    <!-- Back to archive link -->
+  <Container width="default" class="animate-reveal space-y-10 py-10 md:py-14">
+    <!-- Back to archive navigation link -->
     <nav>
       <a
         href="/projects"
-        class="text-small text-primary hover:text-primary-hover font-semibold transition-colors"
+        class="text-small text-primary hover:text-primary-hover flex items-center gap-1.5 font-bold transition-colors"
       >
-        ← Back to Projects
+        <span>← Back to projects</span>
       </a>
     </nav>
 
-    <!-- Header Section -->
+    <!-- Case Study Header Section -->
     <header class="space-y-6">
+      <!-- Eyebrow & Status Badge Row -->
       <div class="flex flex-wrap items-center gap-3">
         <span
-          class={`text-[10px] font-semibold border rounded-full px-2.5 py-0.5 uppercase tracking-wider ${
+          class={`text-[10px] font-bold border rounded-full px-2.5 py-0.5 uppercase tracking-wider font-mono ${
             project.data.status === "completed"
-              ? "bg-green-500/10 border-green-500/20 text-green-800 dark:text-green-300"
+              ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-800 dark:text-emerald-300"
               : project.data.status === "active"
                 ? "bg-blue-500/10 border-blue-500/20 text-blue-800 dark:text-blue-300"
                 : "bg-amber-500/10 border-amber-500/20 text-amber-800 dark:text-amber-300"
@@ -47,44 +62,74 @@ const skillMap = new Map(skills.map((s) => [s.id, s.data.name]));
         >
           {project.data.status}
         </span>
+
         {
-          project.data.featured && (
-            <span class="bg-primary/10 border-primary/20 text-primary rounded-full border px-2.5 py-0.5 text-[10px] font-semibold tracking-wider uppercase">
-              Featured
+          project.data.chessPiece && (
+            <span class="bg-primary/10 border-primary/20 text-primary rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase">
+              {chessRoleTitles[project.data.chessPiece] || project.data.chessPiece}
             </span>
           )
         }
       </div>
 
-      <h1 class="text-h1 font-display text-text leading-tight font-extrabold tracking-tight">
-        {project.data.title}
-      </h1>
-      <p class="text-body-large text-text-muted max-w-3xl leading-relaxed">
-        {project.data.summary}
-      </p>
+      <!-- Title & Summary -->
+      <div class="space-y-3">
+        <h1 class="text-h1 font-display text-text leading-tight font-extrabold tracking-tight">
+          {project.data.title}
+        </h1>
+        <p class="text-body-large text-text-muted max-w-3xl leading-relaxed">
+          {project.data.summary}
+        </p>
+      </div>
+
+      <!-- Executive Summary / Key Takeaway Callout Box -->
+      {
+        project.data.keyTakeaway && (
+          <blockquote class="border-primary bg-surface-subtle/80 text-body text-text border-l-2 p-4 leading-relaxed font-medium shadow-xs">
+            {project.data.keyTakeaway}
+          </blockquote>
+        )
+      }
+
+      <!-- Hero Image Banner -->
+      {
+        project.data.heroImage && (
+          <div class="border-ink relative overflow-hidden rounded-xl border-[2.5px] shadow-sm">
+            <img
+              src={project.data.heroImage}
+              alt={project.data.title}
+              class="max-h-[440px] w-full object-cover"
+            />
+          </div>
+        )
+      }
     </header>
 
-    <!-- Metadata Grid & Details Sidebar -->
-    <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-      <!-- Main Markdown Content -->
-      <div class="space-y-8 lg:col-span-2">
+    <!-- Main Content & Sticky Engraved Sidebar Grid -->
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
+      <!-- Main Prose Narrative (Col 1-8) -->
+      <div class="space-y-8 lg:col-span-8">
         <article
           class="prose-custom text-body text-text-muted max-w-none space-y-6 leading-relaxed"
         >
           <Content />
         </article>
 
+        <!-- Key Outcomes Box -->
         {
           project.data.outcomes && project.data.outcomes.length > 0 && (
-            <div class="border-border-custom bg-surface space-y-4 rounded-2xl border p-6">
+            <div
+              class="bg-surface border-ink space-y-4 rounded-xl border-[2.5px] p-6 shadow-xs"
+              style="box-shadow: 3px 3px 0 var(--color-ink);"
+            >
               <h3 class="text-h3 font-display text-text flex items-center gap-2 font-bold">
                 <Award class="text-primary size-6" />
                 Key Project Outcomes
               </h3>
-              <ul class="space-y-3">
+              <ul class="space-y-2.5">
                 {project.data.outcomes.map((outcome) => (
-                  <li class="text-body text-text-muted flex items-start gap-2">
-                    <span class="text-primary mt-1 shrink-0 font-bold">•</span>
+                  <li class="text-body text-text flex items-start gap-2.5">
+                    <span class="text-primary font-bold">✓</span>
                     <span>{outcome}</span>
                   </li>
                 ))}
@@ -94,10 +139,13 @@ const skillMap = new Map(skills.map((s) => [s.id, s.data.name]));
         }
       </div>
 
-      <!-- Sidebar Metadata -->
-      <aside class="space-y-6">
-        <div class="border-border-custom bg-surface space-y-6 rounded-2xl border p-6">
-          <h3 class="text-h4 font-display text-text border-border-custom border-b pb-3 font-bold">
+      <!-- Sticky Engraved Sidebar (Col 9-12) -->
+      <aside class="space-y-6 lg:col-span-4">
+        <div
+          class="bg-surface border-ink sticky top-24 space-y-6 rounded-xl border-[2.5px] p-6 transition-all"
+          style="box-shadow: 3px 3px 0 var(--color-ink);"
+        >
+          <h3 class="text-h4 font-display text-text border-ink/10 border-b pb-3 font-bold">
             Project Metadata
           </h3>
 
@@ -105,19 +153,21 @@ const skillMap = new Map(skills.map((s) => [s.id, s.data.name]));
           <div class="flex items-start gap-3">
             <Briefcase class="text-text-muted mt-1 size-5 shrink-0" />
             <div>
-              <span class="text-caption text-text-muted block tracking-wider uppercase">Role</span>
-              <span class="text-body text-text font-medium">{project.data.role}</span>
+              <span class="text-caption text-text-muted block font-mono tracking-wider uppercase"
+                >Role</span
+              >
+              <span class="text-small text-text font-medium">{project.data.role}</span>
             </div>
           </div>
 
-          <!-- Dates -->
+          <!-- Duration -->
           <div class="flex items-start gap-3">
             <Calendar class="text-text-muted mt-1 size-5 shrink-0" />
             <div>
-              <span class="text-caption text-text-muted block tracking-wider uppercase"
+              <span class="text-caption text-text-muted block font-mono tracking-wider uppercase"
                 >Duration</span
               >
-              <span class="text-body text-text font-medium">{project.data.dates}</span>
+              <span class="text-small text-text font-medium">{project.data.dates}</span>
             </div>
           </div>
 
@@ -127,12 +177,12 @@ const skillMap = new Map(skills.map((s) => [s.id, s.data.name]));
               <div class="flex items-start gap-3">
                 <Tag class="text-text-muted mt-1 size-5 shrink-0" />
                 <div class="space-y-2">
-                  <span class="text-caption text-text-muted block tracking-wider uppercase">
+                  <span class="text-caption text-text-muted block font-mono tracking-wider uppercase">
                     Technology Stack
                   </span>
                   <div class="flex flex-wrap gap-1.5">
                     {project.data.stackRefs.map((ref) => (
-                      <span class="bg-surface-subtle border-border-custom text-caption text-text-muted rounded border px-2 py-0.5 font-mono">
+                      <span class="bg-surface-subtle border-ink/15 text-caption text-text-muted rounded border px-2 py-0.5 font-mono">
                         {skillMap.get(ref) || ref}
                       </span>
                     ))}
@@ -142,13 +192,13 @@ const skillMap = new Map(skills.map((s) => [s.id, s.data.name]));
             )
           }
 
-          <!-- Project Links -->
+          <!-- External Links -->
           {
             project.data.links && project.data.links.length > 0 && (
-              <div class="border-border-custom flex items-start gap-3 border-t pt-4">
+              <div class="border-ink/10 flex items-start gap-3 border-t pt-4">
                 <LinkIcon class="text-text-muted mt-1 size-5 shrink-0" />
                 <div class="w-full space-y-3">
-                  <span class="text-caption text-text-muted block tracking-wider uppercase">
+                  <span class="text-caption text-text-muted block font-mono tracking-wider uppercase">
                     Project Links
                   </span>
                   <div class="flex w-full flex-col gap-2">
@@ -161,7 +211,7 @@ const skillMap = new Map(skills.map((s) => [s.id, s.data.name]));
                         size="sm"
                         class="w-full justify-center"
                       >
-                        {link.label}
+                        {link.label} ↗
                       </LinkButton>
                     ))}
                   </div>
@@ -169,8 +219,66 @@ const skillMap = new Map(skills.map((s) => [s.id, s.data.name]));
               </div>
             )
           }
+
+          <!-- Strategic Chess Piece Badge & Definition Card (Fills sidebar whitespace!) -->
+          {
+            project.data.chessPiece && project.data.chessRoleReason && (
+              <div class="bg-surface-subtle/80 border-ink/20 space-y-3 rounded-lg border p-4">
+                <div class="flex items-center gap-2.5">
+                  <div class="text-primary size-8 shrink-0">
+                    <ChessIcons piece={project.data.chessPiece} variant="woodcut" class="size-full" />
+                  </div>
+                  <span class="text-small font-display text-text font-bold">
+                    {chessRoleTitles[project.data.chessPiece]}
+                  </span>
+                </div>
+                <p class="text-caption text-text-muted leading-relaxed font-normal">
+                  {project.data.chessRoleReason}
+                </p>
+              </div>
+            )
+          }
         </div>
       </aside>
     </div>
+
+    <!-- Next / Previous Case Study Pagination Footer -->
+    <nav class="border-ink/10 flex flex-col justify-between gap-4 border-t pt-8 sm:flex-row">
+      <div>
+        {
+          prevProject && (
+            <a
+              href={`/projects/${prevProject.id}`}
+              class="group flex flex-col space-y-1 text-left focus:outline-none"
+            >
+              <span class="text-caption text-text-muted font-mono tracking-wider uppercase">
+                ← Previous Case Study
+              </span>
+              <span class="text-small text-primary font-display font-bold group-hover:underline">
+                {prevProject.data.title}
+              </span>
+            </a>
+          )
+        }
+      </div>
+
+      <div>
+        {
+          nextProject && (
+            <a
+              href={`/projects/${nextProject.id}`}
+              class="group flex flex-col space-y-1 text-right focus:outline-none"
+            >
+              <span class="text-caption text-text-muted font-mono tracking-wider uppercase">
+                Next Case Study →
+              </span>
+              <span class="text-small text-primary font-display font-bold group-hover:underline">
+                {nextProject.data.title}
+              </span>
+            </a>
+          )
+        }
+      </div>
+    </nav>
   </Container>
 </BaseLayout>

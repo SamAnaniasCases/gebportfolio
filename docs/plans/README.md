@@ -28,15 +28,19 @@ Each plan file must specify a status badge in its header:
 
 ## Naming Convention
 
-Name files using a sequential number and short kebab-case title:
-`NNNN-feature-name.md` (e.g. `0001-dark-mode-refinement.md`).
+Name files using sequential feature numbers and short kebab-case titles:
+
+- Major Specifications: `NNNN-feature-name.md` (e.g. `0001-home-page-specification.md`).
+- Execution Roadmaps: `NNNN.1-feature-roadmap.md` (e.g. `0001.1-home-page-implementation-roadmap.md`).
 
 For quick iteration, copy the standard template from [0000-template.md](0000-template.md).
 
 ## Index of Plans
 
-| ID     | Title                                                                                      | Status        | Date       |
-| ------ | ------------------------------------------------------------------------------------------ | ------------- | ---------- |
-| `0000` | [Standard Feature Plan Template](0000-template.md)                                         | `Active`      | 2026-07-24 |
-| `0001` | [Home Page IA & Content Specification](0001-home-page-specification.md)                    | `Approved`    | 2026-07-24 |
-| `0002` | [Home Page Implementation Roadmap & Checkpoints](0002-home-page-implementation-roadmap.md) | `Implemented` | 2026-07-24 |
+| ID       | Title                                                                                        | Status        | Date       |
+| -------- | -------------------------------------------------------------------------------------------- | ------------- | ---------- |
+| `0000`   | [Standard Feature Plan Template](0000-template.md)                                           | `Active`      | 2026-07-24 |
+| `0001`   | [Home Page IA & Content Specification](0001-home-page-specification.md)                      | `Approved`    | 2026-07-24 |
+| `0001.1` | [Home Page Implementation Roadmap & Checkpoints](0001.1-home-page-implementation-roadmap.md) | `Implemented` | 2026-07-24 |
+| `0002`   | [Work Page IA & Content Specification](0002-work-page-specification.md)                      | `Approved`    | 2026-07-25 |
+| `0002.1` | [Work Page Implementation Roadmap & Checkpoints](0002.1-work-page-implementation-roadmap.md) | `Active`      | 2026-07-25 |
