@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Official **Content & Writing Style Guide** in `docs/engineering/ContentStyleGuide.md` establishing author positioning, voice, tone boundaries, surface copy standards, authenticity criteria, and AI collaboration rules (renamed from `docs/still-noname.md`).
+- Updated `docs/README.md`, `docs/engineering/AI-Guidelines.md`, and `docs/engineering/AI-Project-Context.md` to reference `ContentStyleGuide.md`.
+
+### Changed
+
+- Refreshed all Home Page (`/`) section copy and action button labels to strictly conform to `ContentStyleGuide.md` (sentence case CTAs, grounded early-career graduate positioning, fixed `02. Core Mindset & Principles` section heading). Updated `site.json`, `about.json`, all 7 section components in `src/components/sections/`, and `docs/plans/0001-home-page-specification.md`.
+
 ## [1.0.0] - 2026-07-25
 
 ### Added

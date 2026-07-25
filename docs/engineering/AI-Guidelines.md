@@ -6,7 +6,7 @@ Directives for AI agents collaborating on this codebase.
 
 ## Mandatory Preflight
 
-1.  Read `README.md`, `AGENTS.md`, and [Handbook](../../Portfolio%20Architecture%20&%20Engineering%20Handbook%202e6dfc6171c0423a8fc61d2f398ece49.md).
+1.  Read `README.md`, `AGENTS.md`, [Handbook](../../Portfolio%20Architecture%20&%20Engineering%20Handbook%202e6dfc6171c0423a8fc61d2f398ece49.md), and [Content & Writing Style Guide](ContentStyleGuide.md).
 2.  Search for existing components and patterns.
 3.  Propose plans for significant changes before writing code.
 

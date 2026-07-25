@@ -16,7 +16,7 @@ The Home page serves as a **Curated Portal & Executive Summary** for the persona
 
 Within 10 seconds of landing, a visitor must understand:
 
-1. **Who**: A Bachelor of Industrial Technology major in Computer and early-career software builder.
+1. **Who**: A Computer-focused Industrial Technology graduate and software developer.
 2. **What**: Focuses on structured problem decomposition, maintainable web architecture, and disciplined development.
 3. **How**: Pairs human architectural ownership and rigorous verification with AI-accelerated workflows.
 
@@ -61,10 +61,10 @@ graph TD
     - _Hover / Focus State_: On hover, keyboard focus (`:focus-visible`), or touch-tap, smoothly transitions (200ms opacity/transform cross-fade) to reveal a clean PNG portrait photo of the owner.
     - _Frame & Styling_: 2.5px structural stroke border (`--stroke-structural`), hard-offset shadow (`3px 3px 0 var(--color-ink)`), and 12px border-radius (`rounded-lg`).
     - _Accessibility_: Explicit `alt` text, keyboard navigable (`tabindex="0"`), and respects `prefers-reduced-motion` for instant swap fallback.
-  - **Eyebrow**: `Bachelor of Industrial Technology (Computer) · Early-Career Software Builder`
+  - **Eyebrow**: `Cebu, Philippines · Industrial Technology (Computer) Graduate`
   - **Headline**: Clear stance on building maintainable, human-centered software.
-  - **Subheadline**: _"Combining structured problem decomposition with AI-paired workflows to craft fast, accessible web applications."_
-  - **Action Buttons**: `Explore Case Studies` (`/projects`) and `Read Engineering Specs` (`/docs/plans/`).
+  - **Subheadline**: _"Recent Computer-focused Industrial Technology graduate exploring maintainable web development, accessible interfaces, and carefully documented engineering decisions."_
+  - **Action Buttons**: `Explore case studies` (`/projects`) and `Read specifications` (`/docs/plans/`).
 - **Data Source**: Static configuration in `src/content/data/site.json` (pointing to SVG asset `src/assets/brand/avatar.svg` and photo asset `src/assets/brand/portrait.png`).
 
 ### Section 2: Strategy Before Code (Opening Principles)

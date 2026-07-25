@@ -61,6 +61,7 @@ Understanding what each directory inside `/docs` is for:
 ### Engineering & Guidelines (`docs/engineering/`)
 
 - [Coding Standards](engineering/CodingStandards.md) — TypeScript guidelines, component contracts, error boundaries, testing.
+- [Content & Writing Style Guide](engineering/ContentStyleGuide.md) — Voice, tone, surface copy standards, AI collaboration rules, and authenticity criteria.
 - [AI Guidelines](engineering/AI-Guidelines.md) — Preflight checks and workflow instructions for AI assistants.
 - [AI Project Context](engineering/AI-Project-Context.md) — Copy-pasteable bootstrap prompt for new AI sessions.
 

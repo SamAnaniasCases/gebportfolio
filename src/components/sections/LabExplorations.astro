@@ -20,7 +20,7 @@ const latestPosts = posts
   </Container>
 
   <!-- Inner Content -->
-  <Container width="default" class="py-10 md:py-14 lg:py-16 space-y-12">
+  <Container width="default" class="space-y-12 py-10 md:py-14 lg:py-16">
     <!-- Section Header -->
     <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div class="max-w-2xl space-y-3">
@@ -37,7 +37,7 @@ const latestPosts = posts
       </div>
       <div>
         <LinkButton href="/posts" variant="ghost" class="text-primary font-semibold">
-          See all writings →
+          Explore all writings →
         </LinkButton>
       </div>
     </div>
@@ -87,7 +87,7 @@ const latestPosts = posts
                 href={`/posts/${post.id}`}
                 class="text-small text-primary flex items-center gap-1 font-semibold group-hover:underline"
               >
-                <span>Read Deep Dive</span>
+                <span>Read research note</span>
                 <span class="transition-transform group-hover:translate-x-1">→</span>
               </a>
             </div>

@@ -4,13 +4,13 @@
     {
       "id": "biography",
       "heading": "Biography",
-      "content": "Sam Ananias Cases is a Bachelor of Industrial Technology major in Computer based in Cebu, Philippines. He focuses on software engineering fundamentals, problem decomposition, web standards, and leveraging AI as an interactive development partner.",
+      "content": "Sam Ananias Cases is a Computer-focused Industrial Technology graduate based in Cebu, Philippines. He focuses on software engineering fundamentals, structured problem decomposition, web standards, and leveraging AI responsibly as an interactive development partner.",
       "order": 1
     },
     {
       "id": "philosophy",
       "heading": "Philosophy",
-      "content": "I believe in building software thoughtfully—writing clear specifications, planning maintainable architecture, evaluating trade-offs, and verifying every build through rigorous automated testing.",
+      "content": "I believe in building software thoughtfully—thinking through requirements before implementation, documenting key decisions for future context, evaluating trade-offs, and verifying every build through test suites.",
       "order": 2
     }
   ]
