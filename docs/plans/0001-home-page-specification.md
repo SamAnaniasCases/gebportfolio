@@ -110,6 +110,7 @@ graph TD
 
 - **Why It Exists**: Provides visual, verifiable proof of active daily coding habit and public repository activity on GitHub (`https://github.com/SamAnaniasCases`), while playfully reinforcing the site's chess design theme.
 - **Content & Element Requirements**:
+  - **Eyebrow Header**: `06 · GITHUB CONTRIBUTIONS` transitioning directly into the contribution graph card (without large body header text).
   - **GitHub Activity Grid**: Displays the contribution activity grid (52 weeks of contribution squares), visually styled to match the woodcut theme.
   - **Interactive ♔ King Piece**: Renders a theme-bound ♔ King piece on the contribution grid. Visitors can freely move the King across the contribution squares via drag-and-drop, clicking target cells, or using keyboard controls.
   - **Contribution Tooltip / Cell Details**: Moving the King over a cell highlights the date and contribution count for that day.
@@ -121,10 +122,30 @@ graph TD
 
 - **Why It Exists**: Low-friction conversion path for recruiters, collaborators, and visitors.
 - **Content Requirements**:
-  - **Headline**: "Let's Build Together" or "Get in Touch".
+  - **Eyebrow**: `07 · CONTACT & COLLABORATION`.
+  - **Headline**: "07. Contact & Collaboration".
   - **Body**: Invitation for software opportunities, technical discussions, or code feedback.
-  - **Actions**: Direct email link, GitHub profile link, LinkedIn link, or contact page link (`/contact`).
+  - **Email Pill Badge**: Standalone inline pill badge displaying email address (`samananiascases@gmail.com`) with text truncation and select-all support.
+  - **Actions**: Responsive button stack (`flex-col sm:flex-row`) for direct email link, GitHub profile link, and contact page link (`/contact`), ensuring zero text/pill overlap at mobile breakpoints.
 - **Data Source**: `src/content/data/site.json` singleton.
+
+---
+
+## 3.1 Section Background Alternating Pattern & Divider Boundary Invariant
+
+To ensure visual consistency and prevent background color bleed or gaps across the Home page:
+
+1. **Alternating Background Sequence**:
+   - Section 1 (Hero): Ground (`bg-bg`)
+   - Section 2 (CoreMindset): Subtle Surface (`bg-surface-subtle/50`)
+   - Section 3 (FeaturedProjects): Ground (`bg-bg`)
+   - Section 4 (LabExplorations): Subtle Surface (`bg-surface-subtle/50`)
+   - Section 5 (AboutSummary): Ground (`bg-bg`)
+   - Section 6 (GitHubActivity): Subtle Surface (`bg-surface-subtle/50`)
+   - Section 7 (ContactCTA): Ground (`bg-bg`)
+2. **Divider Boundary Alignment**:
+   - Each colored section (`bg-surface-subtle/50`) MUST be bounded by a top `<DividerChessboard />` (at `pt-0` / top of section) and a bottom `<DividerChessboard />` (at `pb-0` / bottom of section).
+   - Inner content padding (`py-8 md:py-12 lg:py-14`) MUST be placed between the top and bottom dividers. The background color must span from top divider to bottom divider with 0px top/bottom bleed and 0px gaps.
 
 ---
 

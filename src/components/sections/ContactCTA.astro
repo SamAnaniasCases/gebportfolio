@@ -1,0 +1,72 @@
+---
+import Container from "../primitives/Container.astro";
+import LinkButton from "../primitives/LinkButton.astro";
+import { getEntry } from "astro:content";
+
+// Fetch site configuration singleton
+const siteEntry = await getEntry("site", "site-config");
+const siteConfig = siteEntry?.data;
+
+const email = siteConfig?.contactSettings?.email || "samananiascases@gmail.com";
+const githubUrl = siteConfig?.canonicalURL || "https://github.com/SamAnaniasCases";
+---
+
+<section class="relative overflow-hidden py-10 md:py-14 lg:py-16">
+  <Container width="default" class="space-y-12">
+    <div
+      class="bg-surface border-ink relative overflow-hidden rounded-xl border-[2.5px] p-6 text-center transition-all sm:p-8 md:p-12"
+      style="box-shadow: 3px 3px 0 var(--color-ink);"
+    >
+      <div class="mx-auto max-w-2xl space-y-6">
+        <!-- Eyebrow Badge -->
+        <span
+          class="border-ink/20 bg-surface-subtle text-caption text-primary inline-flex items-center gap-2 rounded-full border px-3 py-1 font-mono font-semibold tracking-widest uppercase"
+        >
+          <span class="text-xs">✉</span> 07 · Contact & Collaboration
+        </span>
+
+        <!-- Headline -->
+        <h2 class="text-h2 font-display text-text font-bold tracking-tight">
+          07. Contact & Collaboration
+        </h2>
+
+        <!-- Subheadline & Description -->
+        <p class="text-body text-text-muted leading-relaxed">
+          Open for software engineering opportunities, architecture discussions, and technical
+          collaborations. Feel free to reach out directly via email or explore my public code
+          repositories.
+        </p>
+
+        <!-- Direct Email Pill Badge -->
+        <div class="pt-1">
+          <div
+            class="border-ink/20 bg-surface-subtle text-caption text-text inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 font-mono shadow-xs"
+          >
+            <span class="text-primary font-bold">✉</span>
+            <span class="truncate font-semibold select-all">{email}</span>
+          </div>
+        </div>
+
+        <!-- CTA Buttons -->
+        <div class="flex w-full flex-col items-center justify-center gap-3.5 pt-2 sm:flex-row">
+          <LinkButton href={`mailto:${email}`} variant="primary" size="lg" class="w-full sm:w-auto">
+            Send Email →
+          </LinkButton>
+          <LinkButton
+            href={githubUrl}
+            variant="secondary"
+            size="lg"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full sm:w-auto"
+          >
+            GitHub Profile ↗
+          </LinkButton>
+          <LinkButton href="/contact" variant="ghost" size="lg" class="w-full sm:w-auto">
+            Direct Contact Page
+          </LinkButton>
+        </div>
+      </div>
+    </div>
+  </Container>
+</section>

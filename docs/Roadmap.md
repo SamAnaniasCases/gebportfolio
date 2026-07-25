@@ -1,6 +1,6 @@
 # Phased Roadmap
 
-<callout icon="♞">**Status:** Active · **Owner:** Gen · **Last Reviewed:** 2026-07-21</callout>
+<callout icon="♞">**Status:** Active · **Owner:** Gen · **Last Reviewed:** 2026-07-25</callout>
 
 Project phases, priority, complexity, and success metrics.
 

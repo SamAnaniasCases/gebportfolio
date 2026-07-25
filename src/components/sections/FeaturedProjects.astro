@@ -2,7 +2,6 @@
 import Container from "../primitives/Container.astro";
 import Grid from "../primitives/Grid.astro";
 import LinkButton from "../primitives/LinkButton.astro";
-import DividerChessboard from "../primitives/DividerChessboard.astro";
 import { getCollection } from "astro:content";
 
 // Fetch featured projects from content collections
@@ -10,18 +9,16 @@ const projects = await getCollection("projects");
 const featuredProjects = projects.filter((p) => p.data.featured).slice(0, 3);
 ---
 
-<section class="bg-background border-ink/10 border-b py-12 md:py-16 lg:py-20">
+<section class="relative overflow-hidden py-10 md:py-14 lg:py-16">
   <Container width="default" class="space-y-12">
-    <DividerChessboard />
-
     <!-- Section Header -->
     <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div class="max-w-2xl space-y-3">
         <span class="text-caption text-primary font-mono font-semibold tracking-widest uppercase">
-          Proof of Work
+          03 · Proof of Work
         </span>
         <h2 class="text-h2 font-display text-text font-bold tracking-tight">
-          Featured Case Studies
+          03. Featured Case Studies
         </h2>
         <p class="text-body text-text-muted leading-relaxed">
           Real projects where I planned the approach, documented key decisions, and built for

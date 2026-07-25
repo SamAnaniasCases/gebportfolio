@@ -56,10 +56,22 @@ async function getLiveContributions() {
 const liveData = await getLiveContributions();
 ---
 
-<section class="py-12 md:py-16 bg-background border-t border-b border-ink/10">
-  <Container width="default" class="space-y-8">
+<section class="bg-surface-subtle/50 relative overflow-hidden">
+  <!-- Top Boundary Divider -->
+  <Container width="default">
     <DividerChessboard />
+  </Container>
 
+  <!-- Inner Content -->
+  <Container width="default" class="py-8 md:py-12 lg:py-14 space-y-8">
+    <!-- Section Eyebrow Label Only -->
+    <div>
+      <span class="text-caption text-primary font-mono font-semibold tracking-widest uppercase">
+        06 · GitHub Contributions
+      </span>
+    </div>
+
+    <!-- Contribution Graph Card -->
     <GitHubChessGrid
       initialDays={liveData.days}
       initialTotal={liveData.totalContributions}
@@ -67,5 +79,10 @@ const liveData = await getLiveContributions();
       profileUrl="https://github.com/SamAnaniasCases"
       client:visible
     />
+  </Container>
+
+  <!-- Bottom Boundary Divider -->
+  <Container width="default">
+    <DividerChessboard />
   </Container>
 </section>

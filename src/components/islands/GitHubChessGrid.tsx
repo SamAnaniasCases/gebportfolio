@@ -154,10 +154,10 @@ export default function GitHubChessGrid({
   ];
 
   return (
-    <div className="space-y-4 max-w-5xl mx-auto">
+    <div className="mx-auto max-w-5xl space-y-4">
       {/* Top Header Row */}
       <div className="flex items-center justify-between">
-        <h3 className="font-display text-text text-lg sm:text-xl font-bold tracking-tight">
+        <h3 className="font-display text-text text-lg font-bold tracking-tight sm:text-xl">
           {displayTotal.toLocaleString()} contributions in the last year
         </h3>
 
@@ -165,18 +165,18 @@ export default function GitHubChessGrid({
           href={profileUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-primary hover:underline font-mono text-small font-semibold flex items-center gap-1 group"
+          className="text-primary text-small group flex items-center gap-1 font-mono font-semibold hover:underline"
         >
           @{username}
-          <span className="inline-block transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+          <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
             ↗
           </span>
         </a>
       </div>
 
       {/* Main GitHub Calendar Outer Container (Centered Layout) */}
-      <div className="bg-surface border-ink/15 rounded-xl border p-4 sm:p-6 shadow-xs flex flex-col items-center">
-        <div className="overflow-x-auto w-full flex justify-center pb-2 scrollbar-thin">
+      <div className="bg-surface border-ink/15 flex flex-col items-center rounded-xl border p-4 shadow-xs sm:p-6">
+        <div className="flex w-full scrollbar-thin justify-center overflow-x-auto pb-2">
           <div className="inline-block">
             {/* 52-Week Activity Grid (No Months / No Day Labels) */}
             <div className="grid grid-flow-col grid-rows-7 gap-[3px] py-1">
@@ -192,12 +192,12 @@ export default function GitHubChessGrid({
                 return (
                   <div
                     key={day.date}
-                    className={`relative flex h-3 w-3 sm:h-3.5 sm:w-3.5 items-center justify-center rounded-[2px] border transition-all duration-150 ${squareClasses[day.level]}`}
+                    className={`relative flex h-3 w-3 items-center justify-center rounded-[2px] border transition-all duration-150 sm:h-3.5 sm:w-3.5 ${squareClasses[day.level]}`}
                     title={`${day.count} contribution${day.count === 1 ? "" : "s"} on ${formattedDate}`}
                   >
                     {isPeak && (
                       <span
-                        className="text-[9px] sm:text-[10px] leading-none font-bold text-ink select-none"
+                        className="text-ink text-[9px] leading-none font-bold select-none sm:text-[10px]"
                         title={`♔ Peak Activity: ${day.count} contributions on ${formattedDate}`}
                       >
                         ♔
@@ -209,23 +209,23 @@ export default function GitHubChessGrid({
             </div>
 
             {/* Bottom Legend Row */}
-            <div className="mt-4 flex items-center justify-between text-[11px] font-mono text-text-muted pt-3 border-t border-ink/10 w-full gap-4">
+            <div className="text-text-muted border-ink/10 mt-4 flex w-full items-center justify-between gap-4 border-t pt-3 font-mono text-[11px]">
               <a
                 href={profileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:underline hover:text-text transition-colors"
+                className="hover:text-text transition-colors hover:underline"
               >
                 Learn how we count contributions
               </a>
 
               <div className="flex items-center gap-1.5">
                 <span>Less</span>
-                <span className="h-2.5 w-2.5 rounded-[1px] border border-ink/10 bg-surface-subtle/80" />
-                <span className="h-2.5 w-2.5 rounded-[1px] border border-primary/30 bg-primary/25" />
-                <span className="h-2.5 w-2.5 rounded-[1px] border border-primary/55 bg-primary/50" />
-                <span className="h-2.5 w-2.5 rounded-[1px] border border-primary/85 bg-primary/80" />
-                <span className="h-2.5 w-2.5 rounded-[1px] border border-primary bg-primary" />
+                <span className="border-ink/10 bg-surface-subtle/80 h-2.5 w-2.5 rounded-[1px] border" />
+                <span className="border-primary/30 bg-primary/25 h-2.5 w-2.5 rounded-[1px] border" />
+                <span className="border-primary/55 bg-primary/50 h-2.5 w-2.5 rounded-[1px] border" />
+                <span className="border-primary/85 bg-primary/80 h-2.5 w-2.5 rounded-[1px] border" />
+                <span className="border-primary bg-primary h-2.5 w-2.5 rounded-[1px] border" />
                 <span>More</span>
               </div>
             </div>

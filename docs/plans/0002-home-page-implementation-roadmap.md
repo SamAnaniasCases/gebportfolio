@@ -97,13 +97,13 @@ Build the interactive bottom activity strip.
 
 ---
 
-### Phase 7: Background Trajectory, Contact CTA & Page Assembly `[PENDING ⏳]`
+### Phase 7: Background Trajectory, Contact CTA & Page Assembly `[COMPLETED ✅]`
 
 Finalize page sections and assemble `/src/pages/index.astro`.
 
-- [ ] **Task 7.1**: Build `src/sections/AboutSummary.astro` & `src/sections/ContactCTA.astro`.
-- [ ] **Task 7.2**: Inject `Person` and `WebSite` JSON-LD structured data into document head.
-- [ ] **Task 7.3**: Assemble all 7 sections into `src/pages/index.astro`.
+- [x] **Task 7.1**: Build `src/components/sections/AboutSummary.astro` & `src/components/sections/ContactCTA.astro`.
+- [x] **Task 7.2**: Inject `Person` and `WebSite` JSON-LD structured data into document head.
+- [x] **Task 7.3**: Assemble all 7 sections into `src/pages/index.astro`.
 - 🏁 **Checkpoint 7 Gate (Final Launch Verification)**:
   ```bash
   cmd /c "npx pnpm run format"

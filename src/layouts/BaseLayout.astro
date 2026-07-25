@@ -104,6 +104,31 @@ const groupLabels = ["WORK", "WRITING", "META"];
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={new URL(image, Astro.url.origin)} />
 
+    <!-- JSON-LD Structured Data -->
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify([
+        {
+          "@context": "https://schema.org",
+          "@type": "Person",
+          name: siteConfig?.name ?? "Sam Ananias Cases",
+          url: siteConfig?.canonicalURL ?? Astro.url.origin,
+          jobTitle: siteConfig?.headline ?? "Bachelor of Industrial Technology (Computer)",
+          email: siteConfig?.contactSettings?.email ?? "samananiascases@gmail.com",
+          sameAs: siteConfig?.socialLinks?.map((s) => s.url) ?? [
+            "https://github.com/SamAnaniasCases",
+          ],
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: `${siteConfig?.name ?? "Sam Ananias Cases"} Portfolio`,
+          url: siteConfig?.canonicalURL ?? Astro.url.origin,
+        },
+      ])}
+    />
+
     <!-- Inline Dark Mode Script to Prevent Flash of Unstyled Content (FOUC) -->
     <script is:inline>
       const getThemePreference = () => {

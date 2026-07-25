@@ -7,9 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-07-25
+
 ### Added
 
 - Dedicated `docs/plans/` directory with `README.md` index and `0000-template.md` feature plan template for technical design specs and RFC proposals.
+- Implemented **Phase 7: Background Trajectory, Contact CTA & Page Assembly** on the Home page (`/`):
+  - Created `src/components/sections/AboutSummary.astro` rendering background biography, engineering philosophy, and focus areas from `src/content/pages/about.json`.
+  - Created `src/components/sections/ContactCTA.astro` rendering conversion CTA finish with direct email button, GitHub profile link, and contact route from `src/content/data/site.json`.
+  - Injected `Person` and `WebSite` JSON-LD structured data into `<head>` in `src/layouts/BaseLayout.astro`.
+  - Assembled all 7 top-to-bottom sections on `src/pages/index.astro` strictly following `docs/plans/0001-home-page-specification.md`.
+  - Fixed site-wide section boundary alignment by bounding colored sections (`bg-surface-subtle/50`) with top and bottom `DividerChessboard` primitives for 0px top/bottom background bleed.
+  - Refactored `src/components/sections/GitHubActivity.astro` to use trimmed eyebrow (`06 · GITHUB CONTRIBUTIONS`) and direct grid transition.
+  - Refactored `src/components/sections/ContactCTA.astro` with standalone email pill and responsive button stacking (`flex-col sm:flex-row`).
+  - Updated `docs/plans/0001-home-page-specification.md` with Section 6 & 7 specs and Section Background Alternating Pattern & Divider Boundary rules.
 - Added explicit Windows CLI command execution rule requiring `cmd /c` (e.g. `cmd /c "npx pnpm run format"`) across `AGENTS.md`, `.agents/AGENTS.md`, `docs/AI-Guidelines.md`, and `docs/AI-Project-Context.md` to bypass PowerShell script execution restrictions.
 - Reorganized `docs/` repository documentation into structured subdirectories (`docs/architecture/`, `docs/design/`, `docs/engineering/`), updating all relative markdown links and maintaining 100% link portability.
 - Created official Home Page Information Architecture & Content Strategy specification in `docs/plans/0001-home-page-specification.md`.
