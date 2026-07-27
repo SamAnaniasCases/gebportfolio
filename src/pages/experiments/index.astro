@@ -16,9 +16,9 @@ const technologies = Array.from(
 
 // Status display configuration helper
 const statusStyles = {
-  active: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20",
-  completed: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20",
-  abandoned: "bg-slate-500/10 text-slate-700 dark:text-slate-400 border-slate-500/20",
+  active: "bg-emerald-500/10 text-emerald-800 dark:text-emerald-400 border-emerald-500/20",
+  completed: "bg-blue-500/10 text-blue-800 dark:text-blue-400 border-blue-500/20",
+  abandoned: "bg-slate-500/10 text-slate-800 dark:text-slate-400 border-slate-500/20",
 };
 
 const statusDotStyles = {
@@ -141,7 +141,7 @@ const statusDotStyles = {
                 {exp.data.warning && (
                   <p
                     slot="summary"
-                    class="text-caption rounded-md border border-amber-500/10 bg-amber-500/5 p-2.5 text-amber-700 italic dark:text-amber-400"
+                    class="text-caption rounded-md border border-amber-500/10 bg-amber-500/5 p-2.5 text-amber-800 italic dark:text-amber-400"
                   >
                     Note: {exp.data.warning}
                   </p>

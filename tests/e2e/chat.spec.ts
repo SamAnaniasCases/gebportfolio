@@ -77,6 +77,10 @@ test.describe("Anonymous Real-Time Chatbox Onboarding & Verification", () => {
     const dialog = page.getByRole("dialog", { name: "Real-time live chat room" });
     await expect(dialog).toBeVisible();
 
+    // Wait for modal focus initialization to settle
+    const nameInput = page.getByPlaceholder("e.g. TacticalKnight");
+    await expect(nameInput).toBeFocused();
+
     await page.keyboard.press("Escape");
     await expect(dialog).not.toBeVisible();
   });
