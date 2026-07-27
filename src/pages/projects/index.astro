@@ -12,7 +12,9 @@ const kingProject = featuredProjects.find((p) => p.data.chessPiece === "king");
 const queenProject = featuredProjects.find((p) => p.data.chessPiece === "queen");
 const knightProject = featuredProjects.find((p) => p.data.chessPiece === "knight");
 
-const topFeatured = [kingProject, queenProject, knightProject].filter((p): p is typeof projects[0] => Boolean(p));
+const topFeatured = [kingProject, queenProject, knightProject].filter(
+  (p): p is (typeof projects)[0] => Boolean(p)
+);
 const topFeaturedIds = new Set(topFeatured.map((p) => p.id));
 const secondaryProjects = projects.filter((p) => !topFeaturedIds.has(p.id));
 
@@ -97,7 +99,7 @@ const featuredCount = topFeatured.length;
             type="text"
             id="search-input"
             placeholder="Search projects, tags, tools..."
-            class="bg-surface-subtle border-ink/20 text-text placeholder:text-text-muted/60 text-small w-full rounded-lg border py-1.5 pr-3 pl-8 font-mono focus:border-primary focus:outline-none"
+            class="bg-surface-subtle border-ink/20 text-text placeholder:text-text-muted/60 text-small focus:border-primary w-full rounded-lg border py-1.5 pr-3 pl-8 font-mono focus:outline-none"
           />
           <span class="text-text-muted absolute top-2 left-2.5 font-mono text-xs select-none"
             >🔍</span
@@ -108,17 +110,17 @@ const featuredCount = topFeatured.length;
 
     <!-- Top Featured Showcase Section -->
     <section class="space-y-6" id="featured-showcase-section">
-      <div class="flex items-center justify-between border-ink/10 border-b pb-3">
+      <div class="border-ink/10 flex items-center justify-between border-b pb-3">
         <h2 class="text-h3 font-display text-text font-bold tracking-tight">
           Featured Case Studies
         </h2>
-        <span class="text-caption text-text-muted font-mono uppercase tracking-wider">
+        <span class="text-caption text-text-muted font-mono tracking-wider uppercase">
           Top Signature Work
         </span>
       </div>
 
       <!-- Responsive Grid for Featured Projects -->
-      <div class="grid grid-cols-1 gap-6 pt-2 pb-2 md:grid-cols-2 items-stretch">
+      <div class="grid grid-cols-1 items-stretch gap-6 pt-2 pb-2 md:grid-cols-2">
         {/* King Signature Hero Card (BITS) */}
         {
           kingProject && (
@@ -133,13 +135,13 @@ const featuredCount = topFeatured.length;
               <div class="relative z-10 space-y-4">
                 <div class="flex items-center justify-between gap-2">
                   <div class="flex items-center gap-2 font-mono text-xs">
-                    <span class="bg-primary text-surface inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 font-bold uppercase tracking-wider shadow-xs">
+                    <span class="bg-primary text-surface inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 font-bold tracking-wider uppercase shadow-xs">
                       <span class="font-serif text-sm">♔</span>
                       <span>Signature System</span>
                     </span>
                   </div>
                   <span
-                    class={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider shrink-0 ${
+                    class={`shrink-0 rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase ${
                       kingProject.data.status === "completed"
                         ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300"
                         : kingProject.data.status === "active"
@@ -152,18 +154,18 @@ const featuredCount = topFeatured.length;
                 </div>
 
                 {kingProject.data.heroImage && (
-                  <div class="border-ink/20 relative overflow-hidden rounded-lg border aspect-video w-full shadow-xs">
+                  <div class="border-ink/20 relative aspect-video w-full overflow-hidden rounded-lg border shadow-xs">
                     <img
                       src={kingProject.data.heroImage}
                       alt={kingProject.data.title}
-                      class="size-full object-cover grayscale contrast-105 transition-all duration-300 group-hover:grayscale-0 group-hover:scale-102"
+                      class="size-full object-cover contrast-105 grayscale transition-all duration-300 group-hover:scale-102 group-hover:grayscale-0"
                       loading="lazy"
                     />
                   </div>
                 )}
 
                 <div class="space-y-2">
-                  <h3 class="text-h3 font-display text-text group-hover:text-primary leading-tight font-bold transition-colors line-clamp-2">
+                  <h3 class="text-h3 font-display text-text group-hover:text-primary line-clamp-2 leading-tight font-bold transition-colors">
                     <a
                       href={`/projects/${kingProject.id}`}
                       class="focus:underline focus:outline-none"
@@ -177,7 +179,7 @@ const featuredCount = topFeatured.length;
                 </div>
               </div>
 
-              <div class="relative z-10 border-ink/10 flex items-center justify-between border-t pt-4 mt-4">
+              <div class="border-ink/10 relative z-10 mt-4 flex items-center justify-between border-t pt-4">
                 <a
                   href={`/projects/${kingProject.id}`}
                   class="text-small text-primary flex items-center gap-1.5 font-bold group-hover:underline"
@@ -189,7 +191,7 @@ const featuredCount = topFeatured.length;
 
               {/* Clean Chess Icon Watermark (Matching work-page-visual.html) */}
               <div
-                class="text-primary/10 dark:text-primary/15 pointer-events-none absolute -right-2 -bottom-4 select-none font-serif text-[155px] leading-none transform rotate-[-7deg] origin-bottom-right transition-transform group-hover:scale-105 group-hover:rotate-[-4deg]"
+                class="text-primary/10 dark:text-primary/15 pointer-events-none absolute -right-2 -bottom-4 origin-bottom-right rotate-[-7deg] transform font-serif text-[155px] leading-none transition-transform select-none group-hover:scale-105 group-hover:rotate-[-4deg]"
                 aria-hidden="true"
               >
                 ♔
@@ -212,13 +214,13 @@ const featuredCount = topFeatured.length;
               <div class="relative z-10 space-y-4">
                 <div class="flex items-center justify-between gap-2">
                   <div class="flex items-center gap-2 font-mono text-xs">
-                    <span class="text-primary bg-primary/10 border-primary/20 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 font-bold uppercase tracking-wider">
+                    <span class="text-primary bg-primary/10 border-primary/20 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 font-bold tracking-wider uppercase">
                       <span class="text-primary font-serif text-sm">♛</span>
                       <span>Technical Powerhouse</span>
                     </span>
                   </div>
                   <span
-                    class={`rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider shrink-0 ${
+                    class={`shrink-0 rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase ${
                       queenProject.data.status === "completed"
                         ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300"
                         : queenProject.data.status === "active"
@@ -231,18 +233,18 @@ const featuredCount = topFeatured.length;
                 </div>
 
                 {queenProject.data.heroImage && (
-                  <div class="border-ink/20 relative overflow-hidden rounded-lg border aspect-video w-full shadow-xs">
+                  <div class="border-ink/20 relative aspect-video w-full overflow-hidden rounded-lg border shadow-xs">
                     <img
                       src={queenProject.data.heroImage}
                       alt={queenProject.data.title}
-                      class="size-full object-cover grayscale contrast-105 transition-all duration-300 group-hover:grayscale-0 group-hover:scale-102"
+                      class="size-full object-cover contrast-105 grayscale transition-all duration-300 group-hover:scale-102 group-hover:grayscale-0"
                       loading="lazy"
                     />
                   </div>
                 )}
 
                 <div class="space-y-2">
-                  <h3 class="text-h3 font-display text-text group-hover:text-primary leading-tight font-bold transition-colors line-clamp-2">
+                  <h3 class="text-h3 font-display text-text group-hover:text-primary line-clamp-2 leading-tight font-bold transition-colors">
                     <a
                       href={`/projects/${queenProject.id}`}
                       class="focus:underline focus:outline-none"
@@ -256,7 +258,7 @@ const featuredCount = topFeatured.length;
                 </div>
               </div>
 
-              <div class="relative z-10 border-ink/10 flex items-center justify-between border-t pt-4 mt-4">
+              <div class="border-ink/10 relative z-10 mt-4 flex items-center justify-between border-t pt-4">
                 <a
                   href={`/projects/${queenProject.id}`}
                   class="text-small text-primary flex items-center gap-1 font-bold group-hover:underline"
@@ -268,7 +270,7 @@ const featuredCount = topFeatured.length;
 
               {/* Clean Chess Icon Watermark (Matching work-page-visual.html) */}
               <div
-                class="text-primary/10 dark:text-primary/15 pointer-events-none absolute -right-2 -bottom-4 select-none font-serif text-[145px] leading-none transform rotate-[-7deg] origin-bottom-right transition-transform group-hover:scale-105 group-hover:rotate-[-4deg]"
+                class="text-primary/10 dark:text-primary/15 pointer-events-none absolute -right-2 -bottom-4 origin-bottom-right rotate-[-7deg] transform font-serif text-[145px] leading-none transition-transform select-none group-hover:scale-105 group-hover:rotate-[-4deg]"
                 aria-hidden="true"
               >
                 ♛
@@ -281,11 +283,11 @@ const featuredCount = topFeatured.length;
 
     <!-- Secondary Projects Archive (Vertical List Layout) -->
     <section class="space-y-6" id="secondary-archive-section">
-      <div class="flex items-center justify-between border-ink/10 border-b pb-3">
+      <div class="border-ink/10 flex items-center justify-between border-b pb-3">
         <h2 class="text-h3 font-display text-text font-bold tracking-tight">
           All Projects Archive
         </h2>
-        <span class="text-caption text-text-muted font-mono uppercase tracking-wider">
+        <span class="text-caption text-text-muted font-mono tracking-wider uppercase">
           Scannable Archive List
         </span>
       </div>
@@ -293,7 +295,7 @@ const featuredCount = topFeatured.length;
       <div class="border-ink/20 divide-ink/10 bg-surface divide-y rounded-xl border">
         {
           secondaryProjects.length === 0 ? (
-            <div class="p-6 text-center text-text-muted font-mono text-small">
+            <div class="text-text-muted text-small p-6 text-center font-mono">
               No additional secondary projects cataloged.
             </div>
           ) : (
@@ -303,16 +305,16 @@ const featuredCount = topFeatured.length;
                 data-category={project.data.category}
                 data-status={project.data.status}
                 data-search-text={`${project.data.title} ${project.data.summary} ${project.data.tags.join(" ")}`}
-                class="group flex flex-col justify-between gap-4 p-4 transition-colors hover:bg-surface-subtle/60 md:flex-row md:items-center md:p-5"
+                class="group hover:bg-surface-subtle/60 flex flex-col justify-between gap-4 p-4 transition-colors md:flex-row md:items-center md:p-5"
               >
                 <div class="space-y-1.5 md:max-w-2xl">
                   <div class="flex flex-wrap items-center gap-2 font-mono text-xs">
                     <span class="text-text-muted">{project.data.dates}</span>
-                    <span class="text-primary bg-primary/10 border-primary/20 rounded border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
+                    <span class="text-primary bg-primary/10 border-primary/20 rounded border px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase">
                       {project.data.category}
                     </span>
                     <span
-                      class={`rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider ${
+                      class={`rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase ${
                         project.data.status === "completed"
                           ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300"
                           : project.data.status === "active"
@@ -329,12 +331,12 @@ const featuredCount = topFeatured.length;
                       {project.data.title}
                     </a>
                   </h3>
-                  <p class="text-small text-text-muted leading-relaxed line-clamp-1">
+                  <p class="text-small text-text-muted line-clamp-1 leading-relaxed">
                     {project.data.summary}
                   </p>
                 </div>
 
-                <div class="flex items-center gap-4 shrink-0">
+                <div class="flex shrink-0 items-center gap-4">
                   <a
                     href={`/projects/${project.id}`}
                     class="text-small text-primary flex items-center gap-1 font-bold group-hover:underline"

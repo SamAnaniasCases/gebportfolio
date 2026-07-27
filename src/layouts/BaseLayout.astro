@@ -8,6 +8,7 @@ import Logo from "../components/primitives/Logo.astro";
 import DividerChessboard from "../components/primitives/DividerChessboard.astro";
 import knightMarker from "../assets/chess-nav/knight.svg?raw";
 import navIndicator from "../assets/chess-icons/correct.svg?raw";
+import { ChatWidget } from "../components/chat/ChatWidget";
 
 interface Props {
   title?: string;
@@ -245,6 +246,15 @@ const groupLabels = ["WORK", "WRITING", "META"];
             );
           })
         }
+        <button
+          type="button"
+          onclick="window.dispatchEvent(new CustomEvent('open-portfolio-chat'))"
+          class="mobile-nav-link animate-reveal text-text-muted hover:text-text flex w-full cursor-pointer items-center gap-3 rounded-md px-3 py-3 text-left font-mono text-base font-medium transition-colors duration-150"
+          aria-label="Open live chat modal"
+        >
+          <span class="w-[18px]" aria-hidden="true"></span>
+          <span>Live Chat</span>
+        </button>
       </nav>
     </div>
 
@@ -370,6 +380,17 @@ const groupLabels = ["WORK", "WRITING", "META"];
                         </li>
                       );
                     })}
+                    <li>
+                      <button
+                        type="button"
+                        onclick="window.dispatchEvent(new CustomEvent('open-portfolio-chat'))"
+                        class="group focus-visible:ring-focus text-text-muted hover:text-text relative flex min-h-[36px] w-full cursor-pointer items-center gap-2.5 rounded-sm py-1 pr-2 pl-6 text-left font-mono text-[13px] font-medium tracking-wide transition-colors duration-150 outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                        aria-label="Open live chat modal"
+                      >
+                        <span class="w-[15px]" aria-hidden="true" />
+                        <span>Live Chat</span>
+                      </button>
+                    </li>
                   </ul>
                 </div>
               );
@@ -483,5 +504,8 @@ const groupLabels = ["WORK", "WRITING", "META"];
         });
       })();
     </script>
+
+    <!-- Global Anonymous Real-Time Chat Widget -->
+    <ChatWidget client:load />
   </body>
 </html>

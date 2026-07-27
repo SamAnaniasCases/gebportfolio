@@ -7,11 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Fixed **Double Scrollbar & Background Page Scrolling** (`src/components/chat/ChatBox.tsx`). Added body scroll lock (`document.body.style.overflow = "hidden"`) when the chat modal opens, restoring original overflow on close.
+- Fixed **Nav Bar Icon Redundancy & Hover Cursor** (`src/layouts/BaseLayout.astro` and `src/components/chat/ChatWidget.tsx`). Removed extra `♞` text character and knight SVG from the navigation bar item and added `cursor-pointer` to all chat trigger buttons.
+- Fixed **Mobile Responsiveness & Layout Squishing** (`src/components/chat/ChatBox.tsx`). Refactored header layout with responsive flex wrappers, truncated user handle badges, compact input paddings (`pr-12 sm:pr-14`), and optimized mobile modal heights (`h-[92vh] sm:h-[88vh]`).
+- Fixed **WebSocket Connection Lifecycle Stability & Non-Blocking Typing** (`src/components/chat/useChatSocket.ts` and `src/components/chat/ChatBox.tsx`). Refactored `useChatSocket` to connect once on mount using a stable `displayNameRef`, preventing connection teardowns during typing or display name edits. Removed input field disabling in `ChatBox.tsx` and added optimistic local message delivery so typing and sending are 100% smooth and uninterrupted.
+
 ### Added
 
+- Implemented **Mandatory Username Onboarding & Immutable Single-Session Identity** (`src/components/chat/useChatSocket.ts`, `src/components/chat/ChatBox.tsx`, and `tests/e2e/chat.spec.ts`). Removed automatic default display name generation, requiring users to pick a 3–20 character handle on first visit before accessing the chat. Handle is persisted in `localStorage` and cannot be modified in-session.
+
+- Implemented **Phase 4 & Phase 5: Layout & Navigation Integration, Audio Polish & E2E Tests** (`src/components/chat/ChatWidget.tsx`, `src/layouts/BaseLayout.astro`, and `tests/e2e/chat.spec.ts`). Mounted `ChatWidget` island (`client:idle`) with floating bottom-right trigger, custom event listener (`open-portfolio-chat`), Web Audio woodblock click feedback, `aria-live="polite"` live announcements, and Playwright E2E test suite.
+- Implemented **Phase 3: Fullscreen Blurred Backdrop UI & Woodcut Component Setup** (`src/components/chat/ChatBox.tsx`) introducing the fullscreen modal overlay with frosted glass background blur (`backdrop-blur-md bg-bg/85 dark:bg-bg/90`), woodcut framing, chess avatar badges (♞, ♜, ♝, ♟, ♔, ♛), live user counter badge, auto-scrolling feed, error banners, 280-character limit indicator, and inline display name editing.
+- Implemented **Phase 2: Client State, WebSocket Hook & Display Name Management** (`src/components/chat/useChatSocket.ts`) introducing the React custom hook with exponential backoff auto-reconnection, page visibility reconnection handlers, hidden internal UUID session tokens, local storage display name persistence, and typing indicator timeout handlers.
+- Implemented **Phase 1: Real-Time Edge Engine Setup** (`party/chat.ts` and `partykit.json`) introducing the PartyKit server handler, configurable in-memory 50-message ring buffer (`MAX_CHAT_HISTORY = 50`), HTML escaping XSS protection, token bucket rate limiting (3 msgs / 5s), system join/leave event emitter, and conditional discriminator engine.
+- Added **Anonymous Real-Time Chatbox Architecture & Design Specification** in `docs/plans/0003-anonymous-realtime-chatbox-specification.md` and **Implementation Roadmap & Checkpoints** in `docs/plans/0003.1-anonymous-realtime-chatbox-implementation-roadmap.md` detailing phased execution, PartyKit edge engine, fullscreen blurred backdrop UI, and verification gates.
 - Official **Content & Writing Style Guide** in `docs/engineering/ContentStyleGuide.md` establishing author positioning, voice, tone boundaries, surface copy standards, authenticity criteria, and AI collaboration rules (renamed from `docs/still-noname.md`).
 - Updated `docs/README.md`, `docs/engineering/AI-Guidelines.md`, and `docs/engineering/AI-Project-Context.md` to reference `ContentStyleGuide.md`.
-- Rebuilt Work Index Page (`src/pages/projects/index.astro`) and Case Study Detail Template (`src/pages/projects/[slug].astro`) following [work-page-visual.html](file:///c:/Users/Sam/Sam%20Folder/Repo/work-page-visual.html) and [0002-work-page-specification.md](file:///c:/Users/Sam/Sam%20Folder/Repo/docs/plans/0002-work-page-specification.md).
+- Rebuilt Work Index Page (`src/pages/projects/index.astro`) and Case Study Detail Template (`src/pages/projects/[slug].astro`) following `work-page-visual.html` and [0002-work-page-specification.md](plans/0002-work-page-specification.md).
 - Restructured featured showcase into a 2-column grid featuring the author's 2 signature projects: **BITS (Biometrics Integrated Timekeeping System)** (`bits-timekeeping.md` - ♔ Signature System) and **Portfolio Architecture & Content System** (`portfolio-architecture.md` - ♛ Technical Powerhouse).
 - Integrated real project screenshots (`/images/projects/bits/dashboard.png`, `devices.png`, and `/images/projects/portfolio-architecture.png`) into frontmatter, markdown narratives, and card preview banners with `grayscale contrast-105 group-hover:grayscale-0` hover transitions.
 - Added clean font chess character background watermarks (`♔`, `♛`, `♞`) matching `work-page-visual.html` (`font-serif text-[145px] rotate-[-7deg]`).
@@ -19,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed 3 fake dummy project files (`cloud-scheduler.md`, `distributed-logging.md`, `edge-telemetry-agent.md`).
 - Omitted `1st`, `2nd`, `3rd` ranking numbers from all project badges and eyebrows.
 - Streamlined featured card design by removing Key Decision blockquotes and Tech Stack tag pills, focusing on clean image banners, bold titles, and concise 1-sentence summaries.
-- Updated Work Page Information Architecture Specification ([0002-work-page-specification.md](file:///c:/Users/Sam/Sam%20Folder/Repo/docs/plans/0002-work-page-specification.md)) and Implementation Roadmap ([0002.1-work-page-implementation-roadmap.md](file:///c:/Users/Sam/Sam%20Folder/Repo/docs/plans/0002.1-work-page-implementation-roadmap.md)).
+- Updated Work Page Information Architecture Specification ([0002-work-page-specification.md](plans/0002-work-page-specification.md)) and Implementation Roadmap ([0002.1-work-page-implementation-roadmap.md](plans/0002.1-work-page-implementation-roadmap.md)).
 
 ### Changed
 

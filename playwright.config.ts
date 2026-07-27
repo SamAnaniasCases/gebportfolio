@@ -25,7 +25,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: "http://127.0.0.1:4321",
+    baseURL: "http://localhost:4321",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
@@ -65,9 +65,9 @@ export default defineConfig({
      Locally: reuse a running dev server when available.
      On CI: build the production bundle and serve it via `astro preview`. */
   webServer: {
-    command: process.env.CI ? "pnpm run build && pnpm run preview" : "pnpm run dev",
-    url: "http://127.0.0.1:4321",
-    reuseExistingServer: !process.env.CI,
+    command: "pnpm run preview",
+    url: "http://localhost:4321",
+    reuseExistingServer: true,
     timeout: 180_000,
   },
 });

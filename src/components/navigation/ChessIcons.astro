@@ -67,17 +67,23 @@ const blackSvgContent = woodcutBlackMap[piece];
 {
   !isWoodcut ? (
     <span
-      class={`chess-piece-icon inline-flex items-center justify-center select-none align-middle [&>svg]:size-full [&>svg]:w-full [&>svg]:h-full ${className}`}
+      class={`chess-piece-icon inline-flex items-center justify-center align-middle select-none [&>svg]:size-full [&>svg]:h-full [&>svg]:w-full ${className}`}
       aria-hidden="true"
       set:html={navSvgContent}
     />
   ) : (
     <span
-      class={`chess-piece-icon-woodcut inline-flex items-center justify-center select-none align-middle ${className}`}
+      class={`chess-piece-icon-woodcut inline-flex items-center justify-center align-middle select-none ${className}`}
       aria-hidden="true"
     >
-      <span class="block size-full dark:hidden [&>svg]:h-full [&>svg]:w-full [&>svg]:size-full" set:html={whiteSvgContent} />
-      <span class="hidden size-full dark:block [&>svg]:h-full [&>svg]:w-full [&>svg]:size-full" set:html={blackSvgContent} />
+      <span
+        class="block size-full dark:hidden [&>svg]:size-full [&>svg]:h-full [&>svg]:w-full"
+        set:html={whiteSvgContent}
+      />
+      <span
+        class="hidden size-full dark:block [&>svg]:size-full [&>svg]:h-full [&>svg]:w-full"
+        set:html={blackSvgContent}
+      />
     </span>
   )
 }

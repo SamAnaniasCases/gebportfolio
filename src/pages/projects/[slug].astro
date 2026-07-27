@@ -226,7 +226,11 @@ const chessRoleTitles: Record<string, string> = {
               <div class="bg-surface-subtle/80 border-ink/20 space-y-3 rounded-lg border p-4">
                 <div class="flex items-center gap-2.5">
                   <div class="text-primary size-8 shrink-0">
-                    <ChessIcons piece={project.data.chessPiece} variant="woodcut" class="size-full" />
+                    <ChessIcons
+                      piece={project.data.chessPiece}
+                      variant="woodcut"
+                      class="size-full"
+                    />
                   </div>
                   <span class="text-small font-display text-text font-bold">
                     {chessRoleTitles[project.data.chessPiece]}

@@ -30,3 +30,6 @@ pnpm-debug.log*
 playwright-report/
 test-results/
 .qoder/
+
+# PartyKit local dev state
+.partykit/

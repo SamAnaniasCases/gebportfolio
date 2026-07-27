@@ -30,7 +30,7 @@ Within 10 seconds of landing on `/projects`, a visitor must understand:
 
 ## 2. Visual Reference Analysis & Design Adaptations
 
-Based on our analysis of [work-page-visual.html](file:///c:/Users/Sam/Sam%20Folder/Repo/work-page-visual.html), the following elements are adopted and integrated into our design system:
+Based on our analysis of `work-page-visual.html`, the following elements are adopted and integrated into our design system:
 
 ### Adopted & Streamlined Card Design
 
@@ -51,11 +51,11 @@ Based on our analysis of [work-page-visual.html](file:///c:/Users/Sam/Sam%20Fold
 
 Every project is assigned a strategic chess piece role:
 
-| Chess Piece | Symbol | Strategic Role            | Selection Criteria                                                                                 | Authentic Project                                  |
-| ----------- | ------ | ------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| **King**    | ♔      | **Signature System**      | The project that best represents the author's core philosophy, systems architecture, and identity. | _Biometrics Integrated Timekeeping System (BITS)_  |
-| **Queen**   | ♛      | **Technical Powerhouse**  | The most technically intensive, high-performance, or modern architecture project.                  | _Portfolio Architecture & Content System_          |
-| **Knight**  | ♞      | **Creative Optimization** | The foundational, experimental, or legacy UI project.                                              | _Legacy Personal Web Portfolio_ (Archived)         |
+| Chess Piece | Symbol | Strategic Role            | Selection Criteria                                                                                 | Authentic Project                                 |
+| ----------- | ------ | ------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| **King**    | ♔      | **Signature System**      | The project that best represents the author's core philosophy, systems architecture, and identity. | _Biometrics Integrated Timekeeping System (BITS)_ |
+| **Queen**   | ♛      | **Technical Powerhouse**  | The most technically intensive, high-performance, or modern architecture project.                  | _Portfolio Architecture & Content System_         |
+| **Knight**  | ♞      | **Creative Optimization** | The foundational, experimental, or legacy UI project.                                              | _Legacy Personal Web Portfolio_ (Archived)        |
 
 ---
 
