@@ -65,7 +65,7 @@ export default defineConfig({
      Locally: reuse a running dev server when available.
      On CI: build the production bundle and serve it via `astro preview`. */
   webServer: {
-    command: "pnpm run preview",
+    command: "pnpm run build && pnpm run preview",
     url: "http://localhost:4321",
     reuseExistingServer: true,
     timeout: 180_000,
