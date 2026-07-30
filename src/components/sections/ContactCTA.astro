@@ -1,6 +1,7 @@
 ---
 import Container from "../primitives/Container.astro";
 import LinkButton from "../primitives/LinkButton.astro";
+import DoodleIcon from "../ui/DoodleIcon.astro";
 import { getEntry } from "astro:content";
 
 // Fetch site configuration singleton
@@ -22,7 +23,7 @@ const githubUrl = siteConfig?.canonicalURL || "https://github.com/SamAnaniasCase
         <span
           class="border-ink/20 bg-surface-subtle text-caption text-primary inline-flex items-center gap-2 rounded-full border px-3 py-1 font-mono font-semibold tracking-widest uppercase"
         >
-          <span class="text-xs">✉</span> 07 · Contact & Collaboration
+          <DoodleIcon name="mail" class="text-primary size-3.5" /> 07 · Contact & Collaboration
         </span>
 
         <!-- Headline -->
@@ -41,7 +42,7 @@ const githubUrl = siteConfig?.canonicalURL || "https://github.com/SamAnaniasCase
           <div
             class="border-ink/20 bg-surface-subtle text-caption text-text inline-flex max-w-full items-center justify-center gap-2 rounded-full border px-4 py-2 font-mono shadow-xs"
           >
-            <span class="text-primary font-bold">✉</span>
+            <DoodleIcon name="mail" class="text-primary size-4" />
             <span class="truncate font-semibold select-all">{email}</span>
           </div>
         </div>

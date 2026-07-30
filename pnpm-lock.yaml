@@ -38,9 +38,6 @@ importers:
       '@lucide/astro':
         specifier: ^1.24.0
         version: 1.24.0(astro@7.1.1(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.2)(@types/node@26.1.1)(idb-keyval@6.3.0)(jiti@2.7.0)(yaml@2.9.0))
-      '@samananias/turn-arbiter':
-        specifier: file:../turn-arbiter
-        version: file:../turn-arbiter(chess.js@1.4.0)
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.1.5(@types/node@26.1.1)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0))
@@ -59,6 +56,9 @@ importers:
       tailwindcss:
         specifier: ^4.3.3
         version: 4.3.3
+      turn-arbiter:
+        specifier: ^0.1.0
+        version: 0.1.0(chess.js@1.4.0)
     devDependencies:
       '@astrojs/check':
         specifier: ^0.9.9
@@ -2118,15 +2118,6 @@ packages:
       rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
     peerDependenciesMeta:
       rollup:
-        optional: true
-
-  '@samananias/turn-arbiter@file:../turn-arbiter':
-    resolution: {directory: ../turn-arbiter, type: directory}
-    engines: {node: '>=22.12.0'}
-    peerDependencies:
-      chess.js: ^1.0.0
-    peerDependenciesMeta:
-      chess.js:
         optional: true
 
   '@shikijs/core@4.3.1':
@@ -4562,6 +4553,15 @@ packages:
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+
+  turn-arbiter@0.1.0:
+    resolution: {integrity: sha512-0PQbU57U5kmpkC5uk66Kt+xA1/7vTmypy9ZO8aDiDwV+BBwdnq08r/hYMHzmP/dfJ9RIvXv5EHPBqlt071Nhrw==}
+    engines: {node: '>=22.12.0'}
+    peerDependencies:
+      chess.js: ^1.0.0
+    peerDependenciesMeta:
+      chess.js:
+        optional: true
 
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -7154,10 +7154,6 @@ snapshots:
       '@types/estree': 1.0.9
       estree-walker: 2.0.2
       picomatch: 4.0.5
-
-  '@samananias/turn-arbiter@file:../turn-arbiter(chess.js@1.4.0)':
-    optionalDependencies:
-      chess.js: 1.4.0
 
   '@shikijs/core@4.3.1':
     dependencies:
@@ -10187,6 +10183,10 @@ snapshots:
   ts-dedent@2.3.0: {}
 
   tslib@2.8.1: {}
+
+  turn-arbiter@0.1.0(chess.js@1.4.0):
+    optionalDependencies:
+      chess.js: 1.4.0
 
   type-check@0.4.0:
     dependencies:

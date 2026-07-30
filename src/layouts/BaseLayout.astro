@@ -1,11 +1,11 @@
 ---
 import "../styles/global.css";
 import { getEntry } from "astro:content";
-import { Menu, X } from "@lucide/astro";
 import ThemeToggle from "../components/navigation/ThemeToggle.astro";
 import ChessIcons from "../components/navigation/ChessIcons.astro";
 import Logo from "../components/primitives/Logo.astro";
 import DividerChessboard from "../components/primitives/DividerChessboard.astro";
+import DoodleIcon from "../components/ui/DoodleIcon.astro";
 import knightMarker from "../assets/chess-nav/knight.svg?raw";
 import navIndicator from "../assets/chess-icons/correct.svg?raw";
 import { ChatWidget } from "../components/chat/ChatWidget";
@@ -190,7 +190,7 @@ const groupLabels = ["WORK", "WRITING", "META"];
             aria-label="Open navigation menu"
             class="text-text hover:bg-surface-subtle focus-visible:ring-focus flex size-11 items-center justify-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
           >
-            <Menu class="size-5" stroke-width={1.6} />
+            <DoodleIcon name="menu" class="size-5" />
           </button>
         </div>
       </div>
@@ -217,7 +217,7 @@ const groupLabels = ["WORK", "WRITING", "META"];
           aria-label="Close navigation menu"
           class="text-text hover:bg-surface-subtle focus-visible:ring-focus flex size-11 items-center justify-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
         >
-          <X class="size-5" stroke-width={1.6} />
+          <DoodleIcon name="cross" class="size-5" />
         </button>
       </div>
       <nav aria-label="Mobile navigation" class="flex flex-col gap-1 px-4 py-6">
@@ -252,7 +252,7 @@ const groupLabels = ["WORK", "WRITING", "META"];
           class="mobile-nav-link animate-reveal text-text-muted hover:text-text flex w-full cursor-pointer items-center gap-3 rounded-md px-3 py-3 text-left font-mono text-base font-medium transition-colors duration-150"
           aria-label="Open live chat modal"
         >
-          <span class="w-[18px]" aria-hidden="true"></span>
+          <DoodleIcon name="message" class="size-[18px]" />
           <span>Live Chat</span>
         </button>
       </nav>

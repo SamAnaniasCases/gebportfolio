@@ -60,7 +60,7 @@ const iconMap = {
     <Grid cols="1 md:2" gap="8">
       {
         sections
-          .sort((a, b) => a.order - b.order)
+          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
           .map((sec) => (
             <div class="space-y-3">
               <h2 class="text-h3 font-display text-text font-bold">{sec.heading}</h2>

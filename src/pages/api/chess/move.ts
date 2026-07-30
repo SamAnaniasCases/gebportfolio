@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
-import { createArbiter } from "@samananias/turn-arbiter";
-import { chessRules } from "@samananias/turn-arbiter/chess";
+import { createArbiter } from "turn-arbiter";
+import { chessRules } from "turn-arbiter/chess";
 import {
   memoryStorageProvider,
   createD1StorageProvider,

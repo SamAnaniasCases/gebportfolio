@@ -51,12 +51,12 @@ Once onboarded, the Chat Modal displays a dual-panel split layout:
 
 ## 3. Package & Architecture Strategy
 
-### Turn Arbitration (`@samananias/turn-arbiter`)
+### Turn Arbitration (`turn-arbiter`)
 
-The game turn logic is owned by `@samananias/turn-arbiter` (located locally during testing at `../turn-arbiter`).
+The game turn logic is owned by `turn-arbiter` (located locally during testing at `../turn-arbiter`).
 
-- **Pure State Engine:** `@samananias/turn-arbiter` contains zero runtime dependencies, performs no I/O, and reads no system clock (time is injected via `now`).
-- **Chess Adapter:** `@samananias/turn-arbiter/chess` uses `chess.js` (optional peer dependency) for chess rules, SAN validation, checkmate/stalemate, and threefold repetition key tracking.
+- **Pure State Engine:** `turn-arbiter` contains zero runtime dependencies, performs no I/O, and reads no system clock (time is injected via `now`).
+- **Chess Adapter:** `turn-arbiter/chess` uses `chess.js` (optional peer dependency) for chess rules, SAN validation, checkmate/stalemate, and threefold repetition key tracking.
 - **State Invariant:** The host application database owns storage; the package owns turn permissions and state transitions.
 
 ```

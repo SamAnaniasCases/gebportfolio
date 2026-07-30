@@ -41,3 +41,8 @@ CI enforces this same sequence plus a Lighthouse performance budget check on eve
 ### 6. Terminal & Command Execution Rule
 
 - Always wrap CLI commands on Windows with `cmd /c` (e.g. `cmd /c "npx pnpm run format"`) to bypass PowerShell script execution policy restrictions (`.ps1` disabled), unless another terminal is explicitly requested.
+
+### 7. Emoji & UI Icon Rule
+
+- **Prohibited**: Do **not** use system text emojis (e.g. `✉`, 📷, 📹, ✕, 🚀) in UI components, layout templates, or client code.
+- **Permitted**: Use theme-aware `<DoodleIcon>` vector SVGs (`DoodleIcon.astro` or `DoodleIcon.tsx`) or custom `currentColor` SVGs. Refer to `docs/design/DoodleIconSystem.md` for guidelines.

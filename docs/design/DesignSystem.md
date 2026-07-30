@@ -59,4 +59,5 @@ The visual language is a black-ink woodcut / engraving aesthetic derived from th
 - **No gradients**: zero `linear-gradient`/`radial-gradient`/`conic-gradient` (the `.chess-grid` repeating grid lines are the sole documented exception).
 - **No soft shadows**: blurred `box-shadow` is banned; only hard offsets (e.g. `3px 3px 0 var(--color-border-custom)`).
 - **Current-color art**: SVG illustrations use `currentColor` strokes so they invert automatically between modes.
+- **Doodle UI Icon System**: UI buttons, action controls, and list indicators use hand-drawn Doodle SVGs (`DoodleIcon.astro` / `DoodleIcon.tsx`) instead of system emojis or generic third-party icons. See [DoodleIconSystem.md](DoodleIconSystem.md) and [SVGRules.md](SVGRules.md).
 - **Chess motif**: pieces, board patterns, and coordinates are the primary decorative vocabulary (icons, dividers, borders). See [WoodcutTheme.md](WoodcutTheme.md) for the full specification.

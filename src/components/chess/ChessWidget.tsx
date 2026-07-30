@@ -121,15 +121,15 @@ export const ChessWidget: React.FC<ChessWidgetProps> = ({ is3D = true, onGameSta
         if (onGameStateChange) onGameStateChange(data.state);
       } else {
         if (data.reason === "superseded") {
-          showToast("👥 A teammate moved first!");
+          showToast("A teammate moved first!");
           if (data.publicView) {
             setGameState(data.publicView);
             if (onGameStateChange) onGameStateChange(data.publicView);
           }
         } else if (data.reason === "not_your_side") {
-          showToast("⏳ It's not your team's turn right now.");
+          showToast("It's not your team's turn right now.");
         } else if (data.reason === "illegal_move") {
-          showToast("❌ Illegal move for this position.");
+          showToast("Illegal move for this position.");
         } else {
           showToast(`Rejected: ${data.reason}`);
         }

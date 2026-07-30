@@ -1,4 +1,5 @@
 import React from "react";
+import { DoodleIcon } from "../ui/DoodleIcon";
 
 export interface PublicGameState {
   version: number;
@@ -48,9 +49,9 @@ export const GameDetailsModal: React.FC<GameDetailsModalProps> = ({
             type="button"
             onClick={onClose}
             aria-label="Close game details"
-            className="text-text-muted hover:text-text cursor-pointer rounded-full p-1 text-lg leading-none transition-colors"
+            className="text-text-muted hover:text-text flex cursor-pointer items-center justify-center rounded-full p-1 text-lg leading-none transition-colors"
           >
-            ✕
+            <DoodleIcon name="cross" className="size-4" />
           </button>
         </header>
 

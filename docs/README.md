@@ -53,6 +53,7 @@ Understanding what each directory inside `/docs` is for:
 
 - [Design System](design/DesignSystem.md) — Typography, semantic tokens, radius, motion, design constraints.
 - [SVG & Image Rules](design/SVGRules.md) — Cropping standards, stroke weights, dark mode SVG binding, and asset specs.
+- [Doodle Icon System](design/DoodleIconSystem.md) — Hand-drawn doodle SVG icon system and `<DoodleIcon>` component usage.
 - [Chess Icon System](design/ChessIconSystem.md) — Specification for chess navigation icons and move evaluation badges.
 - [Woodcut Visual Theme](design/WoodcutTheme.md) — Woodcut & engraving visual theme specification.
 - [Woodcut Theme Roadmap](design/WoodcutThemeRoadmap.md) — Phased rollout strategy for woodcut theme.

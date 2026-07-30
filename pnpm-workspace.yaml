@@ -3,3 +3,4 @@ allowBuilds:
   workerd: true
 minimumReleaseAgeExclude:
   - astro@7.1.1
+  - turn-arbiter@0.1.0

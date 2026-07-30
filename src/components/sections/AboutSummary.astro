@@ -1,6 +1,7 @@
 ---
 import Container from "../primitives/Container.astro";
 import LinkButton from "../primitives/LinkButton.astro";
+import DoodleIcon from "../ui/DoodleIcon.astro";
 import { getEntry } from "astro:content";
 
 // Fetch about page data singleton
@@ -14,18 +15,22 @@ const focusAreas = [
   {
     title: "Web Standards & SSG",
     desc: "Astro, TypeScript, clean HTML, and CSS-first design systems.",
+    icon: "globe",
   },
   {
     title: "Software Architecture",
     desc: "Structured problem decomposition and maintainable system boundaries.",
+    icon: "layer",
   },
   {
     title: "Automated Verification",
     desc: "End-to-end testing, accessibility audits, and automated linting.",
+    icon: "checklist",
   },
   {
     title: "AI-Paired Workflows",
     desc: "Human architectural ownership accelerated by interactive AI partners.",
+    icon: "bot",
   },
 ];
 ---
@@ -97,10 +102,10 @@ const focusAreas = [
               focusAreas.map((area) => (
                 <div class="space-y-1">
                   <div class="flex items-center gap-2">
-                    <span class="text-primary font-mono text-xs font-bold">♞</span>
+                    <DoodleIcon name={area.icon} class="text-primary size-4 shrink-0" />
                     <span class="text-small font-display text-text font-bold">{area.title}</span>
                   </div>
-                  <p class="text-caption text-text-muted pl-4 leading-normal">{area.desc}</p>
+                  <p class="text-caption text-text-muted pl-6 leading-normal">{area.desc}</p>
                 </div>
               ))
             }

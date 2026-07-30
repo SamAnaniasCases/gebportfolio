@@ -3,6 +3,7 @@ import { useChatSocket, validateUsername } from "./useChatSocket";
 import { ChessWidget } from "../chess/ChessWidget";
 import { GameDetailsModal, type PublicGameState } from "../chess/GameDetailsModal";
 import { ToastContainer, MistakeIcon } from "../feedback/Toast";
+import { DoodleIcon } from "../ui/DoodleIcon";
 
 interface ChatBoxProps {
   isOpen: boolean;
@@ -157,9 +158,9 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
             type="button"
             onClick={onClose}
             aria-label="Close chat modal"
-            className="text-text-muted hover:text-text absolute top-4 right-4 cursor-pointer rounded-full p-1 text-lg leading-none transition-colors"
+            className="text-text-muted hover:text-text absolute top-4 right-4 flex cursor-pointer items-center justify-center rounded-full p-1 text-lg leading-none transition-colors"
           >
-            ✕
+            <DoodleIcon name="cross" className="size-4" />
           </button>
 
           <div className="bg-primary/10 border-primary/20 text-primary mx-auto mb-4 flex size-12 items-center justify-center rounded-full border text-2xl">
@@ -176,7 +177,10 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
 
           {activeError && (
             <div className="border-border-custom mb-4 flex items-center justify-between rounded border bg-rose-500/10 px-3 py-2 font-mono text-xs text-rose-700 dark:text-rose-300">
-              <span className="truncate">⚠️ {activeError}</span>
+              <span className="flex items-center gap-1.5 truncate">
+                <DoodleIcon name="caution" className="size-3.5 shrink-0" />
+                {activeError}
+              </span>
               <button
                 type="button"
                 onClick={() => {
@@ -259,9 +263,9 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
               type="button"
               onClick={onClose}
               aria-label="Close mobile chat modal"
-              className="text-text-muted hover:text-text ml-2 cursor-pointer rounded-lg p-1.5 text-base leading-none transition-colors"
+              className="text-text-muted hover:text-text ml-2 flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-base leading-none transition-colors"
             >
-              ✕
+              <DoodleIcon name="cross" className="size-4" />
             </button>
           </div>
 
@@ -274,8 +278,8 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
             {/* Left Header */}
             <header className="border-border-custom/60 mb-3 flex shrink-0 items-center justify-between border-b pb-3">
               <div className="flex items-center gap-2">
-                <span className="text-text-muted font-mono text-xs">
-                  💬 {messages.length} messages
+                <span className="text-text-muted flex items-center gap-1 font-mono text-xs">
+                  <DoodleIcon name="message" className="size-3.5" /> {messages.length} messages
                 </span>
                 <span
                   title={isConnected ? "Connected to live edge" : "Connecting..."}
@@ -302,7 +306,8 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
                   title="Toggle between 3D Perspective and 2D Top-Down View"
                   className="border-border-custom hover:bg-surface-subtle text-text flex cursor-pointer items-center gap-1 rounded-lg border px-2 py-1 font-mono text-[11px] font-semibold transition-colors"
                 >
-                  {is3D ? "📹 3D View" : "📷 2D View"}
+                  <DoodleIcon name="camera" className="size-3.5" />
+                  {is3D ? "3D View" : "2D View"}
                 </button>
 
                 <button
@@ -321,7 +326,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
                   aria-label="Close chat modal"
                   className="text-text-muted hover:text-text hidden cursor-pointer rounded-md p-1 text-base leading-none transition-colors md:block"
                 >
-                  ✕
+                  <DoodleIcon name="cross" className="size-4" />
                 </button>
               </div>
             </header>
@@ -476,9 +481,9 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
                 type="button"
                 onClick={onClose}
                 aria-label="Close modal"
-                className="text-text-muted hover:text-text cursor-pointer rounded-md p-1 text-base leading-none"
+                className="text-text-muted hover:text-text flex cursor-pointer items-center justify-center rounded-md p-1 text-base leading-none"
               >
-                ✕
+                <DoodleIcon name="cross" className="size-4" />
               </button>
             </div>
             <ChessWidget

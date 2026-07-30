@@ -25,6 +25,10 @@ Before considering a task completed, run the full verification suite in order:
 
 CI enforces the same gates plus a Lighthouse performance budget check on every push and PR.
 
+## Emoji & UI Icon Rule
+
+Do **not** use system text emojis (e.g. `✉`, 📷, 📹, ✕, 🚀) in UI components, layout templates, or code. Always use theme-aware `<DoodleIcon>` vector SVGs (`DoodleIcon.astro` or `DoodleIcon.tsx`) or custom `currentColor` SVGs. Refer to `docs/design/DoodleIconSystem.md` for guidelines.
+
 ## Documentation
 
 Full documentation: https://docs.astro.build

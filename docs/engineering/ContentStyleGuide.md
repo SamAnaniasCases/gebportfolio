@@ -1588,7 +1588,7 @@ Avoid:
 - Excessive one-line fragments
 - Artificially provocative headings
 - Engagement bait
-- Overuse of emojis
+- Overuse of emojis (system emojis in UI components must be replaced with custom theme-aware `<DoodleIcon>` vector SVGs; see [DoodleIconSystem.md](../design/DoodleIconSystem.md))
 - Writing designed primarily for algorithms
 
 ### 16.2 Allow the author’s positioning to evolve

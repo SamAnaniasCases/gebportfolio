@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Integrated **Doodle SVG Icon System** (`src/assets/icons/doodle/`, `src/components/ui/DoodleIcon.astro`, `src/components/ui/DoodleIcon.tsx`, `src/components/sections/ContactCTA.astro`, `src/components/sections/AboutSummary.astro`, `src/layouts/BaseLayout.astro`, `src/components/chat/ChatBox.tsx`, `docs/design/DoodleIconSystem.md`):
+  - Organized and migrated 177+ hand-drawn vector doodle SVG icons into `src/assets/icons/doodle/` across 15 UI categories.
+  - Built `<DoodleIcon.astro>` and `<DoodleIcon.tsx>` components with dynamic `currentColor` stroke/fill binding for seamless Light and Dark Mode ink inversion.
+  - Replaced text emojis (`✉`, camera emojis, unicode `✕`) and `@lucide/astro` dependencies across site headers, contact cards, focus area lists, and chat controls with theme-aligned Doodle SVGs.
+  - Documented the icon system architecture and component usage in `docs/design/DoodleIconSystem.md`, updated design and engineering guides (`docs/README.md`, `docs/design/SVGRules.md`, `docs/design/DesignSystem.md`, `docs/engineering/ContentStyleGuide.md`), and updated AI Agent rules (`.agents/AGENTS.md`, `AGENTS.md`, `docs/engineering/AI-Guidelines.md`, `docs/engineering/AI-Project-Context.md`) to strictly mandate custom `<DoodleIcon>` vector SVGs over system text emojis.
+
 - Redesigned **Shared Chess Board UI & Global Anti-Spam Toast System** (`src/components/chess/ChessWidget.tsx`, `src/components/chess/ChessBoard3D.tsx`, `src/components/feedback/Toast.tsx`, `src/components/chat/ChatBox.tsx`, `src/lib/chess/storage.ts`, `src/styles/global.css`, `astro.config.ts`, `tests/e2e/chat.spec.ts`, `tests/e2e/navigation.spec.ts`, and `docs/plans/0004-anonymous-shared-chess-game-specification.md`):
   - Updated Playwright E2E test suite (`tests/e2e/chat.spec.ts` & `tests/e2e/navigation.spec.ts`) with updated input placeholders (`"say something..."`), onboarding title assertions, static route trailing slash normalization, and navigation timeouts.
   - Fixed TypeScript diagnostic hints in `astro.config.ts` (`_eventType`) and `ChatBox.tsx` (`React.SyntheticEvent`), reducing diagnostic noise for clean CLI feedback.

@@ -198,6 +198,7 @@ const pages = defineCollection({
           id: z.string(),
           heading: z.string().optional(),
           content: z.string(),
+          order: z.number().optional(),
         })
       )
       .optional(),

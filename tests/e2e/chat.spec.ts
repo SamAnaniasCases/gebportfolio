@@ -65,7 +65,9 @@ test.describe("Anonymous Real-Time Chatbox Onboarding & Verification", () => {
     await expect(dialog).toBeVisible();
 
     // Onboarding heading should NOT be visible
-    const onboardingHeading = page.getByRole("heading", { name: "Enter Handle to Play Chess & Chat" });
+    const onboardingHeading = page.getByRole("heading", {
+      name: "Enter Handle to Play Chess & Chat",
+    });
     await expect(onboardingHeading).not.toBeVisible();
 
     // Main message input should be visible immediately

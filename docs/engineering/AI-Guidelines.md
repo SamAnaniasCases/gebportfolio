@@ -16,4 +16,5 @@ Directives for AI agents collaborating on this codebase.
 - Do not introduce redundant dependencies.
 - Preserve existing code formatting and types.
 - Always execute terminal commands via `cmd /c` on Windows (e.g. `cmd /c "npx pnpm run format"`) to prevent PowerShell `.ps1` execution errors.
+- Do not use system text emojis in UI components or code; use theme-aware `<DoodleIcon>` vector SVGs (`DoodleIcon.astro` / `DoodleIcon.tsx`) instead (see [DoodleIconSystem.md](../design/DoodleIconSystem.md)).
 - Never leak secrets or personal identifying info in logs, prompts, or commits.

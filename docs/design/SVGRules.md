@@ -119,7 +119,20 @@ See [ChessIconSystem.md](ChessIconSystem.md) for full system specifications.
 
 ---
 
-## 7. Accessibility & Performance Checklist
+## 7. Doodle UI Icon Library & Component Usage
+
+See [DoodleIconSystem.md](DoodleIconSystem.md) for full system specifications and category directories.
+
+1. **Asset Directory (`src/assets/icons/doodle/`)**:
+   - Organised vector doodle SVGs across 15 UI categories (`interface`, `misc`, `emojis`, `objects`, `arrows`, `files`, etc.).
+   - Replaces system text emojis (`✉`, 📷, 📹, ✕) and generic corporate UI icons with theme-aligned hand-drawn linework.
+2. **Dynamic `currentColor` Binding**:
+   - Both `<DoodleIcon.astro>` and `<DoodleIcon.tsx>` convert raw SVG black strokes/fills to `currentColor` dynamically.
+   - Icons automatically invert ink color in Dark Mode (`#f0f4ff`) without explicit theme overrides.
+
+---
+
+## 8. Accessibility & Performance Checklist
 
 - [ ] Every SVG asset includes `<title>` and `<desc>` child elements where applicable.
 - [ ] Decorative SVGs set `aria-hidden="true"`.
