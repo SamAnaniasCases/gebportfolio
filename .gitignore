@@ -33,3 +33,9 @@ test-results/
 
 # PartyKit local dev state
 .partykit/
+
+# Local chess game state
+.chess-state.json
+
+# Wrangler local dev & deployment cache
+.wrangler/

@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@astrojs/react";
 import keystatic from "@keystatic/astro";
+import cloudflare from "@astrojs/cloudflare";
 import fs from "fs";
 import path from "path";
 
@@ -87,7 +88,7 @@ function syncSingletonsPlugin() {
       }
 
       // Watch Keystatic writes
-      fs.watch(KEYSTATIC_DIR, (eventType, filename) => {
+      fs.watch(KEYSTATIC_DIR, (_eventType, filename) => {
         if (isWriting) return;
         if (filename === "site.json") {
           wrapAndWrite(SITE_SRC, SITE_KS, "site-config");
@@ -99,7 +100,7 @@ function syncSingletonsPlugin() {
       // Watch developer/git edits in src/content/data
       const srcDir = path.dirname(SITE_SRC);
       if (fs.existsSync(srcDir)) {
-        fs.watch(srcDir, (eventType, filename) => {
+        fs.watch(srcDir, (_eventType, filename) => {
           if (isWriting) return;
           if (filename === "site.json" || filename === "navigation.json") {
             syncSrcToKeystatic();
@@ -112,6 +113,9 @@ function syncSingletonsPlugin() {
 
 // https://astro.build/config
 export default defineConfig({
+  adapter: cloudflare({
+    imageService: "passthrough",
+  }),
   integrations: [
     react(),
     // Only include Keystatic integration in development/preview builds

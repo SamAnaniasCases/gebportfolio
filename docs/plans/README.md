@@ -37,12 +37,14 @@ For quick iteration, copy the standard template from [0000-template.md](0000-tem
 
 ## Index of Plans
 
-| ID       | Title                                                                                                                           | Status        | Date       |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------- | ---------- |
-| `0000`   | [Standard Feature Plan Template](0000-template.md)                                                                              | `Active`      | 2026-07-24 |
-| `0001`   | [Home Page IA & Content Specification](0001-home-page-specification.md)                                                         | `Approved`    | 2026-07-24 |
-| `0001.1` | [Home Page Implementation Roadmap & Checkpoints](0001.1-home-page-implementation-roadmap.md)                                    | `Implemented` | 2026-07-24 |
-| `0002`   | [Work Page IA & Content Specification](0002-work-page-specification.md)                                                         | `Approved`    | 2026-07-25 |
-| `0002.1` | [Work Page Implementation Roadmap & Checkpoints](0002.1-work-page-implementation-roadmap.md)                                    | `Active`      | 2026-07-25 |
-| `0003`   | [Anonymous Real-Time Chatbox Architecture & Design Specification](0003-anonymous-realtime-chatbox-specification.md)             | `Approved`    | 2026-07-27 |
-| `0003.1` | [Anonymous Real-Time Chatbox Implementation Roadmap & Checkpoints](0003.1-anonymous-realtime-chatbox-implementation-roadmap.md) | `Implemented` | 2026-07-27 |
+| ID       | Title                                                                                                                            | Status        | Date       |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------- | ---------- |
+| `0000`   | [Standard Feature Plan Template](0000-template.md)                                                                               | `Active`      | 2026-07-24 |
+| `0001`   | [Home Page IA & Content Specification](0001-home-page-specification.md)                                                          | `Approved`    | 2026-07-24 |
+| `0001.1` | [Home Page Implementation Roadmap & Checkpoints](0001.1-home-page-implementation-roadmap.md)                                     | `Implemented` | 2026-07-24 |
+| `0002`   | [Work Page IA & Content Specification](0002-work-page-specification.md)                                                          | `Approved`    | 2026-07-25 |
+| `0002.1` | [Work Page Implementation Roadmap & Checkpoints](0002.1-work-page-implementation-roadmap.md)                                     | `Active`      | 2026-07-25 |
+| `0003`   | [Anonymous Real-Time Chatbox Architecture & Design Specification](0003-anonymous-realtime-chatbox-specification.md)              | `Approved`    | 2026-07-27 |
+| `0003.1` | [Anonymous Real-Time Chatbox Implementation Roadmap & Checkpoints](0003.1-anonymous-realtime-chatbox-implementation-roadmap.md)  | `Implemented` | 2026-07-27 |
+| `0004`   | [Anonymous Shared Chess Game Architecture & Specification](0004-anonymous-shared-chess-game-specification.md)                    | `Approved`    | 2026-07-28 |
+| `0004.1` | [Anonymous Shared Chess Game Implementation Roadmap & Checkpoints](0004.1-anonymous-shared-chess-game-implementation-roadmap.md) | `Active`      | 2026-07-28 |

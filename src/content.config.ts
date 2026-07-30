@@ -198,14 +198,12 @@ const pages = defineCollection({
           id: z.string(),
           heading: z.string().optional(),
           content: z.string(),
-          order: z.number().default(0),
         })
       )
       .optional(),
   }),
 });
 
-// Export collections
 export const collections = {
   site,
   navigation,

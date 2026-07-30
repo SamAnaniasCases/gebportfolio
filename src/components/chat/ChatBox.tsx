@@ -1,7 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useChatSocket, validateUsername } from "./useChatSocket";
+import { ChessWidget } from "../chess/ChessWidget";
+import { GameDetailsModal, type PublicGameState } from "../chess/GameDetailsModal";
+import { ToastContainer, MistakeIcon } from "../feedback/Toast";
 
-export interface ChatBoxProps {
+interface ChatBoxProps {
   isOpen: boolean;
   onClose: () => void;
   partyHost?: string;
@@ -16,20 +19,26 @@ const CHESS_SYMBOLS: Record<string, string> = {
   queen: "♛",
 };
 
-/**
- * Fullscreen Anonymous Real-Time Chat Modal with Frosted Glass Background Blur.
- * Optimized for 100% Mobile & Desktop Responsiveness with Woodcut Line-Art Framing.
- */
+function formatRelativeTime(timestamp: number): string {
+  const diffMs = Date.now() - timestamp;
+  const mins = Math.floor(diffMs / (1000 * 60));
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
 export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) => {
   const {
     messages,
     presenceCount,
-    assignedName,
-    displayName,
-    avatar,
     isConnected,
-    hasOnboarded,
     error,
+    displayName,
+    assignedName,
+    hasOnboarded,
     typingUsers,
     sendMessage,
     setUsername,
@@ -40,42 +49,38 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
   const [inputText, setInputText] = useState("");
   const [onboardingInput, setOnboardingInput] = useState("");
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [mobileTab, setMobileTab] = useState<"chat" | "chess">("chat");
+
+  // Shared Chess Widget Controls State
+  const [is3D, setIs3D] = useState(true);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [gameState, setGameState] = useState<PublicGameState | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const onboardingInputRef = useRef<HTMLInputElement | null>(null);
-  const modalRef = useRef<HTMLDivElement | null>(null);
 
-  // Auto-scroll to bottom on message update
+  // Auto-scroll message feed to bottom
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   useEffect(() => {
     if (isOpen && hasOnboarded) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      scrollToBottom();
     }
   }, [messages, isOpen, hasOnboarded]);
 
-  // Focus appropriate input when modal opens or onboarding status changes
+  // Focus input when onboarding opens or chat opens
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => {
-        if (!hasOnboarded) {
-          onboardingInputRef.current?.focus();
-        } else {
-          inputRef.current?.focus();
-        }
-      }, 100);
+      if (!hasOnboarded) {
+        setTimeout(() => onboardingInputRef.current?.focus(), 100);
+      } else {
+        setTimeout(() => inputRef.current?.focus(), 100);
+      }
     }
   }, [isOpen, hasOnboarded]);
-
-  // Lock background body scrollbar when chat modal is open
-  useEffect(() => {
-    if (isOpen) {
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      return () => {
-        document.body.style.overflow = originalOverflow;
-      };
-    }
-  }, [isOpen]);
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -88,204 +93,267 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
-  const handleSend = (e?: React.FormEvent) => {
+  const handleOnboardingSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const trimmed = onboardingInput.trim();
+    const validation = validateUsername(trimmed);
+    if (!validation.valid) {
+      setValidationError(validation.error || "Username must be between 3 and 20 characters.");
+      return;
+    }
+    const success = setUsername(trimmed);
+    if (!success) {
+      setValidationError("Failed to set username.");
+      return;
+    }
+    setValidationError(null);
+  };
+
+  const handleSend = (e?: React.SyntheticEvent) => {
     if (e) e.preventDefault();
     if (!inputText.trim()) return;
 
-    const success = sendMessage(inputText);
-    if (success) {
-      setInputText("");
-      sendTypingSignal(false);
-    }
+    sendMessage(inputText.trim());
+    setInputText("");
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const text = e.target.value;
-    setInputText(text);
-    if (text.length > 0) {
-      sendTypingSignal(true);
-    } else {
-      sendTypingSignal(false);
-    }
+    setInputText(e.target.value);
+    sendTypingSignal(true);
   };
 
-  const handleOnboardingSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const result = validateUsername(onboardingInput);
-    if (!result.valid) {
-      setValidationError(result.error || "Invalid username.");
-      return;
-    }
-
-    setValidationError(null);
-    const ok = setUsername(onboardingInput);
-    if (!ok) {
-      setValidationError("Failed to save username.");
-    }
-  };
-
-  const currentChessSymbol = CHESS_SYMBOLS[avatar] || "♞";
   const activeError = validationError || error;
 
   return (
     <div
+      aria-label="Real-time live chat room"
       role="dialog"
       aria-modal="true"
-      aria-label="Real-time live chat room"
-      className="bg-bg/85 dark:bg-bg/90 animate-reveal fixed inset-0 z-[100] flex items-center justify-center p-2 backdrop-blur-md sm:p-6"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-3 backdrop-blur-md sm:p-6 md:p-8"
     >
-      {/* Modal Container */}
-      <div
-        ref={modalRef}
-        className="bg-surface border-structural border-border-custom relative flex h-[92vh] max-h-[750px] w-full max-w-3xl flex-col overflow-hidden rounded-lg shadow-[4px_4px_0_var(--color-border-custom)] sm:h-[88vh]"
-      >
-        {/* Header Bar */}
-        <header className="bg-surface border-b-hatch border-border-custom flex shrink-0 items-center justify-between px-3.5 py-2.5 select-none sm:px-5 sm:py-3.5">
-          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-            <span className="font-display text-primary shrink-0 text-lg sm:text-xl">
-              {currentChessSymbol}
-            </span>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <h2 className="font-display text-text text-sm font-bold tracking-tight sm:text-base">
-                  Live Portfolio Chat
-                </h2>
-                {hasOnboarded && (
-                  <span
-                    title={isConnected ? "Connected to live edge" : "Connecting..."}
-                    className={`inline-flex shrink-0 items-center gap-1 rounded-full border px-1.5 py-0.5 font-mono text-[10px] font-semibold sm:gap-1.5 sm:px-2 sm:text-[11px] ${
-                      isConnected
-                        ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                        : "border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                    }`}
-                  >
-                    <span
-                      className={`size-1.5 rounded-full ${
-                        isConnected ? "animate-pulse bg-emerald-500" : "bg-amber-500"
-                      }`}
-                    />
-                    {presenceCount} Online
-                  </span>
-                )}
-              </div>
-              <p className="text-text-muted hidden font-mono text-[11px] sm:block">
-                Ephemeral in-memory room · No login required
-              </p>
-            </div>
+      {/* Global Toast Container */}
+      <ToastContainer />
+
+      {/* Background click handler */}
+      <div className="absolute inset-0" onClick={onClose} aria-hidden="true" />
+
+      {/* Mandatory Onboarding Screen (Centered single card) */}
+      {!hasOnboarded ? (
+        <div className="bg-bg border-border-custom relative z-10 w-full max-w-md rounded-2xl border p-6 shadow-2xl backdrop-blur-xl">
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close chat modal"
+            className="text-text-muted hover:text-text absolute top-4 right-4 cursor-pointer rounded-full p-1 text-lg leading-none transition-colors"
+          >
+            ✕
+          </button>
+
+          <div className="bg-primary/10 border-primary/20 text-primary mx-auto mb-4 flex size-12 items-center justify-center rounded-full border text-2xl">
+            ♞
           </div>
 
-          {/* Right Header Actions: Read-Only User Badge & Close Button */}
-          <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
-            {hasOnboarded && (
-              <div
-                title="Your immutable session handle"
-                className="border-border-custom bg-surface-subtle text-text flex max-w-[130px] items-center gap-1 rounded border px-2 py-0.5 font-mono text-[11px] font-semibold sm:max-w-none sm:gap-1.5 sm:px-3 sm:py-1 sm:text-xs"
+          <h3 className="font-display text-text mb-1 text-center text-xl font-bold">
+            Enter Handle to Play Chess & Chat
+          </h3>
+          <p className="text-text-muted mb-6 text-center font-sans text-xs leading-relaxed">
+            Choose a display name for this session. Entering your handle unlocks the live chat room
+            and assigns you to a crowd-chess team!
+          </p>
+
+          {activeError && (
+            <div className="border-border-custom mb-4 flex items-center justify-between rounded border bg-rose-500/10 px-3 py-2 font-mono text-xs text-rose-700 dark:text-rose-300">
+              <span className="truncate">⚠️ {activeError}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setValidationError(null);
+                  clearError();
+                }}
+                className="ml-2 text-rose-600 hover:underline dark:text-rose-400"
               >
-                <span className="text-primary shrink-0">{currentChessSymbol}</span>
-                <span className="truncate">{assignedName || displayName}</span>
-              </div>
-            )}
+                Dismiss
+              </button>
+            </div>
+          )}
+
+          <form onSubmit={handleOnboardingSubmit} className="space-y-4">
+            <div className="relative text-left">
+              <label
+                htmlFor="onboarding-username"
+                className="text-text-muted mb-1 block font-mono text-xs font-semibold"
+              >
+                Display Name (3–20 characters)
+              </label>
+              <input
+                id="onboarding-username"
+                ref={onboardingInputRef}
+                type="text"
+                value={onboardingInput}
+                onChange={(e) => {
+                  setOnboardingInput(e.target.value);
+                  if (validationError) setValidationError(null);
+                }}
+                maxLength={20}
+                placeholder="e.g. TacticalKnight"
+                className="bg-surface border-border-custom text-text placeholder:text-text-muted focus:ring-primary w-full rounded-lg border px-3.5 py-2.5 font-sans text-sm outline-none focus:ring-2"
+              />
+              <span className="text-text-muted absolute top-8 right-3 font-mono text-[10px]">
+                {onboardingInput.trim().length}/20
+              </span>
+            </div>
+
+            <button
+              type="submit"
+              disabled={onboardingInput.trim().length < 3}
+              className="bg-primary border-primary w-full cursor-pointer rounded-lg border py-2.5 font-mono text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40"
+            >
+              Play & Join Chat ♞
+            </button>
+          </form>
+        </div>
+      ) : (
+        /* Onboarded Dual Panel Layout */
+        <div className="pointer-events-none relative z-10 flex h-[88vh] w-full max-w-7xl flex-col items-stretch justify-between gap-4 md:flex-row md:gap-6">
+          {/* Mobile Tab Switcher (< md screens) */}
+          <div className="border-border-custom bg-bg/95 pointer-events-auto flex items-center justify-between rounded-xl border p-1.5 backdrop-blur-xl md:hidden">
+            <div className="flex flex-1 gap-1">
+              <button
+                type="button"
+                onClick={() => setMobileTab("chat")}
+                className={`flex-1 rounded-lg px-3 py-1.5 font-mono text-xs font-semibold transition-all ${
+                  mobileTab === "chat"
+                    ? "bg-primary text-white shadow-sm"
+                    : "text-text-muted hover:text-text"
+                }`}
+              >
+                Chat ({messages.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setMobileTab("chess")}
+                className={`flex-1 rounded-lg px-3 py-1.5 font-mono text-xs font-semibold transition-all ${
+                  mobileTab === "chess"
+                    ? "bg-primary text-white shadow-sm"
+                    : "text-text-muted hover:text-text"
+                }`}
+              >
+                ♞ Shared Chess
+              </button>
+            </div>
 
             <button
               type="button"
               onClick={onClose}
-              aria-label="Close chat modal"
-              className="text-text-muted hover:text-text hover:bg-surface-subtle cursor-pointer rounded border border-transparent p-1 text-base leading-none transition-colors sm:p-1.5 sm:text-lg"
+              aria-label="Close mobile chat modal"
+              className="text-text-muted hover:text-text ml-2 cursor-pointer rounded-lg p-1.5 text-base leading-none transition-colors"
             >
               ✕
             </button>
           </div>
-        </header>
 
-        {/* Error Banner */}
-        {activeError && (
-          <div className="border-border-custom flex items-center justify-between border-b bg-rose-500/10 px-3 py-1.5 font-mono text-[11px] text-rose-700 sm:px-4 sm:py-2 sm:text-xs dark:text-rose-300">
-            <span className="truncate">⚠️ {activeError}</span>
-            <button
-              type="button"
-              onClick={() => {
-                setValidationError(null);
-                clearError();
-              }}
-              className="ml-2 text-rose-600 hover:underline dark:text-rose-400"
-            >
-              Dismiss
-            </button>
-          </div>
-        )}
-
-        {/* Mandatory Onboarding Screen vs Live Message Feed */}
-        {!hasOnboarded ? (
-          <div className="bg-bg flex flex-1 flex-col items-center justify-center p-4 text-center sm:p-6">
-            <div className="bg-surface border-structural border-border-custom w-full max-w-md rounded-lg p-5 shadow-[3px_3px_0_var(--color-border-custom)] sm:p-6">
-              <div className="bg-primary/10 border-primary/20 text-primary mx-auto mb-3 flex size-10 items-center justify-center rounded-full border text-xl sm:mb-4 sm:size-12 sm:text-2xl">
-                ♞
+          {/* LEFT FLOATING PANEL: Chatbox */}
+          <div
+            className={`border-border-custom bg-bg/95 pointer-events-auto flex h-full w-full flex-col overflow-hidden rounded-2xl border p-4 shadow-2xl backdrop-blur-xl md:w-[380px] lg:w-[420px] ${
+              mobileTab === "chat" ? "flex" : "hidden md:flex"
+            }`}
+          >
+            {/* Left Header */}
+            <header className="border-border-custom/60 mb-3 flex shrink-0 items-center justify-between border-b pb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-text-muted font-mono text-xs">
+                  💬 {messages.length} messages
+                </span>
+                <span
+                  title={isConnected ? "Connected to live edge" : "Connecting..."}
+                  className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[10px] font-semibold ${
+                    isConnected
+                      ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                      : "border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                  }`}
+                >
+                  <span
+                    className={`size-1.5 rounded-full ${
+                      isConnected ? "animate-pulse bg-emerald-500" : "bg-amber-500"
+                    }`}
+                  />
+                  {presenceCount} Online
+                </span>
               </div>
 
-              <h3 className="font-display text-text mb-1 text-lg font-bold sm:text-xl">
-                Choose Your Handle
-              </h3>
-              <p className="text-text-muted mb-5 font-sans text-xs leading-relaxed sm:mb-6">
-                Choose a display name for this browser session. It will be saved locally and used
-                whenever you chat.
-              </p>
-
-              <form onSubmit={handleOnboardingSubmit} className="space-y-3.5 sm:space-y-4">
-                <div className="relative text-left">
-                  <label
-                    htmlFor="onboarding-username"
-                    className="text-text-muted mb-1 block font-mono text-[11px] font-semibold"
-                  >
-                    Display Name (3–20 characters)
-                  </label>
-                  <input
-                    id="onboarding-username"
-                    ref={onboardingInputRef}
-                    type="text"
-                    value={onboardingInput}
-                    onChange={(e) => {
-                      setOnboardingInput(e.target.value);
-                      if (validationError) setValidationError(null);
-                    }}
-                    maxLength={20}
-                    placeholder="e.g. TacticalKnight"
-                    className="bg-bg border-border-custom text-text placeholder:text-text-muted focus:ring-primary w-full rounded border px-3 py-2 font-sans text-xs outline-none focus:ring-2 sm:px-3.5 sm:py-2.5 sm:text-sm"
-                  />
-                  <span className="text-text-muted absolute top-7 right-2.5 font-mono text-[10px] sm:top-8 sm:right-3">
-                    {onboardingInput.trim().length}/20
-                  </span>
-                </div>
+              {/* Chatbox Header Controls: 3D View Toggle, Details SVG Button & Close */}
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setIs3D(!is3D)}
+                  title="Toggle between 3D Perspective and 2D Top-Down View"
+                  className="border-border-custom hover:bg-surface-subtle text-text flex cursor-pointer items-center gap-1 rounded-lg border px-2 py-1 font-mono text-[11px] font-semibold transition-colors"
+                >
+                  {is3D ? "📹 3D View" : "📷 2D View"}
+                </button>
 
                 <button
-                  type="submit"
-                  disabled={onboardingInput.trim().length < 3}
-                  className="bg-primary border-primary w-full cursor-pointer rounded border py-2 font-mono text-xs font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40 sm:py-2.5 sm:text-sm"
+                  type="button"
+                  onClick={() => setIsDetailsOpen(true)}
+                  title="Game Details & History"
+                  aria-label="Open Game Details"
+                  className="hover:bg-surface-subtle text-text flex cursor-pointer items-center justify-center rounded-lg p-1 transition-colors"
                 >
-                  Join Chat ♞
+                  <MistakeIcon className="size-5 select-none" />
                 </button>
-              </form>
-            </div>
-          </div>
-        ) : (
-          <>
+
+                <button
+                  type="button"
+                  onClick={onClose}
+                  aria-label="Close chat modal"
+                  className="text-text-muted hover:text-text hidden cursor-pointer rounded-md p-1 text-base leading-none transition-colors md:block"
+                >
+                  ✕
+                </button>
+              </div>
+            </header>
+
+            {/* Error Banner */}
+            {activeError && (
+              <div className="border-border-custom mb-2 flex items-center justify-between rounded border bg-rose-500/10 px-3 py-1.5 font-mono text-xs text-rose-700 dark:text-rose-300">
+                <span className="truncate">{activeError}</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setValidationError(null);
+                    clearError();
+                  }}
+                  className="ml-2 text-rose-600 hover:underline dark:text-rose-400"
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
+
             {/* Live Message Feed */}
-            <div className="bg-bg flex-1 space-y-2.5 overflow-y-auto p-3 sm:space-y-3 sm:p-5">
+            <div className="custom-scrollbar flex-1 space-y-3 overflow-y-auto pr-1">
               {messages.length === 0 ? (
-                <div className="flex h-full flex-col items-center justify-center text-center">
-                  <div className="bg-surface border-border-custom max-w-sm rounded-lg border p-5 text-center shadow-sm sm:p-6">
-                    <span className="font-display text-primary text-2xl sm:text-3xl">♞</span>
-                    <h3 className="font-display text-text mt-2 text-sm font-bold sm:text-base">
-                      Welcome to Live Portfolio Chat!
-                    </h3>
-                    <p className="text-text-muted mt-1 font-sans text-xs leading-relaxed">
-                      No users have sent a message yet. Be the first to start the conversation!
-                    </p>
-                  </div>
+                <div className="flex h-full flex-col items-center justify-center p-4 text-center">
+                  <span className="font-display text-primary text-3xl">♞</span>
+                  <h4 className="font-display text-text mt-2 text-sm font-bold">
+                    Welcome to Live Portfolio Chat!
+                  </h4>
+                  <p className="text-text-muted mt-1 font-sans text-xs leading-relaxed">
+                    No messages sent yet. Be the first to start the conversation!
+                  </p>
                 </div>
               ) : (
                 messages.map((msg) => {
@@ -295,11 +363,8 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
 
                   if (isSystemMsg) {
                     return (
-                      <div
-                        key={msg.id}
-                        className="my-1.5 flex items-center justify-center text-center sm:my-2"
-                      >
-                        <span className="bg-surface-subtle border-border-custom/50 text-text-muted max-w-[95%] truncate rounded-full border px-2.5 py-0.5 font-mono text-[10px] italic shadow-xs sm:max-w-none sm:px-3 sm:py-1 sm:text-[11px]">
+                      <div key={msg.id} className="my-2 text-center">
+                        <span className="bg-surface-subtle border-border-custom/50 text-text-muted inline-block rounded-full border px-3 py-0.5 font-mono text-[10px] italic">
                           {msg.text}
                         </span>
                       </div>
@@ -309,37 +374,35 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
                   return (
                     <div
                       key={msg.id}
-                      className={`flex items-start gap-2 sm:gap-2.5 ${isMe ? "flex-row-reverse" : "flex-row"}`}
+                      className={`flex items-start gap-2.5 ${isMe ? "flex-row-reverse" : "flex-row"}`}
                     >
-                      {/* Chess Avatar Badge */}
+                      {/* Avatar Circle */}
                       <div
                         title={msg.sender}
-                        className={`border-border-custom flex size-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold shadow-xs select-none sm:size-8 sm:text-sm ${
+                        className={`flex size-8 shrink-0 items-center justify-center rounded-full border text-xs font-bold shadow-xs select-none ${
                           isMe
-                            ? "bg-primary text-white"
-                            : "bg-surface text-primary border-border-custom"
+                            ? "bg-primary border-primary text-white"
+                            : "bg-surface border-border-custom text-primary"
                         }`}
                       >
                         {avatarSymbol}
                       </div>
 
-                      {/* Message Content Bubble */}
-                      <div className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}>
-                        <div className="mb-0.5 flex items-center gap-1.5 font-mono text-[9px] sm:gap-2 sm:text-[10px]">
-                          <span className="text-text-muted font-bold">{msg.sender}</span>
-                          <span className="text-text-muted/70">
-                            {new Date(msg.timestamp).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </span>
+                      {/* Message Content & Metadata */}
+                      <div
+                        className={`flex max-w-[82%] flex-col ${isMe ? "items-end" : "items-start"}`}
+                      >
+                        <div className="text-text-muted mb-1 flex items-center gap-1.5 font-mono text-[10px]">
+                          <span className="font-bold">{msg.sender}</span>
+                          <span>·</span>
+                          <span>{formatRelativeTime(msg.timestamp)}</span>
                         </div>
 
                         <div
-                          className={`max-w-[88%] rounded-lg border px-3 py-2 font-sans text-xs leading-relaxed break-words shadow-sm sm:max-w-[75%] sm:px-4 sm:py-2.5 sm:text-sm ${
+                          className={`rounded-2xl border px-3.5 py-2 font-sans text-xs leading-relaxed break-words shadow-sm ${
                             isMe
-                              ? "bg-primary border-primary rounded-br-none text-white"
-                              : "bg-surface text-text border-border-custom rounded-bl-none"
+                              ? "bg-primary border-primary rounded-tr-xs text-white"
+                              : "bg-surface-subtle/90 border-border-custom/60 text-text rounded-tl-xs"
                           }`}
                         >
                           {msg.text}
@@ -352,10 +415,10 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Typing Indicator Bar */}
+            {/* Typing Indicator */}
             {typingUsers.length > 0 && (
-              <div className="bg-surface border-border-custom/50 text-text-muted flex items-center gap-1.5 border-t px-3 py-1 font-mono text-[10px] italic sm:px-4 sm:text-[11px]">
-                <span className="bg-primary inline-block size-1.5 animate-ping rounded-full" />
+              <div className="text-text-muted flex items-center gap-1.5 py-1 font-mono text-[10px] italic">
+                <span className="bg-primary size-1.5 animate-ping rounded-full" />
                 <span className="truncate">
                   {typingUsers.length === 1
                     ? `${typingUsers[0]} is typing...`
@@ -364,8 +427,13 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
               </div>
             )}
 
-            {/* Message Input Form */}
-            <footer className="bg-surface border-border-custom shrink-0 border-t p-2.5 sm:p-4">
+            {/* Footer Input Form */}
+            <footer className="border-border-custom/60 mt-3 shrink-0 border-t pt-3">
+              <div className="text-text-muted mb-1.5 font-mono text-[11px]">
+                chatting as{" "}
+                <span className="text-text font-bold">{assignedName || displayName}</span>
+              </div>
+
               <form onSubmit={handleSend} className="flex items-center gap-2">
                 <div className="relative flex-1">
                   <input
@@ -374,14 +442,10 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
                     value={inputText}
                     onChange={handleInputChange}
                     maxLength={280}
-                    placeholder="Type a message..."
-                    className="bg-bg border-border-custom text-text placeholder:text-text-muted focus:ring-primary w-full rounded-md border py-2 pr-12 pl-3 font-sans text-xs transition-all outline-none focus:border-transparent focus:ring-2 sm:py-2.5 sm:pr-14 sm:pl-3.5 sm:text-sm"
+                    placeholder="say something..."
+                    className="bg-surface border-border-custom text-text placeholder:text-text-muted focus:ring-primary w-full rounded-xl border py-2 pr-12 pl-3 font-sans text-xs outline-none focus:ring-2"
                   />
-                  <span
-                    className={`absolute top-1/2 right-2.5 -translate-y-1/2 font-mono text-[9px] select-none sm:right-3 sm:text-[10px] ${
-                      inputText.length > 250 ? "font-bold text-amber-600" : "text-text-muted"
-                    }`}
-                  >
+                  <span className="text-text-muted absolute top-1/2 right-2.5 -translate-y-1/2 font-mono text-[9px]">
                     {inputText.length}/280
                   </span>
                 </div>
@@ -389,15 +453,50 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
                 <button
                   type="submit"
                   disabled={!inputText.trim()}
-                  className="bg-primary border-primary shrink-0 cursor-pointer rounded-md border px-3 py-2 font-mono text-xs font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40 sm:px-4 sm:py-2.5 sm:text-sm"
+                  className="bg-primary border-primary shrink-0 cursor-pointer rounded-xl border px-3 py-2 font-mono text-xs font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40"
                 >
-                  Send ↵
+                  send ↵
                 </button>
               </form>
             </footer>
-          </>
-        )}
-      </div>
+          </div>
+
+          {/* CENTER SPACER: Allows Portfolio Hero / Content to show cleanly between the two panels */}
+          <div className="pointer-events-none hidden flex-1 md:block" />
+
+          {/* RIGHT FLOATING PANEL: Headerless & Frameless Pure Shared Chess Board */}
+          <div
+            className={`pointer-events-auto flex h-full w-full flex-col items-center justify-center overflow-visible md:w-[380px] lg:w-[440px] ${
+              mobileTab === "chess" ? "flex" : "hidden md:flex"
+            }`}
+          >
+            <div className="mb-2 flex w-full items-center justify-between md:hidden">
+              <span className="text-text-muted font-mono text-xs">♞ Crowd Chess</span>
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Close modal"
+                className="text-text-muted hover:text-text cursor-pointer rounded-md p-1 text-base leading-none"
+              >
+                ✕
+              </button>
+            </div>
+            <ChessWidget
+              displayName={assignedName || displayName}
+              is3D={is3D}
+              onGameStateChange={setGameState}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Game Details Popover Modal */}
+      <GameDetailsModal
+        isOpen={isDetailsOpen}
+        onClose={() => setIsDetailsOpen(false)}
+        gameState={gameState}
+        displayName={assignedName || displayName}
+      />
     </div>
   );
 };

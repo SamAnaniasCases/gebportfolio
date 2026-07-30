@@ -33,18 +33,20 @@ test.describe("Anonymous Real-Time Chatbox Onboarding & Verification", () => {
     const dialog = page.getByRole("dialog", { name: "Real-time live chat room" });
     await expect(dialog).toBeVisible();
 
-    const onboardingHeading = page.getByRole("heading", { name: "Choose Your Handle" });
+    const onboardingHeading = page.getByRole("heading", {
+      name: "Enter Handle to Play Chess & Chat",
+    });
     await expect(onboardingHeading).toBeVisible();
 
     const nameInput = page.getByPlaceholder("e.g. TacticalKnight");
     await expect(nameInput).toBeVisible();
 
     await nameInput.fill("TacticalTester");
-    const joinBtn = page.getByRole("button", { name: "Join Chat ♞" });
+    const joinBtn = page.getByRole("button", { name: "Play & Join Chat ♞" });
     await joinBtn.click();
 
     // After onboarding, main message input should be visible
-    const messageInput = page.getByPlaceholder("Type a message...");
+    const messageInput = page.getByPlaceholder("say something...");
     await expect(messageInput).toBeVisible();
   });
 
@@ -63,11 +65,11 @@ test.describe("Anonymous Real-Time Chatbox Onboarding & Verification", () => {
     await expect(dialog).toBeVisible();
 
     // Onboarding heading should NOT be visible
-    const onboardingHeading = page.getByRole("heading", { name: "Choose Your Handle" });
+    const onboardingHeading = page.getByRole("heading", { name: "Enter Handle to Play Chess & Chat" });
     await expect(onboardingHeading).not.toBeVisible();
 
     // Main message input should be visible immediately
-    const messageInput = page.getByPlaceholder("Type a message...");
+    const messageInput = page.getByPlaceholder("say something...");
     await expect(messageInput).toBeVisible();
   });
 
@@ -91,7 +93,7 @@ test.describe("Anonymous Real-Time Chatbox Onboarding & Verification", () => {
     const dialog = page.getByRole("dialog", { name: "Real-time live chat room" });
     await expect(dialog).toBeVisible();
 
-    const closeBtn = page.getByRole("button", { name: "Close chat modal" });
+    const closeBtn = page.getByRole("button", { name: "Close chat modal" }).first();
     await closeBtn.click();
     await expect(dialog).not.toBeVisible();
   });

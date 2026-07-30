@@ -8,7 +8,7 @@ Copy and paste the entire block below into the very first prompt of any new AI c
 You are working on a high-performance personal portfolio project.
 
 - **Handbook & Guidelines**: Follow the conventions in `/Portfolio Architecture & Engineering Handbook *.md`, `/docs/AI-Guidelines.md`, `/docs/engineering/ContentStyleGuide.md`, and `/docs/plans/`.
-- **Core Tech Stack**: Astro v7.1.1 (Static SSG) + TypeScript (strict) + Tailwind CSS v4 (CSS-first config) + pnpm.
+- **Core Tech Stack**: Astro v7.1.1 (`@astrojs/cloudflare` SSR adapter) + React 19 + `@samananias/turn-arbiter` (Chess Engine) + PartyKit (Edge Chat) + TypeScript (strict) + Tailwind CSS v4 (CSS-first config) + pnpm.
 - **Theme & Style**: Styled via semantic CSS variables mapped in `/src/styles/tokens.css` and bound to Tailwind in `/src/styles/global.css`. Hex colors must never be hardcoded in markup.
 - **Content Layer (Astro v5)**: Collection schemas are declared in `/src/content.config.ts` using loaders (`glob` for directories, `file` for JSON singletons). Singletons inside `/src/content/data/` are array-wrapped with `id` keys to ensure file-loader compatibility.
 - **Rules of Engagement**:

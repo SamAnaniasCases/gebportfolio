@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Redesigned **Shared Chess Board UI & Global Anti-Spam Toast System** (`src/components/chess/ChessWidget.tsx`, `src/components/chess/ChessBoard3D.tsx`, `src/components/feedback/Toast.tsx`, `src/components/chat/ChatBox.tsx`, `src/lib/chess/storage.ts`, `src/styles/global.css`, `astro.config.ts`, `tests/e2e/chat.spec.ts`, `tests/e2e/navigation.spec.ts`, and `docs/plans/0004-anonymous-shared-chess-game-specification.md`):
+  - Updated Playwright E2E test suite (`tests/e2e/chat.spec.ts` & `tests/e2e/navigation.spec.ts`) with updated input placeholders (`"say something..."`), onboarding title assertions, static route trailing slash normalization, and navigation timeouts.
+  - Fixed TypeScript diagnostic hints in `astro.config.ts` (`_eventType`) and `ChatBox.tsx` (`React.SyntheticEvent`), reducing diagnostic noise for clean CLI feedback.
+  - Fixed ESLint `@typescript-eslint/no-unused-vars` lint check in `ChessWidget.tsx` by cleaning up unused destructured prop parameters.
+  - Fixed Cloudflare Workers edge environment compatibility in `src/lib/chess/storage.ts` by removing Node.js `node:fs` imports.
+  - Created `.custom-scrollbar` CSS utility class in `global.css` (ultra-thin 5px thumb, transparent track, smooth hover accent color) and applied it across `ChatBox.tsx` message feeds and `GameDetailsModal.tsx` lists to replace bulky native browser scrollbars.
+  - Added physical 3D wooden block slab extrusion (`.board-3d-slab`) and ground placement radial shadow to `ChessBoard3D.tsx`, giving the chess stage realistic physical block thickness and volumetric depth in 3D perspective mode.
+  - Removed container background card, outer borders, shadows, header bar, and the move accepted notification banner from `ChessWidget.tsx`, making the 3D/2D chess board sit cleanly and framelessly in the interface.
+  - Built a global, accessible Toast Notification System (`Toast.tsx`) positioned at the **top-right** of the viewport, featuring `inaccuracy.svg` as the notification icon, styled with design system tokens and backdrop blur.
+  - Implemented anti-spam duplicate message suppression: if a toast with the exact same text is currently active/visible, duplicate triggers are ignored until the current toast vanishes.
+  - Added turn indicator toasts when clicking/pressing anywhere on the chess board (e.g., _"Your Turn to move!"_ or _"Opponent's Turn..."_).
+  - Integrated **3D View** camera perspective toggle and a borderless **Details** button (rendered as the `mistake.svg` icon without border or text description) directly into the Chatbox header control toolbar.
 - Fixed **Double Scrollbar & Background Page Scrolling** (`src/components/chat/ChatBox.tsx`). Added body scroll lock (`document.body.style.overflow = "hidden"`) when the chat modal opens, restoring original overflow on close.
 - Fixed **Nav Bar Icon Redundancy & Hover Cursor** (`src/layouts/BaseLayout.astro` and `src/components/chat/ChatWidget.tsx`). Removed extra `♞` text character and knight SVG from the navigation bar item and added `cursor-pointer` to all chat trigger buttons.
 - Fixed **Mobile Responsiveness & Layout Squishing** (`src/components/chat/ChatBox.tsx`). Refactored header layout with responsive flex wrappers, truncated user handle badges, compact input paddings (`pr-12 sm:pr-14`), and optimized mobile modal heights (`h-[92vh] sm:h-[88vh]`).
@@ -14,6 +26,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Implemented **Production 3D Chess Stage & Projection Engine Architecture** ([sceneConfig.ts](../src/components/chess/sceneConfig.ts), [ChessBoard3D.tsx](../src/components/chess/ChessBoard3D.tsx), [ChessPiece.tsx](../src/components/chess/ChessPiece.tsx), [GameDetailsModal.tsx](../src/components/chess/GameDetailsModal.tsx), [ChessWidget.tsx](../src/components/chess/ChessWidget.tsx), and [global.css](../src/styles/global.css)):
+  - Built centralized `projectPiece(x, y, type, isSelected, camera)` Projection System in `sceneConfig.ts` converting board coordinates (`x`, `y`) into screen position (`left`, `top`), depth (`zIndex`), height (`height`), and tilt (`rotateX(-46deg)`).
+  - Streamlined 4-layer Stage Hierarchy (`Board Surface` -> `Highlights Layer` -> `Piece Renderer Layer` -> `UI Overlay`).
+  - Centralized virtual camera geometry (`CAMERA.perspective = 1400`, `boardTilt = 58°`, `pieceTilt = -46°`) and decoupled visual style config (`PIECE_STYLES`).
+  - Decoupled 8x8 Board Surface Grid from the Piece Overlay Layer: board squares are 100% agnostic of piece children.
+  - Dynamic Screen-Space Depth Sorting (`pieces.sort((a,b) => a.y - b.y)`): foreground pieces physically overlap background rows naturally without DOM clipping.
+  - Streamlined 4-layer Standee structure (`Shadow` -> `Base` -> `Thickness` -> `SVG Artwork`).
+  - Added `.woodcut-square-dark` cross-hatching utility (`repeating-linear-gradient(45deg, var(--ink) 0 1.5px, transparent 1.5px 6px)`), letterpress frame, Lichess corner coordinates, and ink move rings.
+
+- Implemented **Phase 0–Phase 5 of Shared Anonymous Chess Game (`@samananias/turn-arbiter`)** (`src/components/chess/ChessWidget.tsx`, `src/components/chat/ChatBox.tsx`, `src/lib/chess/storage.ts`, `src/lib/chess/session.ts`, `src/pages/api/chess/state.ts`, and `src/pages/api/chess/move.ts`):
+  - Integrated local package `@samananias/turn-arbiter` (`file:../turn-arbiter`) and `chess.js` (`^1.4.0`).
+  - Gated chess side assignment behind username onboarding ("Enter Handle to Play Chess & Chat"). Passive site visitors receive no chess cookies or team assignment.
+  - Implemented Cloudflare D1 SQL Compare-and-Swap (CAS) atomic storage engine (`UPDATE game SET ... WHERE id = 1 AND version = ?`) with memory storage fallback.
+  - Created Web Crypto API HMAC-SHA256 session cookie signing/verification (`chess_session`) for side assignment.
+  - Built Astro API endpoints `/api/chess/state` (`GET`) and `/api/chess/move` (`POST`).
+  - Implemented interactive 8x8 React chess board widget (`ChessWidget.tsx`) using piece vector SVGs from `src/assets/chess/`, legal move highlighting, turn state indicator, team assignment status, and move collision feedback.
+  - Expanded Chat Modal (`ChatBox.tsx`) into a dual-panel split container (`max-w-5xl`) rendering real-time chat on the left panel and the shared crowd chess game on the right panel.
+
+- Added **Anonymous Shared Chess Game Architecture & Specification** in [0004-anonymous-shared-chess-game-specification.md](plans/0004-anonymous-shared-chess-game-specification.md) and **Implementation Roadmap & Checkpoints** in [0004.1-anonymous-shared-chess-game-implementation-roadmap.md](plans/0004.1-anonymous-shared-chess-game-implementation-roadmap.md) detailing `@samananias/turn-arbiter` integration, D1 CAS storage engine, signed session cookie auth, and Astro API endpoints.
 - Implemented **Mandatory Username Onboarding & Immutable Single-Session Identity** (`src/components/chat/useChatSocket.ts`, `src/components/chat/ChatBox.tsx`, and `tests/e2e/chat.spec.ts`). Removed automatic default display name generation, requiring users to pick a 3–20 character handle on first visit before accessing the chat. Handle is persisted in `localStorage` and cannot be modified in-session.
 
 - Implemented **Phase 4 & Phase 5: Layout & Navigation Integration, Audio Polish & E2E Tests** (`src/components/chat/ChatWidget.tsx`, `src/layouts/BaseLayout.astro`, and `tests/e2e/chat.spec.ts`). Mounted `ChatWidget` island (`client:idle`) with floating bottom-right trigger, custom event listener (`open-portfolio-chat`), Web Audio woodblock click feedback, `aria-live="polite"` live announcements, and Playwright E2E test suite.

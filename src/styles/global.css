@@ -240,21 +240,78 @@
   }
 }
 
-/* Primary Navigation Custom Scrollbar Utility */
-.nav-scrollbar::-webkit-scrollbar {
-  width: 4px;
+/* Primary Navigation & General Custom Scrollbar Utility */
+.nav-scrollbar::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
 }
-.nav-scrollbar::-webkit-scrollbar-track {
+.nav-scrollbar::-webkit-scrollbar-track,
+.custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
-.nav-scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--color-border-raw);
+.nav-scrollbar::-webkit-scrollbar-thumb,
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-custom, rgba(255, 255, 255, 0.2));
   border-radius: 9999px;
 }
-.nav-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: var(--color-primary-raw);
+.nav-scrollbar::-webkit-scrollbar-thumb:hover,
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-primary-raw, #f0b830);
 }
-.nav-scrollbar {
+.nav-scrollbar,
+.custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-border-raw) transparent;
+  scrollbar-color: var(--color-border-custom, rgba(255, 255, 255, 0.2)) transparent;
+}
+
+/* Chess Board Palette — cohesive warm handcrafted tones */
+:root {
+  --chess-ink: #2a2320; /* warm charcoal — softer than pure ink */
+  --chess-paper: #f2e8d5; /* warm ivory / parchment */
+  --chess-hatch: color-mix(in srgb, var(--chess-ink) 55%, transparent);
+  --chess-shadow: rgba(38, 30, 26, 0.35);
+}
+.dark {
+  --chess-ink: #e8dfd4; /* inverted — light lines on dark board */
+  --chess-paper: #1a1614; /* dark walnut ground */
+  --chess-hatch: color-mix(in srgb, var(--chess-ink) 35%, transparent);
+  --chess-shadow: rgba(200, 190, 175, 0.18);
+}
+
+/* Woodcut Chessboard Hatching Utilities — subdued texture, not decoration */
+.woodcut-square-dark {
+  background-color: var(--chess-paper, #f2e8d5);
+  background-image: repeating-linear-gradient(45deg, var(--chess-hatch) 0 1px, transparent 1px 8px);
+}
+.woodcut-square-light {
+  background-color: var(--chess-paper, #f2e8d5);
+}
+
+/* 3D Physical Wooden Block Extrusion & Ground Shadow */
+.board-3d-slab {
+  transform-style: preserve-3d;
+  box-shadow:
+    0 1px 0 var(--chess-ink),
+    0 2px 0 var(--chess-ink),
+    0 3px 0 var(--chess-ink),
+    0 4px 0 var(--chess-ink),
+    0 5px 0 var(--chess-ink),
+    0 6px 0 var(--chess-ink),
+    0 7px 0 var(--chess-ink),
+    0 8px 0 var(--chess-ink),
+    0 9px 0 var(--chess-ink),
+    0 10px 0 var(--chess-ink),
+    0 11px 0 var(--chess-ink),
+    0 12px 0 var(--chess-ink),
+    0 13px 0 var(--chess-ink),
+    0 14px 0 var(--chess-ink),
+    0 22px 28px -4px rgba(0, 0, 0, 0.45),
+    0 40px 50px -10px rgba(0, 0, 0, 0.35);
+}
+
+.board-2d-flat {
+  box-shadow:
+    0 3px 0 var(--chess-ink),
+    0 8px 16px -2px rgba(0, 0, 0, 0.2);
 }

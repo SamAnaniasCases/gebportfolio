@@ -58,21 +58,28 @@ test.describe("Global Navigation & Header Verification", () => {
       await openMenuIfMobile();
 
       // Find navigation link inside the active navigation region
-      const navLink = navigation().getByRole("link", { name: link.name, exact: true });
+      const navLink = navigation().locator(`a[href="${link.path}"]`).first();
       await expect(navLink).toBeVisible();
 
-      // Click the link and wait for navigation
-      await navLink.click();
-      await page.waitForURL(`**${link.path}`);
+      // Click link and await URL navigation concurrently
+      if (link.path === "/") {
+        await navLink.click();
+      } else {
+        await Promise.all([
+          page.waitForURL(`**${link.path}**`),
+          navLink.click(),
+        ]);
+      }
 
-      // Verify URL pathname
+      // Verify URL pathname (strip trailing slashes for static output compatibility)
       const url = new URL(page.url());
-      expect(url.pathname).toBe(link.path);
+      const cleanPath = url.pathname.endsWith("/") && url.pathname.length > 1 ? url.pathname.slice(0, -1) : url.pathname;
+      expect(cleanPath).toBe(link.path);
     }
 
     // Verify the last visited route is marked as the active link
     await openMenuIfMobile();
-    await expect(navigation().getByRole("link", { name: "Contact", exact: true })).toHaveAttribute(
+    await expect(navigation().locator('a[href="/contact"]').first()).toHaveAttribute(
       "aria-current",
       "page"
     );
