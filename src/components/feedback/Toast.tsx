@@ -108,7 +108,7 @@ export const ToastContainer: React.FC = () => {
   return (
     <div
       aria-live="polite"
-      className="pointer-events-none fixed top-6 right-6 z-[100] flex justify-end px-4"
+      className="pointer-events-none fixed top-16 right-4 z-[100] flex max-w-[90vw] justify-end sm:top-6 sm:right-6 sm:max-w-md"
     >
       <div
         className={`bg-bg/95 border-border-custom text-text pointer-events-auto flex max-w-md items-center gap-3 rounded-full border px-4 py-2.5 shadow-2xl backdrop-blur-xl transition-all duration-300 ${

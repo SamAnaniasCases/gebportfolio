@@ -1,21 +1,5 @@
 import React from "react";
-
-// Eager load all doodle SVGs as raw strings in React environment
-const svgFiles = import.meta.glob<string>("../../assets/icons/doodle/**/*.svg", {
-  query: "?raw",
-  import: "default",
-  eager: true,
-});
-
-function getSvgRaw(iconName: string): string | null {
-  const cleanName = iconName.endsWith(".svg") ? iconName : `${iconName}.svg`;
-  for (const path in svgFiles) {
-    if (path.endsWith(`/${cleanName}`) || path.endsWith(`/${iconName}`)) {
-      return svgFiles[path];
-    }
-  }
-  return null;
-}
+import { getDoodleSvg } from "../../lib/icons/doodleRegistry";
 
 export interface DoodleIconProps {
   name: string;
@@ -30,27 +14,27 @@ export const DoodleIcon: React.FC<DoodleIconProps> = ({
   size,
   ariaLabel,
 }) => {
-  const rawSvg = getSvgRaw(name);
+  const rawSvg = getDoodleSvg(name);
   if (!rawSvg) return null;
 
-  const processedSvg = rawSvg
-    .replace(/fill="(?:black|#000000)"/gi, 'fill="currentColor"')
-    .replace(/stroke="(?:black|#000000)"/gi, 'stroke="currentColor"')
-    .replace(/<svg([^>]*)>/i, (_, attrs) => {
-      const cleanedAttrs = attrs.replace(/\s(width|height)="[^"]*"/gi, "");
-      const ariaAttr = ariaLabel
-        ? `role="img" aria-label="${ariaLabel}"`
-        : `aria-hidden="true" focusable="false"`;
-      const styleAttr = size
-        ? `style="width: ${typeof size === "number" ? `${size}px` : size}; height: ${typeof size === "number" ? `${size}px` : size};"`
-        : "";
-      const classAttr = className ? `class="${className}"` : "";
-      return `<svg${cleanedAttrs} ${classAttr} ${styleAttr} ${ariaAttr}>`;
-    });
+  const processedSvg = rawSvg.replace(/<svg([^>]*)>/i, (_, attrs) => {
+    const ariaAttr = ariaLabel
+      ? `role="img" aria-label="${ariaLabel}"`
+      : `aria-hidden="true" focusable="false"`;
+    return `<svg ${attrs} class="size-full h-full w-full max-h-full max-w-full block object-contain" ${ariaAttr}>`;
+  });
 
   return (
     <span
-      className="inline-flex shrink-0 items-center justify-center"
+      className={`doodle-icon inline-flex shrink-0 items-center justify-center align-middle select-none ${className}`}
+      style={
+        size
+          ? {
+              width: typeof size === "number" ? `${size}px` : size,
+              height: typeof size === "number" ? `${size}px` : size,
+            }
+          : undefined
+      }
       dangerouslySetInnerHTML={{ __html: processedSvg }}
     />
   );

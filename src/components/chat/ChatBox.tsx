@@ -143,7 +143,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
       aria-label="Real-time live chat room"
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-3 backdrop-blur-md sm:p-6 md:p-8"
+      className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-3 backdrop-blur-md sm:p-6 md:p-8"
     >
       {/* Global Toast Container */}
       <ToastContainer />
@@ -475,17 +475,6 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
               mobileTab === "chess" ? "flex" : "hidden md:flex"
             }`}
           >
-            <div className="mb-2 flex w-full items-center justify-between md:hidden">
-              <span className="text-text-muted font-mono text-xs">♞ Crowd Chess</span>
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label="Close modal"
-                className="text-text-muted hover:text-text flex cursor-pointer items-center justify-center rounded-md p-1 text-base leading-none"
-              >
-                <DoodleIcon name="cross" className="size-4" />
-              </button>
-            </div>
             <ChessWidget
               displayName={assignedName || displayName}
               is3D={is3D}

@@ -12,6 +12,7 @@
     "astro": "astro",
     "check": "astro check && pnpm run check-links",
     "check-links": "node scripts/check-links.js",
+    "generate:icons": "node scripts/generate-doodle-registry.js",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
