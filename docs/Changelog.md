@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Completed **Experience Page Redesign & Interactive 3D WebGL King Companion** (`src/pages/experience.astro`, `src/components/experience/ExperienceTimeline.tsx`, `src/components/experience/Scroll3DKingCanvas.tsx`, `src/content/experience/`, `src/content/skills/`, `src/content.config.ts`, `docs/plans/0005-experience-page-specification.md`):
+  - Built `<ExperienceTimeline />` React island featuring interactive category filter pills (`All Roles`, `Internship`, `Academic`, `Full-Time`, `Contract`, `Project Lead`, `Leadership`) with entry count badges and reset filter controls.
+  - Implemented technology tag cross-filtering: clicking any applied technology tag (`TypeScript`, `Docker`, `PostgreSQL`, `WordPress`, `2D Animation & Design`, `Microsoft Office`) cross-filters the timeline to isolate matching roles.
+  - Applied glossy frosted glassmorphism styling (`bg-surface/65 backdrop-blur-md relative z-10 dark:border-white/10 shadow-md hover:shadow-lg`) to timeline milestone cards, allowing the turned-wood 3D King moving at `z-0` to be silhouetted behind cards while preserving 100% text legibility.
+  - Replaced temporary corporate placeholder data with Sam's 100% authentic, real-world experience history:
+    - `avega-shipping-it-intern.yaml`: _Avega Bros. Integrated Shipping Corp_ (`IT Systems & Hardware Intern`) featuring the live biometric timekeeping system (BITS) at `https://bits.abas.ph`.
+    - `ctu-danao-creative-web-design.yaml`: _Cebu Technological University - Danao Campus_ (`TESDA Scholar — Creative Web Design NC III`).
+    - `arcelo-high-school-immersion.yaml`: _Arcelo Memorial National High School_ (`Senior High Work Immersion Student`).
+  - Registered matching skills in `src/content/skills/`: `docker.yaml`, `postgres.yaml`, `nodejs.yaml`, `wordpress.yaml`, `javascript.yaml`, `html-css.yaml`, `microsoft-office.yaml`, and `animation.yaml`.
+  - Refined `<Scroll3DKingCanvas />` 3D companion with top-down elevated tabletop camera perspective ($\sim 50^\circ$ pitch angle), procedural turned-wood grain texture, gold rim lighting (`#d4af37`), feathered soft radial contact shadow plane (`createShadowTexture()`), 4-phase physical hop state machine, interactive drag & drop with strict navigation sidebar clamping (`minX = 0.2`), and `z-0` background placement.
+  - Fixed timeline node circle alignment (`-left-[24px] md:-left-[32px] -translate-x-1/2`), centering the icon circle pixel-perfectly over the vertical left timeline border line on both mobile and desktop viewports.
+  - Created copy-pasteable authoring template `src/content/experience/_template.yaml.example` and updated [0005-experience-page-specification.md](file:///c:/Users/Sam/Sam%20Folder/Repository/gebportfolio/docs/plans/0005-experience-page-specification.md) to **v1.4.0** (`Implemented Specification`).
+
 - Implemented **3D WebGL King Piece Scroll Companion** (`src/components/experience/Scroll3DKingCanvas.tsx`, `src/pages/experience.astro`, `package.json`, `pnpm-lock.yaml`, `docs/plans/0005-experience-page-specification.md`):
   - Created `<Scroll3DKingCanvas />` React island rendering a true 3D King mesh (procedural lathe-profile body, crown bowl, and 3D cross atop a dark chess tile) via Three.js.
   - Positioned canvas fixed near the right-hand scrollbar (`fixed top-1/2 right-3 -translate-y-1/2 z-40`) with a low-angle upward camera perspective (`camera.lookAt(0, 0.95, 0)`).

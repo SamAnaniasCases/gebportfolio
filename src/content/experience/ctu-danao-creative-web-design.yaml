@@ -1,0 +1,15 @@
+organization: "Cebu Technological University - Danao Campus"
+role: "TESDA Scholar — Creative Web Design NC III"
+type: "academic"
+start: "2024-06"
+end: "2025-12"
+location: "Sabang, Danao City, Cebu"
+summary: "Technical certification program covering responsive UI design, visual hierarchy, web standards, CMS development, and digital media design principles under TESDA Creative Web Design NC III."
+achievements:
+  - "Designed, developed, and deployed custom responsive WordPress theme layouts and structured web content."
+  - "Studied core visual UI design principles, layout typography hierarchy, and preliminary 3D asset modeling concepts."
+skills:
+  - wordpress
+  - html-css
+  - javascript
+order: 2

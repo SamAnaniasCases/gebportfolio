@@ -1,0 +1,18 @@
+organization: "Avega Bros. Integrated Shipping Corp"
+role: "IT Systems & Hardware Intern"
+type: "internship"
+start: "2025-07"
+end: "2026-07"
+location: "Tayud, Consolacion, Cebu"
+summary: "On-site IT infrastructure, network integration, hardware deployment, and custom software systems development across vessel operations and corporate headquarters."
+achievements:
+  - "Engineered a biometric timekeeping and attendance tracking system (BITS) integrated with physical ZKTeco hardware devices, improving timekeeping accuracy and operational workflow for vessel staff."
+  - "Configured and deployed CCTV surveillance network nodes and solar power integration, ensuring full synchronization with corporate server networks."
+  - "Collaborated with the logistics & inventory management team during annual fleet inventory audits, streamlining physical hardware asset tracking."
+skills:
+  - typescript
+  - docker
+  - postgres
+  - nodejs
+url: "https://bits.abas.ph"
+order: 1

@@ -1,0 +1,29 @@
+# Experience Entry Template
+# Create new files in src/content/experience/<your-entry-slug>.yaml
+# Example file name: software-engineer-intern.yaml
+
+organization: "Your Company, Client, or University Name"
+role: "Your Official Role Title"
+type: "internship" # Options: fulltime | contract | internship | freelance | academic | project | leadership
+start: "2024-06"   # Format: YYYY-MM or YYYY
+end: "2024-12"     # Format: YYYY-MM or YYYY (leave empty string "" for Present)
+location: "City, Country or Remote"
+summary: "A concise 1-2 sentence high-level overview of your responsibilities, key systems built, or focus area."
+
+# Achievements following CAR (Context -> Action -> Result)
+achievements:
+  - "Built an automated testing suite using Playwright, increasing test coverage across core user flows."
+  - "Refactored front-end state management using TypeScript strict mode, eliminating 12 runtime errors."
+  - "Collaborated on API design with senior engineers, optimizing database queries for peak traffic."
+
+# Skill IDs matching files inside src/content/skills/*.yaml
+skills:
+  - typescript
+  - rust
+  - kubernetes
+
+# Optional project or company link
+url: "https://example.com"
+
+# Display order on timeline (1 = top/most recent, 2 = second, 3 = third, etc.)
+order: 1

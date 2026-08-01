@@ -1,0 +1,14 @@
+organization: "Arcelo Memorial National High School"
+role: "Senior High Work Immersion Student"
+type: "academic"
+start: "2020"
+end: "2021"
+location: "Liloan, Cebu, Philippines"
+summary: "Senior High School technical work immersion focused on digital presentation design, keyframe animation, and computer applications literacy."
+achievements:
+  - "Created vector keyframe animations and interactive multimedia presentation layouts."
+  - "Mastered digital document workflows and foundational office productivity tools."
+skills:
+  - animation
+  - microsoft-office
+order: 3

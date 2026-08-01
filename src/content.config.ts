@@ -106,12 +106,24 @@ const experience = defineCollection({
   schema: z.object({
     organization: z.string(),
     role: z.string(),
+    type: z
+      .enum([
+        "fulltime",
+        "contract",
+        "internship",
+        "freelance",
+        "academic",
+        "project",
+        "leadership",
+      ])
+      .default("project"),
     start: z.string(), // e.g. "2024-01"
     end: z.string().optional(), // empty/null represents Present
     location: z.string(),
     summary: z.string(),
     achievements: z.array(z.string()).default([]),
     skills: z.array(z.string()).default([]),
+    url: z.string().url().optional(),
     order: z.number().default(0),
   }),
 });
