@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Implemented **3D WebGL King Piece Scroll Companion** (`src/components/experience/Scroll3DKingCanvas.tsx`, `src/pages/experience.astro`, `package.json`, `pnpm-lock.yaml`, `docs/plans/0005-experience-page-specification.md`):
+  - Created `<Scroll3DKingCanvas />` React island rendering a true 3D King mesh (procedural lathe-profile body, crown bowl, and 3D cross atop a dark chess tile) via Three.js.
+  - Positioned canvas fixed near the right-hand scrollbar (`fixed top-1/2 right-3 -translate-y-1/2 z-40`) with a low-angle upward camera perspective (`camera.lookAt(0, 0.95, 0)`).
+  - Implemented smooth scroll-driven 3D chess movements: the King executes 3D hops (`translateZ` lift-off, forward tilt, and shadow compression) while rotating 360° over the page scroll duration.
+  - Installed `three` and `@types/three` dependencies and mounted component on `/experience`.
+
+- Refactored **Mobile Live Chat Navigation Transition & Z-Index Layering** (`src/layouts/BaseLayout.astro`, `src/components/chat/ChatBox.tsx`, and `src/components/feedback/Toast.tsx`):
+  - Updated mobile navigation drawer script in `BaseLayout.astro` to execute a smooth 200ms closing transition when tapping "Live Chat", invoking `open-portfolio-chat` event upon completion to open the chat modal without manual drawer exit.
+  - Increased `ChatBox.tsx` modal container z-index from `z-50` to `z-[70]`, ensuring the Live Chat modal and onboarding dialogs surface above navigation bars (`z-50`) and mobile overlays (`z-[60]`).
+  - Adjusted global `ToastContainer` position in `Toast.tsx` to `top-16 right-4 sm:top-6 sm:right-6` on mobile viewports so turn notifications float cleanly below header controls without overlapping the close button.
+  - Removed redundant low-opacity `♞ Crowd Chess` text and secondary `X` button header from mobile `ChatBox.tsx` panel view.
+
+- Established **Experience Page Architecture, Schema & Content Strategy Specification** (`docs/plans/0005-experience-page-specification.md`, `src/content.config.ts`, `src/content/experience/`, `src/pages/experience.astro`, and `docs/plans/README.md`):
+  - Authored comprehensive specification `0005-experience-page-specification.md` defining content rules, CAR (Context, Action, Result) impact formula, non-invented corporate title invariants, and explicit 7-type role categorization taxonomy (`fulltime`, `contract`, `internship`, `freelance`, `academic`, `project`, `leadership`).
+  - Extended Astro v5 Content Layer `experience` schema in `src/content.config.ts` with `type` enum validator and optional `url` property.
+  - Removed outdated placeholder corporate data (`Google - Lead Systems Engineer`, `Netflix - Senior Developer`) and replaced with authentic initial entries (`bits-timekeeping-lead.yaml`, `bsit-computer-technology.yaml`, `software-development-contractor.yaml`).
+  - Redesigned `src/pages/experience.astro` timeline to render category badge pills and theme-aware `<DoodleIcon>` vector SVGs (`briefcase`, `calendar`, `location`, `check`).
+
 - Integrated **Doodle SVG Icon System** (`src/assets/icons/doodle/`, `src/components/ui/DoodleIcon.astro`, `src/components/ui/DoodleIcon.tsx`, `src/components/sections/ContactCTA.astro`, `src/components/sections/AboutSummary.astro`, `src/layouts/BaseLayout.astro`, `src/components/chat/ChatBox.tsx`, `docs/design/DoodleIconSystem.md`):
   - Organized and migrated 177+ hand-drawn vector doodle SVG icons into `src/assets/icons/doodle/` across 15 UI categories.
   - Built `<DoodleIcon.astro>` and `<DoodleIcon.tsx>` components with dynamic `currentColor` stroke/fill binding for seamless Light and Dark Mode ink inversion.
