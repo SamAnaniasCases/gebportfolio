@@ -39,3 +39,9 @@ test-results/
 
 # Wrangler local dev & deployment cache
 .wrangler/
+
+# AI Agent Skills & Impeccable State
+.impeccable/
+.agents/skills/
+.github/skills/
+
