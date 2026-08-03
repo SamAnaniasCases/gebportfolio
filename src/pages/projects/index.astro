@@ -51,19 +51,33 @@ const featuredCount = topFeatured.length;
         <span
           class="border-ink/20 bg-surface-subtle text-text inline-flex items-center gap-2 rounded-full border px-3 py-1 font-semibold"
         >
-          <span class="text-primary font-bold">●</span>
+          <span class="bg-primary h-2 w-2 rounded-full" aria-hidden="true"></span>
           <span>{totalCount} Total Projects</span>
         </span>
         <span
           class="border-ink/20 bg-surface-subtle text-text inline-flex items-center gap-2 rounded-full border px-3 py-1 font-semibold"
         >
-          <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+          <span class="bg-primary/60 h-2 w-2 rounded-full" aria-hidden="true"></span>
           <span>{activeCount} Active Systems</span>
         </span>
         <span
           class="border-ink/20 bg-surface-subtle text-text inline-flex items-center gap-2 rounded-full border px-3 py-1 font-semibold"
         >
-          <span class="text-primary font-bold">♔</span>
+          {/* Woodcut king SVG — inline currentColor, aria-hidden, no Unicode glyph */}
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            class="text-primary size-3 shrink-0"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 2v4M10 4h4M5 8h14l-1 12H6L5 8z"></path>
+            <path d="M8 8V6M16 8V6"></path>
+          </svg>
           <span>{featuredCount} Signature Featured Cases</span>
         </span>
       </div>
@@ -130,8 +144,8 @@ const featuredCount = topFeatured.length;
               data-category={kingProject.data.category}
               data-status={kingProject.data.status}
               data-search-text={`${kingProject.data.title} ${kingProject.data.summary} ${kingProject.data.tags.join(" ")}`}
-              class="group bg-surface border-primary relative flex flex-col justify-between overflow-hidden rounded-xl border-[3px] p-5 transition-all duration-200 hover:-translate-y-1.5 md:p-6"
-              style="box-shadow: 4px 4px 0 var(--color-ink);"
+              class="group bg-surface border-primary relative flex flex-col justify-between overflow-hidden rounded-xl border-[2.5px] p-5 transition-all duration-200 hover:-translate-y-1.5 md:p-6"
+              style="box-shadow: 3px 3px 0 var(--color-ink);"
             >
               <div class="relative z-10 space-y-4">
                 <div class="flex items-center justify-between gap-2">
@@ -143,11 +157,9 @@ const featuredCount = topFeatured.length;
                   </div>
                   <span
                     class={`shrink-0 rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase ${
-                      kingProject.data.status === "completed"
-                        ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300"
-                        : kingProject.data.status === "active"
-                          ? "border-blue-500/20 bg-blue-500/10 text-blue-800 dark:text-blue-300"
-                          : "border-amber-500/20 bg-amber-500/10 text-amber-800 dark:text-amber-300"
+                      kingProject.data.status === "active"
+                        ? "border-primary/20 bg-primary/10 text-primary"
+                        : "border-border-custom bg-surface-subtle text-text-muted"
                     }`}
                   >
                     {kingProject.data.status}
@@ -210,7 +222,7 @@ const featuredCount = topFeatured.length;
               data-status={queenProject.data.status}
               data-search-text={`${queenProject.data.title} ${queenProject.data.summary} ${queenProject.data.tags.join(" ")}`}
               class="group bg-surface border-ink relative flex flex-col justify-between overflow-hidden rounded-xl border-[2.5px] p-5 transition-all duration-200 hover:-translate-y-1 md:p-6"
-              style="box-shadow: 4px 4px 0 var(--color-ink);"
+              style="box-shadow: 3px 3px 0 var(--color-ink);"
             >
               <div class="relative z-10 space-y-4">
                 <div class="flex items-center justify-between gap-2">
@@ -222,11 +234,9 @@ const featuredCount = topFeatured.length;
                   </div>
                   <span
                     class={`shrink-0 rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase ${
-                      queenProject.data.status === "completed"
-                        ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300"
-                        : queenProject.data.status === "active"
-                          ? "border-blue-500/20 bg-blue-500/10 text-blue-800 dark:text-blue-300"
-                          : "border-amber-500/20 bg-amber-500/10 text-amber-800 dark:text-amber-300"
+                      queenProject.data.status === "active"
+                        ? "border-primary/20 bg-primary/10 text-primary"
+                        : "border-border-custom bg-surface-subtle text-text-muted"
                     }`}
                   >
                     {queenProject.data.status}
@@ -288,9 +298,6 @@ const featuredCount = topFeatured.length;
         <h2 class="text-h3 font-display text-text font-bold tracking-tight">
           All Projects Archive
         </h2>
-        <span class="text-caption text-text-muted font-mono tracking-wider uppercase">
-          Scannable Archive List
-        </span>
       </div>
 
       <div class="border-ink/20 divide-ink/10 bg-surface divide-y rounded-xl border">
@@ -316,11 +323,9 @@ const featuredCount = topFeatured.length;
                     </span>
                     <span
                       class={`rounded-full border px-2 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase ${
-                        project.data.status === "completed"
-                          ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300"
-                          : project.data.status === "active"
-                            ? "border-blue-500/20 bg-blue-500/10 text-blue-800 dark:text-blue-300"
-                            : "border-amber-500/20 bg-amber-500/10 text-amber-800 dark:text-amber-300"
+                        project.data.status === "active"
+                          ? "border-primary/20 bg-primary/10 text-primary"
+                          : "border-border-custom bg-surface-subtle text-text-muted"
                       }`}
                     >
                       {project.data.status}
@@ -332,7 +337,7 @@ const featuredCount = topFeatured.length;
                       {project.data.title}
                     </a>
                   </h3>
-                  <p class="text-small text-text-muted line-clamp-1 leading-relaxed">
+                  <p class="text-small text-text-muted line-clamp-2 leading-relaxed">
                     {project.data.summary}
                   </p>
                 </div>
@@ -351,6 +356,24 @@ const featuredCount = topFeatured.length;
           )
         }
       </div>
+
+      <!-- Empty state: revealed by JS when filter+search hides all cards -->
+      <div
+        id="projects-empty-state"
+        class="border-ink/20 bg-surface-subtle hidden rounded-xl border p-10 text-center"
+        aria-live="polite"
+      >
+        <p class="text-body-large font-display text-text font-bold">No projects found</p>
+        <p class="text-body text-text-muted mt-2">
+          No projects match your current filter. Try clearing the search or selecting
+          <button
+            id="reset-filter-btn"
+            class="text-primary font-semibold hover:underline focus:underline focus:outline-none"
+          >
+            All Work
+          </button>.
+        </p>
+      </div>
     </section>
   </Container>
 
@@ -359,11 +382,14 @@ const featuredCount = topFeatured.length;
     const tabs = document.querySelectorAll("#category-tabs .filter-tab");
     const searchInput = document.getElementById("search-input");
     const cards = document.querySelectorAll("[data-project-card]");
+    const emptyState = document.getElementById("projects-empty-state");
+    const resetBtn = document.getElementById("reset-filter-btn");
 
     let activeCategory = "all";
 
     function filterProjects() {
       const query = (searchInput?.value || "").toLowerCase().trim();
+      let visibleCount = 0;
 
       cards.forEach((card) => {
         const category = card.getAttribute("data-category");
@@ -374,10 +400,20 @@ const featuredCount = topFeatured.length;
 
         if (matchesCategory && matchesSearch) {
           card.classList.remove("hidden");
+          visibleCount++;
         } else {
           card.classList.add("hidden");
         }
       });
+
+      // Show or hide empty state based on visible card count
+      if (emptyState) {
+        if (visibleCount === 0) {
+          emptyState.classList.remove("hidden");
+        } else {
+          emptyState.classList.add("hidden");
+        }
+      }
     }
 
     tabs.forEach((tab) => {
@@ -395,5 +431,21 @@ const featuredCount = topFeatured.length;
     });
 
     searchInput?.addEventListener("input", filterProjects);
+
+    // Reset filter button inside empty state
+    resetBtn?.addEventListener("click", () => {
+      if (searchInput) searchInput.value = "";
+      activeCategory = "all";
+      tabs.forEach((t) => {
+        t.className =
+          "filter-tab bg-surface-subtle border-ink/15 text-text-muted hover:text-text cursor-pointer rounded-full border px-3.5 py-1.5 font-mono text-xs font-semibold transition-all";
+      });
+      const allTab = document.querySelector('[data-category="all"]');
+      if (allTab) {
+        allTab.className =
+          "filter-tab active bg-primary text-surface cursor-pointer rounded-full px-3.5 py-1.5 font-mono text-xs font-bold transition-all";
+      }
+      filterProjects();
+    });
   </script>
 </BaseLayout>

@@ -53,6 +53,7 @@
   --font-size-body: clamp(1rem, 0.95rem + 0.2vw, 1.125rem); /* 16px - 18px */
   --font-size-small: 0.875rem; /* 14px */
   --font-size-caption: 0.75rem; /* 12px */
+  --font-size-micro: 0.625rem; /* 10px — badge/chip labels only; below caption */
 
   --font-sans-display: "Manrope Variable", "Manrope", Inter, ui-sans-serif, system-ui, sans-serif;
   --font-sans-body: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;

@@ -53,6 +53,7 @@
   --text-body: var(--font-size-body);
   --text-small: var(--font-size-small);
   --text-caption: var(--font-size-caption);
+  --text-micro: var(--font-size-micro);
 
   /* Transitions */
   --animate-reveal: reveal var(--transition-reveal) var(--ease-standard);
