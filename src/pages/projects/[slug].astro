@@ -3,8 +3,9 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Container from "../../components/primitives/Container.astro";
 import LinkButton from "../../components/primitives/LinkButton.astro";
 import ChessIcons from "../../components/navigation/ChessIcons.astro";
+import DoodleIcon from "../../components/ui/DoodleIcon.astro";
+import DividerChessboard from "../../components/primitives/DividerChessboard.astro";
 import { getCollection, render } from "astro:content";
-import { Calendar, Briefcase, Tag, Link as LinkIcon, Award } from "@lucide/astro";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -27,23 +28,24 @@ const nextProject = currentIndex < allProjects.length - 1 ? allProjects[currentI
 const skills = await getCollection("skills");
 const skillMap = new Map(skills.map((s) => [s.id, s.data.name]));
 
-// Chess Piece Meta Mapping
+// Chess Piece Meta Mapping (text label only — piece rendering handled by ChessIcons)
 const chessRoleTitles: Record<string, string> = {
-  king: "♔ Signature System",
-  queen: "♛ Technical Powerhouse",
-  knight: "♞ Creative Optimization",
+  king: "Signature System",
+  queen: "Technical Powerhouse",
+  knight: "Creative Optimization",
 };
 ---
 
 <BaseLayout title={project.data.title} description={project.data.summary}>
   <Container width="default" class="animate-reveal space-y-10 py-10 md:py-14">
     <!-- Back to archive navigation link -->
-    <nav>
+    <nav aria-label="Breadcrumb">
       <a
         href="/projects"
-        class="text-small text-primary hover:text-primary-hover flex items-center gap-1.5 font-bold transition-colors"
+        class="text-small text-primary hover:text-primary-hover inline-flex items-center gap-1.5 font-bold transition-colors focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
       >
-        <span>← Back to projects</span>
+        <DoodleIcon name="arrows/arrow-left" class="size-3.5" />
+        <span>Back to projects</span>
       </a>
     </nav>
 
@@ -52,7 +54,7 @@ const chessRoleTitles: Record<string, string> = {
       <!-- Eyebrow & Status Badge Row -->
       <div class="flex flex-wrap items-center gap-3">
         <span
-          class={`text-[10px] font-bold border rounded-full px-2.5 py-0.5 uppercase tracking-wider font-mono ${
+          class={`text-micro font-bold border rounded-full px-2.5 py-0.5 uppercase tracking-wider font-mono ${
             project.data.status === "active"
               ? "bg-primary/10 border-primary/20 text-primary"
               : "bg-surface-subtle border-border-custom text-text-muted"
@@ -63,8 +65,9 @@ const chessRoleTitles: Record<string, string> = {
 
         {
           project.data.chessPiece && (
-            <span class="bg-primary/10 border-primary/20 text-primary rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase">
-              {chessRoleTitles[project.data.chessPiece] || project.data.chessPiece}
+            <span class="bg-primary/10 border-primary/20 text-primary text-micro inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono font-bold tracking-wider uppercase">
+              <ChessIcons piece={project.data.chessPiece} class="size-3 shrink-0" />
+              <span>{chessRoleTitles[project.data.chessPiece]}</span>
             </span>
           )
         }
@@ -72,7 +75,9 @@ const chessRoleTitles: Record<string, string> = {
 
       <!-- Title & Summary -->
       <div class="space-y-3">
-        <h1 class="text-h1 font-display text-text leading-tight font-extrabold tracking-tight">
+        <h1
+          class="text-h1 font-display text-text leading-tight font-extrabold tracking-tight text-balance"
+        >
           {project.data.title}
         </h1>
         <p class="text-body-large text-text-muted max-w-3xl leading-relaxed">
@@ -83,7 +88,7 @@ const chessRoleTitles: Record<string, string> = {
       <!-- Executive Summary / Key Takeaway Callout Box -->
       {
         project.data.keyTakeaway && (
-          <blockquote class="border-primary bg-surface-subtle/80 text-body text-text border-l-2 p-4 leading-relaxed font-medium shadow-xs">
+          <blockquote class="border-primary bg-surface-subtle/80 text-body text-text border-l-[var(--stroke-structural)] p-5 leading-relaxed font-medium">
             {project.data.keyTakeaway}
           </blockquote>
         )
@@ -92,7 +97,10 @@ const chessRoleTitles: Record<string, string> = {
       <!-- Hero Image Banner -->
       {
         project.data.heroImage && (
-          <div class="border-ink relative overflow-hidden rounded-xl border-[2.5px] shadow-sm">
+          <div
+            class="border-border-custom relative overflow-hidden rounded-md border-[var(--stroke-structural)]"
+            style="box-shadow: 4px 4px 0 var(--color-ink);"
+          >
             <img
               src={project.data.heroImage}
               alt={project.data.title}
@@ -104,12 +112,10 @@ const chessRoleTitles: Record<string, string> = {
     </header>
 
     <!-- Main Content & Sticky Engraved Sidebar Grid -->
-    <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
+    <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
       <!-- Main Prose Narrative (Col 1-8) -->
-      <div class="space-y-8 lg:col-span-8">
-        <article
-          class="prose-custom text-body text-text-muted max-w-none space-y-6 leading-relaxed"
-        >
+      <div class="space-y-10 lg:col-span-8">
+        <article class="prose-custom text-body text-text-muted max-w-[68ch] leading-relaxed">
           <Content />
         </article>
 
@@ -117,17 +123,17 @@ const chessRoleTitles: Record<string, string> = {
         {
           project.data.outcomes && project.data.outcomes.length > 0 && (
             <div
-              class="bg-surface border-ink space-y-4 rounded-xl border-[2.5px] p-6 shadow-xs"
+              class="bg-surface border-border-custom space-y-5 rounded-md border-[var(--stroke-structural)] p-6"
               style="box-shadow: 3px 3px 0 var(--color-ink);"
             >
-              <h3 class="text-h3 font-display text-text flex items-center gap-2 font-bold">
-                <Award class="text-primary size-6" />
-                Key Project Outcomes
+              <h3 class="text-h3 font-display text-text flex items-center gap-2.5 font-bold">
+                <DoodleIcon name="interface/target" class="text-primary size-6 shrink-0" />
+                Key project outcomes
               </h3>
-              <ul class="space-y-2.5">
+              <ul class="space-y-3">
                 {project.data.outcomes.map((outcome) => (
-                  <li class="text-body text-text flex items-start gap-2.5">
-                    <span class="text-primary font-bold">✓</span>
+                  <li class="text-body text-text flex items-start gap-3">
+                    <DoodleIcon name="interface/tick" class="text-primary mt-0.5 size-5 shrink-0" />
                     <span>{outcome}</span>
                   </li>
                 ))}
@@ -140,16 +146,16 @@ const chessRoleTitles: Record<string, string> = {
       <!-- Sticky Engraved Sidebar (Col 9-12) -->
       <aside class="space-y-6 lg:col-span-4">
         <div
-          class="bg-surface border-ink sticky top-24 space-y-6 rounded-xl border-[2.5px] p-6 transition-all"
+          class="bg-surface border-border-custom sticky top-24 space-y-6 rounded-md border-[var(--stroke-structural)] p-6"
           style="box-shadow: 3px 3px 0 var(--color-ink);"
         >
-          <h3 class="text-h4 font-display text-text border-ink/10 border-b pb-3 font-bold">
-            Project Metadata
+          <h3 class="text-h4 font-display text-text border-border-custom border-b pb-3 font-bold">
+            Project metadata
           </h3>
 
           <!-- Role -->
           <div class="flex items-start gap-3">
-            <Briefcase class="text-text-muted mt-1 size-5 shrink-0" />
+            <DoodleIcon name="interface/suitcase" class="text-text-muted mt-1 size-5 shrink-0" />
             <div>
               <span class="text-caption text-text-muted block font-mono tracking-wider uppercase"
                 >Role</span
@@ -160,7 +166,7 @@ const chessRoleTitles: Record<string, string> = {
 
           <!-- Duration -->
           <div class="flex items-start gap-3">
-            <Calendar class="text-text-muted mt-1 size-5 shrink-0" />
+            <DoodleIcon name="interface/calendar" class="text-text-muted mt-1 size-5 shrink-0" />
             <div>
               <span class="text-caption text-text-muted block font-mono tracking-wider uppercase"
                 >Duration</span
@@ -173,14 +179,14 @@ const chessRoleTitles: Record<string, string> = {
           {
             project.data.stackRefs && project.data.stackRefs.length > 0 && (
               <div class="flex items-start gap-3">
-                <Tag class="text-text-muted mt-1 size-5 shrink-0" />
+                <DoodleIcon name="e-commerce/tag" class="text-text-muted mt-1 size-5 shrink-0" />
                 <div class="space-y-2">
                   <span class="text-caption text-text-muted block font-mono tracking-wider uppercase">
-                    Technology Stack
+                    Technology stack
                   </span>
                   <div class="flex flex-wrap gap-1.5">
                     {project.data.stackRefs.map((ref) => (
-                      <span class="bg-surface-subtle border-ink/15 text-caption text-text-muted rounded border px-2 py-0.5 font-mono">
+                      <span class="bg-surface-subtle border-border-custom text-caption text-text-muted rounded border px-2 py-0.5 font-mono">
                         {skillMap.get(ref) || ref}
                       </span>
                     ))}
@@ -193,11 +199,11 @@ const chessRoleTitles: Record<string, string> = {
           <!-- External Links -->
           {
             project.data.links && project.data.links.length > 0 && (
-              <div class="border-ink/10 flex items-start gap-3 border-t pt-4">
-                <LinkIcon class="text-text-muted mt-1 size-5 shrink-0" />
+              <div class="border-border-custom flex items-start gap-3 border-t pt-4">
+                <DoodleIcon name="interface/link" class="text-text-muted mt-1 size-5 shrink-0" />
                 <div class="w-full space-y-3">
                   <span class="text-caption text-text-muted block font-mono tracking-wider uppercase">
-                    Project Links
+                    Project links
                   </span>
                   <div class="flex w-full flex-col gap-2">
                     {project.data.links.map((link) => (
@@ -209,7 +215,8 @@ const chessRoleTitles: Record<string, string> = {
                         size="sm"
                         class="w-full justify-center"
                       >
-                        {link.label} ↗
+                        {link.label}
+                        <DoodleIcon name="arrows/arrow-ne" class="ml-1 size-3.5" />
                       </LinkButton>
                     ))}
                   </div>
@@ -218,10 +225,10 @@ const chessRoleTitles: Record<string, string> = {
             )
           }
 
-          <!-- Strategic Chess Piece Badge & Definition Card (Fills sidebar whitespace!) -->
+          <!-- Strategic Chess Piece Badge & Definition Card -->
           {
             project.data.chessPiece && project.data.chessRoleReason && (
-              <div class="bg-surface-subtle/80 border-ink/20 space-y-3 rounded-lg border p-4">
+              <div class="bg-surface-subtle/80 border-border-custom space-y-3 rounded-md border-[var(--stroke-detail)] p-4">
                 <div class="flex items-center gap-2.5">
                   <div class="text-primary size-8 shrink-0">
                     <ChessIcons
@@ -244,17 +251,20 @@ const chessRoleTitles: Record<string, string> = {
       </aside>
     </div>
 
+    <DividerChessboard class="mt-2 mb-2 opacity-70" />
+
     <!-- Next / Previous Case Study Pagination Footer -->
-    <nav class="border-ink/10 flex flex-col justify-between gap-4 border-t pt-12 sm:flex-row">
-      <div>
+    <nav aria-label="Case study pagination" class="flex flex-col justify-between gap-6 sm:flex-row">
+      <div class="flex-1">
         {
           prevProject && (
             <a
               href={`/projects/${prevProject.id}`}
-              class="group flex flex-col space-y-1 text-left focus:outline-none"
+              class="group flex flex-col space-y-1.5 text-left focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
             >
-              <span class="text-caption text-text-muted font-mono tracking-wider uppercase">
-                ← Previous Case Study
+              <span class="text-caption text-text-muted inline-flex items-center gap-1.5 font-mono font-bold tracking-wider uppercase">
+                <DoodleIcon name="arrows/arrow-left" class="size-3" />
+                Previous case study
               </span>
               <span class="text-small text-primary font-display font-bold group-hover:underline">
                 {prevProject.data.title}
@@ -264,15 +274,16 @@ const chessRoleTitles: Record<string, string> = {
         }
       </div>
 
-      <div>
+      <div class="flex-1 sm:text-right">
         {
           nextProject && (
             <a
               href={`/projects/${nextProject.id}`}
-              class="group flex flex-col space-y-1 text-right focus:outline-none"
+              class="group flex flex-col space-y-1.5 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
             >
-              <span class="text-caption text-text-muted font-mono tracking-wider uppercase">
-                Next Case Study →
+              <span class="text-caption text-text-muted inline-flex items-center justify-end gap-1.5 font-mono font-bold tracking-wider uppercase">
+                Next case study
+                <DoodleIcon name="arrows/arrow-right" class="size-3" />
               </span>
               <span class="text-small text-primary font-display font-bold group-hover:underline">
                 {nextProject.data.title}

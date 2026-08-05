@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Fixed **React Hook SSR Desynchronization on Vite Dev Reloads** (`src/layouts/BaseLayout.astro`):
+  - Updated `<ChatWidget client:load />` to `<ChatWidget client:only="react" />` to render the interactive live chat widget exclusively on the client.
+  - Eliminated SSR React dispatcher errors (`TypeError: Cannot read properties of null (reading 'useState')`) triggered during Vite's automatic dependency re-optimizations.
+
 - Reshaped **About Page as a Chess-Notation Score Sheet** (`src/pages/about.astro`, `src/components/sections/about/AboutHero.astro`, `src/components/sections/about/MoveLedger.astro`, `src/components/sections/about/MoveEntry.astro`, `src/components/sections/about/FactsIndex.astro`, `src/components/sections/about/CredentialsFootnote.astro`, `src/content/pages/about.json`, `src/content.config.ts`):
   - Replaced the previous biography + skills grid + achievements grid architecture with a vertical chess-notation ledger. Six move entries (`1. Opening position` → `6. Endgame letter`) carry Fraunces headings, italic Fraunces lead paragraphs, JetBrains Mono date ranges, and Inter body paragraphs constricted to a 68ch measure.
   - Built `<MoveEntry />` with alternating inked/outline chess squares (pawn → rook → knight → bishop → queen → king) rendered via `ChessIcons.astro`, each anchored to a 1.3px hatch vertical rule with a hard-offset press shadow (`2px 2px 0 var(--color-ink)`) on hover.

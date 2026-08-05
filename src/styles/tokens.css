@@ -19,6 +19,9 @@
   --color-border-raw: #d2d4d9; /* light mixed derivative of 9497a0 */
   --color-focus-raw: #2563eb;
 
+  /* Aliases — readable shortcuts used by components */
+  --color-ink: var(--color-text-raw); /* ink line / hard offset shadow color */
+
   /* Semantic - Radius */
   --radius-sm: 4px;
   --radius-md: 8px;
