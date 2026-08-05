@@ -13,5 +13,94 @@
       "content": "I believe in building software thoughtfully—thinking through requirements before implementation, documenting key decisions for future context, evaluating trade-offs, and verifying every build through test suites.",
       "order": 2
     }
+  ],
+  "facts": [
+    { "label": "Location", "value": "Cebu, Philippines" },
+    {
+      "label": "Education",
+      "value": "Bachelor of Industrial Technology · Computer major, CTU Danao"
+    },
+    {
+      "label": "Current focus",
+      "value": "Maintainable web development, accessible interfaces, documented decisions"
+    },
+    { "label": "Working style", "value": "Specification-first, AI-paired, verification-led" },
+    { "label": "Contact", "value": "samananiascases@gmail.com" }
+  ],
+  "moves": [
+    {
+      "id": "opening-position",
+      "notation": "1.",
+      "piece": "pawn",
+      "heading": "The opening position",
+      "dateRange": "Present",
+      "lead": "A recent graduate treating engineering as a craft to be studied, not a label to be claimed.",
+      "body": [
+        "I am a Computer-focused Industrial Technology graduate based in Cebu, Philippines. My days are split between reading specs, writing small systems end-to-end, and documenting the reasoning behind each structural decision.",
+        "This portfolio is my evidence of practice: a public record of what I built, how I built it, and what I am still learning. The goal is not to appear as a finished engineer, but to make the discipline I apply to my work impossible to mistake."
+      ]
+    },
+    {
+      "id": "internship-move",
+      "notation": "2.",
+      "piece": "rook",
+      "heading": "First formal moves in industry",
+      "dateRange": "2025 – 2026",
+      "lead": "An internship that taught me how production systems behave under real constraints.",
+      "body": [
+        "At Avega Bros. Integrated Shipping Corp in Tayud, Consolacion, I helped ship the BITS biometric timekeeping system, a fleet inventory process, and a CCTV network deployment across multiple sites.",
+        "The work was unglamorous and real: cabling, firmware, schema decisions at 02:00, and the quiet discipline of writing down what was decided and why. It is the first time I saw a system I helped build run unattended in front of actual users."
+      ]
+    },
+    {
+      "id": "foundation-years",
+      "notation": "3.",
+      "piece": "knight",
+      "heading": "Foundation years",
+      "dateRange": "Earlier studies & self-teaching",
+      "lead": "Curiosity first, frameworks second.",
+      "body": [
+        "My route into software was not linear. I began in hardware — biometric terminals, network switches, the physical layer most developers never touch — before moving into web development, markup, and the discipline of structuring information.",
+        "Working across both layers taught me to respect the full system. A web application that cannot survive an actual user's network or a real printer's quirks is software that has not been thought through."
+      ]
+    },
+    {
+      "id": "active-repertoire",
+      "notation": "4.",
+      "piece": "bishop",
+      "heading": "Active repertoire",
+      "dateRange": "Ongoing study",
+      "lead": "Four openings I return to, again and again.",
+      "body": [
+        "Web standards and static rendering. Long-lived, readable files beat clever abstractions. Astro, semantic HTML, and CSS-first design systems are my default tools.",
+        "Software architecture. I spend more time on the specification than the implementation. A plan that survives five revisions is worth more than ten fast commits.",
+        "Automated verification. Tests, accessibility audits, and build checks are not chores; they are how I sleep at night before handing anything over.",
+        "AI-paired workflows. I use large language models as serious development partners — for decomposition, edge-case hunting, and critique — while keeping architectural ownership and final review on my desk."
+      ]
+    },
+    {
+      "id": "current-position",
+      "notation": "5.",
+      "piece": "queen",
+      "heading": "The current position",
+      "dateRange": "How I work today",
+      "lead": "Deliberate, honest, and slow where it matters.",
+      "body": [
+        "I write before I code. I prefer explicit trade-offs to confident guesses. When AI accelerates me, I document its role plainly. When a decision costs me time today, I expect it to save me more tomorrow.",
+        "I am comfortable saying what I do not know. The fastest way to lose trust in a portfolio is to claim depth I have not earned, so I do not."
+      ]
+    },
+    {
+      "id": "endgame-letter",
+      "notation": "6.",
+      "piece": "king",
+      "heading": "The endgame letter",
+      "dateRange": "Open invitation",
+      "lead": "What I am building toward, and where to find me.",
+      "body": [
+        "I am working toward a career where the systems I build are quiet, documented, and trustworthy — software that someone can inherit without dreading the discovery process.",
+        "If any of this resonates — whether you are evaluating me for a role, considering collaboration, or just want to talk through an engineering decision — the door is open. Email is the most direct way to reach me."
+      ]
+    }
   ]
 }

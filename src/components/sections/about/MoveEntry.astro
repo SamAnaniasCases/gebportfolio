@@ -1,0 +1,87 @@
+---
+import ChessIcons from "../../navigation/ChessIcons.astro";
+import type { CollectionEntry } from "astro:content";
+
+type Move = NonNullable<CollectionEntry<"pages">["data"]["moves"]>[number];
+
+interface Props {
+  move: Move;
+  index: number;
+  isLast: boolean;
+}
+
+const { move, index, isLast } = Astro.props;
+
+// Alternate inked (filled) and outline squares like a chess board row
+const isInked = index % 2 === 0;
+---
+
+<li class="group relative grid grid-cols-[44px_1fr] gap-x-5 pb-14 md:gap-x-7 md:pb-20">
+  {/* Vertical hatch rule connecting this move to the next */}
+  {
+    !isLast && (
+      <span
+        aria-hidden="true"
+        class="bg-border-custom absolute top-[52px] bottom-0 left-[21px] w-[var(--stroke-hatch)] md:left-[23px]"
+      />
+    )
+  }
+
+  {/* Move glyph: engraved square with chess piece and notation */}
+  <div class="relative flex flex-col items-center gap-1.5">
+    <div
+      class:list={[
+        "border-ink border-structural relative flex size-11 items-center justify-center rounded-[2px] transition-transform duration-200 group-hover:-translate-x-[2px] group-hover:-translate-y-[2px] md:size-12",
+        isInked ? "bg-text text-bg" : "bg-surface text-text",
+      ]}
+      style="box-shadow: 2px 2px 0 var(--color-ink);"
+      aria-hidden="true"
+    >
+      {
+        move.piece && (
+          <ChessIcons
+            piece={move.piece}
+            variant="nav"
+            class:list={[
+              "size-6 md:size-7",
+              isInked ? "[&>svg]:text-bg [&>svg_*]:stroke-bg" : "[&>svg]:text-text",
+            ]}
+          />
+        )
+      }
+    </div>
+    <span class="text-caption text-text-muted font-mono font-bold tracking-wider">
+      {move.notation}
+    </span>
+  </div>
+
+  {/* Move body: heading, date range, lead, paragraphs */}
+  <div class="space-y-4 pt-1">
+    <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+      <h3 class="text-h3 font-display text-text font-bold tracking-tight">{move.heading}</h3>
+      {
+        move.dateRange && (
+          <span class="text-caption text-text-muted font-mono font-semibold tracking-widest uppercase">
+            {move.dateRange}
+          </span>
+        )
+      }
+    </div>
+
+    {
+      move.lead && (
+        <p class="text-body-large font-display text-text max-w-[62ch] leading-snug italic">
+          {move.lead}
+        </p>
+      )
+    }
+
+    <div class="max-w-[68ch] space-y-3">
+      {
+        move.body.map((paragraph) => (
+          <p class="text-body text-text-muted leading-relaxed">{paragraph}</p>
+        ))
+      }
+    </div>
+  </div>
+</li>

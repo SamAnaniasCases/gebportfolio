@@ -4,7 +4,16 @@ import eslintPluginAstro from "eslint-plugin-astro";
 
 export default tseslint.config(
   {
-    ignores: [".astro/**", "dist/**", "node_modules/**"],
+    ignores: [
+      ".astro/**",
+      "dist/**",
+      "node_modules/**",
+      ".qoder/**",
+      ".agents/**",
+      ".github/skills/**",
+      "party/**",
+      "public/**",
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,

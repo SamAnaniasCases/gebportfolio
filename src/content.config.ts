@@ -214,6 +214,28 @@ const pages = defineCollection({
         })
       )
       .optional(),
+    // About-page "Score Sheet" ledger (places the page in chess-notation moves)
+    moves: z
+      .array(
+        z.object({
+          id: z.string(),
+          notation: z.string(), // SAN-style move glyph, e.g. "1.", "2.", "Nf3."
+          piece: z.enum(["king", "queen", "rook", "bishop", "knight", "pawn"]).optional(),
+          heading: z.string(),
+          dateRange: z.string().optional(), // "2024 – Present"
+          lead: z.string().optional(), // short thesis line in Fraunces
+          body: z.array(z.string()), // paragraphs as separate entries
+        })
+      )
+      .optional(),
+    facts: z
+      .array(
+        z.object({
+          label: z.string(),
+          value: z.string(),
+        })
+      )
+      .optional(),
   }),
 });
 

@@ -44,4 +44,6 @@ test-results/
 .impeccable/
 .agents/skills/
 .github/skills/
+.codex/
+.github/hooks/
 

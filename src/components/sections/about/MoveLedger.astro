@@ -1,0 +1,39 @@
+---
+import type { CollectionEntry } from "astro:content";
+import MoveEntry from "./MoveEntry.astro";
+import DividerChessboard from "../../primitives/DividerChessboard.astro";
+
+type Move = NonNullable<CollectionEntry<"pages">["data"]["moves"]>[number];
+
+interface Props {
+  moves: Move[];
+}
+
+const { moves } = Astro.props;
+---
+
+<section aria-label="Career score sheet" class="relative">
+  <ol class="space-y-0">
+    {
+      moves.map((move, i) => (
+        <>
+          <MoveEntry move={move} index={i} isLast={i === moves.length - 1} />
+          {!move.id.includes("endgame") && i < moves.length - 1 && null}
+        </>
+      ))
+    }
+  </ol>
+
+  {/* Closing ornament: endgame marker */}
+  <div class="mt-4 mb-2 flex items-center gap-4">
+    <span class="bg-border-custom block h-[var(--stroke-hatch)] flex-1"></span>
+    <span class="text-caption text-text-muted font-mono font-bold tracking-[0.2em] uppercase">
+      0.0 · Position held
+    </span>
+    <span class="bg-border-custom block h-[var(--stroke-hatch)] flex-1"></span>
+  </div>
+
+  <div class="mt-6">
+    <DividerChessboard class="opacity-60" />
+  </div>
+</section>
