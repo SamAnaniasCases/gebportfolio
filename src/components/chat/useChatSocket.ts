@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+  import { useEffect, useRef, useState, useCallback } from "react";
 
 export interface ChatMessage {
   id: string;
@@ -125,27 +125,27 @@ export function useChatSocket(): UseChatSocketReturn {
   const fetchMessages = useCallback(async () => {
     try {
       const res = await fetch("/api/chat/messages");
-      if (!res.ok) return;
+      if (!res.ok) {
+        setIsConnected(false);
+        return;
+      }
       const data = await res.json();
       if (data && Array.isArray(data.messages)) {
         setMessages(data.messages);
         setIsConnected(true);
       }
-    } catch {
+    } catch (err) {
+      console.error("[Chat Fetch Error]:", err);
       setIsConnected(false);
     }
   }, []);
 
-  // Poll for messages when onboarded
+  // Poll for messages continuously
   useEffect(() => {
-    if (!hasOnboarded) return;
-
-    // Initial fetch
     fetchMessages();
-
     const interval = setInterval(fetchMessages, POLL_INTERVAL_MS);
     return () => clearInterval(interval);
-  }, [hasOnboarded, fetchMessages]);
+  }, [fetchMessages]);
 
   // Action: Set Initial Username (Onboarding)
   const setUsername = useCallback((newName: string): boolean => {
@@ -198,14 +198,15 @@ export function useChatSocket(): UseChatSocketReturn {
           if (data && Array.isArray(data.history)) {
             setMessages(data.history);
           }
+          fetchMessages();
         })
-        .catch(() => {
-          // Keep optimistic message on failure
+        .catch((err) => {
+          console.error("[Chat Send Error]:", err);
         });
 
       return true;
     },
-    [displayName, avatar]
+    [displayName, avatar, fetchMessages]
   );
 
   // No-op: typing signals are not supported with HTTP polling
