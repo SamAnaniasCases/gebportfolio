@@ -68,6 +68,9 @@ export const memoryStorageProvider: StorageProvider = {
   },
 };
 
+// @ts-expect-error cloudflare:workers virtual module resolved during Cloudflare Workers runtime
+import { env as cfEnv } from "cloudflare:workers";
+
 export interface D1PreparedStatement {
   first<T = Record<string, unknown>>(): Promise<T | null>;
   bind(...values: unknown[]): D1PreparedStatement;
@@ -79,15 +82,24 @@ export interface D1DatabaseBinding {
 }
 
 /**
- * Safely extracts the D1 database binding from Astro.locals runtime.
- * Resolves from `locals.DB`, `locals.runtime.env.DB`, or `locals.env.DB`.
+ * Safely extracts the D1 database binding from Cloudflare Workers runtime or Astro.locals.
+ * Resolves from `cloudflare:workers` env or `locals.DB`.
  */
-export function getD1Database(locals: unknown): D1DatabaseBinding | undefined {
+export function getD1Database(locals?: unknown): D1DatabaseBinding | undefined {
   try {
+    let targetEnv: Record<string, unknown> | undefined = undefined;
+    try {
+      if (typeof cfEnv !== "undefined") {
+        targetEnv = cfEnv as Record<string, unknown>;
+      }
+    } catch {
+      // cloudflare:workers env unavailable in local dev
+    }
+
     const rawLocals = locals as Record<string, unknown>;
-    const runtime = rawLocals?.runtime as { env?: Record<string, unknown> } | undefined;
-    const envObj = rawLocals?.env as Record<string, unknown> | undefined;
-    const db = (rawLocals?.DB || runtime?.env?.DB || envObj?.DB) as D1DatabaseBinding | undefined;
+    const globalObj = globalThis as unknown as Record<string, unknown>;
+    const db = (targetEnv?.DB || rawLocals?.DB || globalObj?.DB) as D1DatabaseBinding | undefined;
+
     if (db && typeof db.prepare === "function") {
       return db;
     }

@@ -1,4 +1,6 @@
 import type { APIRoute } from "astro";
+// @ts-expect-error cloudflare:workers virtual module resolved during Cloudflare Workers runtime
+import { env as cfEnv } from "cloudflare:workers";
 
 export const prerender = false;
 
@@ -38,14 +40,25 @@ export interface MinimalKV {
 
 /**
  * Retrieves the KV namespace from the Cloudflare runtime context.
- * Resolves from both `locals.CHAT_KV` and `locals.runtime.env.CHAT_KV`.
+ * Resolves from `cloudflare:workers` env or `locals.CHAT_KV`.
  * Returns `null` when running outside Cloudflare (local dev).
  */
-export function getKVNamespace(locals: App.Locals): MinimalKV | null {
+export function getKVNamespace(locals?: App.Locals): MinimalKV | null {
   try {
+    let targetEnv: Record<string, unknown> | undefined = undefined;
+    try {
+      if (typeof cfEnv !== "undefined") {
+        targetEnv = cfEnv as Record<string, unknown>;
+      }
+    } catch {
+      // cloudflare:workers env unavailable in local dev
+    }
+
     const rawLocals = locals as unknown as Record<string, unknown>;
-    const runtime = rawLocals?.runtime as { env?: Record<string, unknown> } | undefined;
-    const kv = (rawLocals?.CHAT_KV || runtime?.env?.CHAT_KV) as MinimalKV | undefined;
+    const globalObj = globalThis as unknown as Record<string, unknown>;
+    const kv = (targetEnv?.CHAT_KV || rawLocals?.CHAT_KV || globalObj?.CHAT_KV) as
+      MinimalKV | undefined;
+
     if (kv && typeof kv.get === "function" && typeof kv.put === "function") {
       return kv;
     }
