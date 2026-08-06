@@ -93,7 +93,7 @@ function getAvatarForSession(sessionToken: string): string {
 }
 
 /**
- * Robust React Hook managing real-time WebSocket connection to PartyKit backend.
+ * Robust React Hook managing real-time WebSocket connection to PartyKit backend with HTTP API fallback.
  * Enforces mandatory username onboarding and persistent single-session identity.
  */
 export function useChatSocket(options: UseChatSocketOptions = {}): UseChatSocketReturn {
@@ -263,6 +263,26 @@ export function useChatSocket(options: UseChatSocketOptions = {}): UseChatSocket
     };
   }, [connect, displayName]);
 
+  // HTTP API Fallback Polling when WebSocket is not connected
+  useEffect(() => {
+    if (!isConnected && hasOnboarded) {
+      const fetchMessages = () => {
+        fetch("/api/chat/messages")
+          .then((res) => res.json())
+          .then((data) => {
+            if (data && Array.isArray(data.messages)) {
+              setMessages(data.messages);
+            }
+          })
+          .catch(() => {});
+      };
+
+      fetchMessages();
+      const interval = setInterval(fetchMessages, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [isConnected, hasOnboarded]);
+
   // Action: Set Initial Username (Onboarding)
   const setUsername = useCallback((newName: string): boolean => {
     const validation = validateUsername(newName);
@@ -285,7 +305,7 @@ export function useChatSocket(options: UseChatSocketOptions = {}): UseChatSocket
     return true;
   }, []);
 
-  // Action: Send Message
+  // Action: Send Message (WebSocket or HTTP API Fallback)
   const sendMessage = useCallback(
     (text: string): boolean => {
       const trimmed = text.trim();
@@ -308,7 +328,22 @@ export function useChatSocket(options: UseChatSocketOptions = {}): UseChatSocket
           })
         );
       } else {
-        setMessages((prev) => [...prev.slice(-49), newMsg]);
+        fetch("/api/chat/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sender: currentName, avatar, text: trimmed }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data && Array.isArray(data.history)) {
+              setMessages(data.history);
+            } else {
+              setMessages((prev) => [...prev.slice(-49), newMsg]);
+            }
+          })
+          .catch(() => {
+            setMessages((prev) => [...prev.slice(-49), newMsg]);
+          });
       }
 
       return true;
