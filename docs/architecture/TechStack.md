@@ -11,6 +11,7 @@ The core technology dependencies, choices, and alternatives.
 - **Fonts**: Fontsource (`Inter Variable`, `Manrope Variable`, `Fraunces Variable`, `JetBrains Mono`, `Gochi Hand`) — three-voice type system detailed in [DesignSystem.md](../design/DesignSystem.md).
 - **Icons**: `@lucide/astro` (v1.24.0) - SVG icon library.
 - **Editor/CMS**: Keystatic (Local/Git mode) - Visual editor without database overhead.
+- **Chat State**: Cloudflare KV - Cross-isolate shared message storage for the live chat feature (HTTP polling, no WebSockets).
 - **Language**: TypeScript (strict mode).
 - **Package Manager**: pnpm.
 - **Linting/Formatting**: ESLint + Prettier.

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Migrated **Live Chat Transport from PartyKit WebSockets to HTTP Polling + Cloudflare KV** (`src/pages/api/chat/messages.ts`, `src/pages/api/chat/send.ts`, `src/components/chat/useChatSocket.ts`, `src/components/chat/ChatBox.tsx`, `src/components/chat/ChatWidget.tsx`):
+  - Replaced WebSocket transport with HTTP polling at 3-second intervals after PartyKit's shared `partykit.dev` zone exceeded Cloudflare's 10,000 custom domain limit, making `npx partykit deploy` unavailable.
+  - Chat API routes (`/api/chat/messages`, `/api/chat/send`) now read and write from Cloudflare KV (`CHAT_KV` binding) for cross-isolate shared state in production, with an in-memory fallback for local development.
+  - Refactored `useChatSocket.ts` from a WebSocket-based hook to a pure HTTP polling hook; removed reconnection logic, typing signals, and presence tracking.
+  - Removed `partyHost` prop from `ChatWidget` and `ChatBox` components.
+  - Removed typing indicator UI and live presence counter from the chat interface (not feasible without persistent connections).
+  - Connection status indicator now shows "Live" when polling is active instead of WebSocket-specific states.
+
 - Created **Hand-Sketched Vector Logo Component & Sketched Thumbnail Skill** (`.agents/skills/sketched-thumbnail-generator/SKILL.md`, `src/components/ui/AvegaLogo.astro`, `public/images/avega-logo.svg`, `src/assets/logos/avega-logo.svg`):
   - Authored the `/sketched-thumbnail-generator` agent skill specifying SVG filter definitions (`#wobble`, `#wobble2`), crayon noise texturing (`#crayonRed`, `#crayonBlue`, `#crayonWhite`), double-pass inked stroke outlines, 100% transparent canvas backgrounds, and borderless container workflows.
   - Built the `AvegaLogo.astro` hand-sketched vector logo component with separate A and V monogram letterform shapes, scaled for full-bleed edge-to-edge app-icon badges.

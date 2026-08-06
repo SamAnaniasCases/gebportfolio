@@ -24,8 +24,8 @@ graph TD
 ## Core Invariants
 
 1. **Content Portability**: Content is kept in plain Markdown/MDX, JSON, or YAML.
-2. **Zero Run-time DB**: There is no live database connection required for the website core.
-3. **No Unauthenticated Server Exec**: All client actions are static pages; dynamic integrations (like forms) use serverless API endpoints.
+2. **Zero Run-time DB**: There is no live database connection required for the website core. The live chat feature uses Cloudflare KV for cross-isolate message persistence with HTTP polling (not WebSockets).
+3. **No Unauthenticated Server Exec**: All client actions are static pages; dynamic integrations (like forms and chat) use serverless API endpoints.
 
 ## Paused Sections
 

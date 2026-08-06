@@ -10,7 +10,6 @@ export interface ChatMessage {
 }
 
 export interface UseChatSocketOptions {
-  partyHost?: string;
   roomName?: string;
 }
 
@@ -31,8 +30,11 @@ export interface UseChatSocketReturn {
   clearError: () => void;
 }
 
-const SESSION_STORAGE_KEY = "portfolio_chat_session_token_v1";
 const DISPLAY_NAME_KEY = "portfolio_chat_display_name_v1";
+const SESSION_STORAGE_KEY = "portfolio_chat_session_token_v1";
+
+/** Polling interval in milliseconds. */
+const POLL_INTERVAL_MS = 3000;
 
 const CHESS_AVATARS = ["knight", "rook", "bishop", "pawn", "king", "queen"];
 const RESERVED_NAMES = ["admin", "system", "mod", "moderator", "owner"];
@@ -93,26 +95,18 @@ function getAvatarForSession(sessionToken: string): string {
 }
 
 /**
- * Robust React Hook managing real-time WebSocket connection to PartyKit backend with HTTP API fallback.
- * Enforces mandatory username onboarding and persistent single-session identity.
+ * React Hook managing chat via HTTP polling against `/api/chat/messages`
+ * and `/api/chat/send`. Replaces the former WebSocket-based hook after
+ * PartyKit deployment became unavailable.
  */
-export function useChatSocket(options: UseChatSocketOptions = {}): UseChatSocketReturn {
-  const { roomName = "global", partyHost } = options;
+export function useChatSocket(): UseChatSocketReturn {
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [presenceCount, setPresenceCount] = useState<number>(1);
   const [displayName, setDisplayNameState] = useState<string>(getInitialDisplayName);
-  const [assignedName, setAssignedName] = useState<string>("");
   const [avatar, setAvatar] = useState<string>("knight");
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [typingUsers, setTypingUsers] = useState<string[]>([]);
 
-  const socketRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const reconnectAttemptsRef = useRef<number>(0);
-  const typingTimerRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
   const displayNameRef = useRef<string>(displayName);
 
   // Synchronize ref with state
@@ -128,160 +122,31 @@ export function useChatSocket(options: UseChatSocketOptions = {}): UseChatSocket
 
   const hasOnboarded = Boolean(displayName.trim() && displayName.trim().length >= 3);
 
-  // Stable connect function
-  const connect = useCallback(() => {
-    if (typeof window === "undefined") return;
-    if (!displayNameRef.current || displayNameRef.current.trim().length < 3) {
-      setIsConnecting(false);
-      return;
-    }
-
-    if (
-      socketRef.current &&
-      (socketRef.current.readyState === WebSocket.OPEN ||
-        socketRef.current.readyState === WebSocket.CONNECTING)
-    ) {
-      return;
-    }
-
-    setIsConnecting(true);
-
-    const token = getOrCreateSessionToken();
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-
-    let host = partyHost;
-    if (!host) {
-      const isLocal =
-        window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-      host = isLocal ? "127.0.0.1:1999" : window.location.host;
-    }
-
-    const wsUrl = `${protocol}//${host}/party/chat?room=${encodeURIComponent(
-      roomName
-    )}&token=${encodeURIComponent(token)}&name=${encodeURIComponent(displayNameRef.current)}`;
-
+  // Fetch messages from the HTTP API
+  const fetchMessages = useCallback(async () => {
     try {
-      const ws = new WebSocket(wsUrl);
-      socketRef.current = ws;
-
-      ws.onopen = () => {
+      const res = await fetch("/api/chat/messages");
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data && Array.isArray(data.messages)) {
+        setMessages(data.messages);
         setIsConnected(true);
-        setIsConnecting(false);
-        setError(null);
-        reconnectAttemptsRef.current = 0;
-      };
-
-      ws.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-
-          if (data.type === "sync") {
-            setMessages(data.history || []);
-            setPresenceCount(data.presenceCount || 1);
-            setAssignedName(data.assignedName || displayNameRef.current);
-            if (data.avatar) setAvatar(data.avatar);
-          } else if (data.type === "message") {
-            if (data.message) {
-              setMessages((prev) => [...prev.slice(-49), data.message]);
-            }
-          } else if (data.type === "presence") {
-            setPresenceCount(data.presenceCount || 1);
-          } else if (data.type === "name_updated") {
-            if (data.assignedName) {
-              setAssignedName(data.assignedName);
-            }
-          } else if (data.type === "typing") {
-            const senderName = data.sender;
-            if (!senderName) return;
-
-            if (data.isTyping) {
-              setTypingUsers((prev) => (prev.includes(senderName) ? prev : [...prev, senderName]));
-
-              if (typingTimerRef.current.has(senderName)) {
-                clearTimeout(typingTimerRef.current.get(senderName)!);
-              }
-              const timer = setTimeout(() => {
-                setTypingUsers((prev) => prev.filter((u) => u !== senderName));
-                typingTimerRef.current.delete(senderName);
-              }, 3000);
-              typingTimerRef.current.set(senderName, timer);
-            } else {
-              setTypingUsers((prev) => prev.filter((u) => u !== senderName));
-              if (typingTimerRef.current.has(senderName)) {
-                clearTimeout(typingTimerRef.current.get(senderName)!);
-                typingTimerRef.current.delete(senderName);
-              }
-            }
-          } else if (data.type === "error") {
-            setError(data.message || "An error occurred.");
-          }
-        } catch {
-          // Ignore JSON parse errors
-        }
-      };
-
-      ws.onerror = () => {
-        setIsConnected(false);
-        setIsConnecting(false);
-      };
-
-      ws.onclose = () => {
-        setIsConnected(false);
-        setIsConnecting(false);
-        socketRef.current = null;
-
-        const delay = Math.min(2000 * Math.pow(2, reconnectAttemptsRef.current), 8000);
-        reconnectAttemptsRef.current += 1;
-
-        if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
-        reconnectTimeoutRef.current = setTimeout(() => {
-          connect();
-        }, delay);
-      };
+      }
     } catch {
       setIsConnected(false);
-      setIsConnecting(false);
     }
-  }, [partyHost, roomName]);
+  }, []);
 
-  // Connect when displayName is set
+  // Poll for messages when onboarded
   useEffect(() => {
-    if (displayName && displayName.trim().length >= 3) {
-      connect();
-    } else {
-      setIsConnecting(false);
-    }
+    if (!hasOnboarded) return;
 
-    return () => {
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
-      }
-      if (socketRef.current) {
-        socketRef.current.close();
-        socketRef.current = null;
-      }
-    };
-  }, [connect, displayName]);
+    // Initial fetch
+    fetchMessages();
 
-  // HTTP API Fallback Polling when WebSocket is not connected
-  useEffect(() => {
-    if (!isConnected && hasOnboarded) {
-      const fetchMessages = () => {
-        fetch("/api/chat/messages")
-          .then((res) => res.json())
-          .then((data) => {
-            if (data && Array.isArray(data.messages)) {
-              setMessages(data.messages);
-            }
-          })
-          .catch(() => {});
-      };
-
-      fetchMessages();
-      const interval = setInterval(fetchMessages, 3000);
-      return () => clearInterval(interval);
-    }
-  }, [isConnected, hasOnboarded]);
+    const interval = setInterval(fetchMessages, POLL_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [hasOnboarded, fetchMessages]);
 
   // Action: Set Initial Username (Onboarding)
   const setUsername = useCallback((newName: string): boolean => {
@@ -305,63 +170,47 @@ export function useChatSocket(options: UseChatSocketOptions = {}): UseChatSocket
     return true;
   }, []);
 
-  // Action: Send Message (WebSocket or HTTP API Fallback)
+  // Action: Send Message via HTTP POST
   const sendMessage = useCallback(
     (text: string): boolean => {
       const trimmed = text.trim();
       if (!trimmed) return false;
 
-      const currentName = assignedName || displayName;
-      const newMsg: ChatMessage = {
+      const currentName = displayName;
+
+      // Optimistic local append
+      const optimisticMsg: ChatMessage = {
         id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
         sender: currentName,
         avatar,
         text: trimmed,
         timestamp: Date.now(),
       };
+      setMessages((prev) => [...prev.slice(-49), optimisticMsg]);
 
-      if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-        socketRef.current.send(
-          JSON.stringify({
-            type: "chat",
-            text: trimmed,
-          })
-        );
-      } else {
-        fetch("/api/chat/send", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sender: currentName, avatar, text: trimmed }),
+      // POST to server
+      fetch("/api/chat/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sender: currentName, avatar, text: trimmed }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && Array.isArray(data.history)) {
+            setMessages(data.history);
+          }
         })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data && Array.isArray(data.history)) {
-              setMessages(data.history);
-            } else {
-              setMessages((prev) => [...prev.slice(-49), newMsg]);
-            }
-          })
-          .catch(() => {
-            setMessages((prev) => [...prev.slice(-49), newMsg]);
-          });
-      }
+        .catch(() => {
+          // Keep optimistic message on failure
+        });
 
       return true;
     },
-    [assignedName, displayName, avatar]
+    [displayName, avatar]
   );
 
-  // Action: Send Typing Signal
-  const sendTypingSignal = useCallback((isTyping: boolean) => {
-    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      socketRef.current.send(
-        JSON.stringify({
-          type: "typing",
-          isTyping,
-        })
-      );
-    }
-  }, []);
+  // No-op: typing signals are not supported with HTTP polling
+  const sendTypingSignal = useCallback(() => {}, []);
 
   // Action: Clear Error
   const clearError = useCallback(() => {
@@ -370,15 +219,15 @@ export function useChatSocket(options: UseChatSocketOptions = {}): UseChatSocket
 
   return {
     messages,
-    presenceCount,
-    assignedName: assignedName || displayName,
+    presenceCount: 0,
+    assignedName: displayName,
     displayName,
     avatar,
     isConnected,
-    isConnecting,
+    isConnecting: false,
     hasOnboarded,
     error,
-    typingUsers,
+    typingUsers: [],
     sendMessage,
     setUsername,
     sendTypingSignal,

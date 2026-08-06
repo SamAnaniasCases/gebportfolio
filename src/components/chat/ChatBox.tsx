@@ -8,7 +8,6 @@ import { DoodleIcon } from "../ui/DoodleIcon";
 interface ChatBoxProps {
   isOpen: boolean;
   onClose: () => void;
-  partyHost?: string;
 }
 
 const CHESS_SYMBOLS: Record<string, string> = {
@@ -31,21 +30,18 @@ function formatRelativeTime(timestamp: number): string {
   return `${days}d ago`;
 }
 
-export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) => {
+export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose }) => {
   const {
     messages,
-    presenceCount,
     isConnected,
     error,
     displayName,
     assignedName,
     hasOnboarded,
-    typingUsers,
     sendMessage,
     setUsername,
-    sendTypingSignal,
     clearError,
-  } = useChatSocket({ partyHost });
+  } = useChatSocket();
 
   const [inputText, setInputText] = useState("");
   const [onboardingInput, setOnboardingInput] = useState("");
@@ -133,7 +129,6 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputText(e.target.value);
-    sendTypingSignal(true);
   };
 
   const activeError = validationError || error;
@@ -282,7 +277,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
                   <DoodleIcon name="message" className="size-3.5" /> {messages.length} messages
                 </span>
                 <span
-                  title={isConnected ? "Connected to live edge" : "Connecting..."}
+                  title={isConnected ? "Live" : "Connecting..."}
                   className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[10px] font-semibold ${
                     isConnected
                       ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
@@ -294,7 +289,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
                       isConnected ? "animate-pulse bg-emerald-500" : "bg-amber-500"
                     }`}
                   />
-                  {presenceCount} Online
+                  {isConnected ? "Live" : "Connecting"}
                 </span>
               </div>
 
@@ -419,18 +414,6 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose, partyHost }) 
               )}
               <div ref={messagesEndRef} />
             </div>
-
-            {/* Typing Indicator */}
-            {typingUsers.length > 0 && (
-              <div className="text-text-muted flex items-center gap-1.5 py-1 font-mono text-[10px] italic">
-                <span className="bg-primary size-1.5 animate-ping rounded-full" />
-                <span className="truncate">
-                  {typingUsers.length === 1
-                    ? `${typingUsers[0]} is typing...`
-                    : `${typingUsers.join(", ")} are typing...`}
-                </span>
-              </div>
-            )}
 
             {/* Footer Input Form */}
             <footer className="border-border-custom/60 mt-3 shrink-0 border-t pt-3">

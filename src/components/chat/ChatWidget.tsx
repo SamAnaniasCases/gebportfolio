@@ -1,16 +1,12 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { ChatBox } from "./ChatBox";
 
-export interface ChatWidgetProps {
-  partyHost?: string;
-}
-
 /**
  * Global Chat Widget Component mounted in BaseLayout.astro.
  * Manages open/close state, Web Audio sound effects,
  * and global event listener for 'open-portfolio-chat'.
  */
-export const ChatWidget: React.FC<ChatWidgetProps> = ({ partyHost }) => {
+export const ChatWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [soundEnabled] = useState(true);
 
@@ -74,7 +70,7 @@ export const ChatWidget: React.FC<ChatWidgetProps> = ({ partyHost }) => {
       <div aria-live="polite" aria-atomic="true" className="sr-only" id="chat-live-region" />
 
       {/* Fullscreen Chat Modal */}
-      <ChatBox isOpen={isOpen} onClose={handleClose} partyHost={partyHost} />
+      <ChatBox isOpen={isOpen} onClose={handleClose} />
     </>
   );
 };
