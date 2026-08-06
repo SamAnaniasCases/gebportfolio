@@ -4,8 +4,8 @@ import { chessRules } from "turn-arbiter/chess";
 import {
   memoryStorageProvider,
   createD1StorageProvider,
+  getD1Database,
   INITIAL_FEN,
-  type D1DatabaseBinding,
 } from "../../../lib/chess/storage";
 import {
   verifySession,
@@ -19,13 +19,7 @@ export const prerender = false;
 export const GET: APIRoute = async ({ cookies, locals }) => {
   try {
     // Determine storage provider (D1 if available via Cloudflare runtime, otherwise Memory Fallback)
-    let envDB: D1DatabaseBinding | undefined = undefined;
-    try {
-      const cfEnv = (locals as { env?: { DB?: D1DatabaseBinding } })?.env;
-      envDB = cfEnv?.DB;
-    } catch {
-      // Memory fallback for local dev / preview
-    }
+    const envDB = getD1Database(locals);
     const storage = envDB ? createD1StorageProvider(envDB) : memoryStorageProvider;
 
     // Load live game from database or initialize default
@@ -99,6 +93,9 @@ export const GET: APIRoute = async ({ cookies, locals }) => {
       status: 200,
       headers: {
         "Content-Type": "application/json",
+        "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
+        "CDN-Cache-Control": "no-store",
+        "Cloudflare-CDN-Cache-Control": "no-store",
       },
     });
   } catch (error) {

@@ -4,8 +4,8 @@ import { chessRules } from "turn-arbiter/chess";
 import {
   memoryStorageProvider,
   createD1StorageProvider,
+  getD1Database,
   INITIAL_FEN,
-  type D1DatabaseBinding,
 } from "../../../lib/chess/storage";
 import { verifySession, COOKIE_NAME } from "../../../lib/chess/session";
 
@@ -36,13 +36,7 @@ export const POST: APIRoute = async ({ request, cookies, locals }) => {
     }
 
     // Determine storage provider
-    let envDB: D1DatabaseBinding | undefined = undefined;
-    try {
-      const cfEnv = (locals as { env?: { DB?: D1DatabaseBinding } })?.env;
-      envDB = cfEnv?.DB;
-    } catch {
-      // Memory fallback for local dev / preview
-    }
+    const envDB = getD1Database(locals);
     const storage = envDB ? createD1StorageProvider(envDB) : memoryStorageProvider;
 
     // Load live game from DB

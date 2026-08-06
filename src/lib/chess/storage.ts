@@ -79,6 +79,25 @@ export interface D1DatabaseBinding {
 }
 
 /**
+ * Safely extracts the D1 database binding from Astro.locals runtime.
+ * Resolves from `locals.DB`, `locals.runtime.env.DB`, or `locals.env.DB`.
+ */
+export function getD1Database(locals: unknown): D1DatabaseBinding | undefined {
+  try {
+    const rawLocals = locals as Record<string, unknown>;
+    const runtime = rawLocals?.runtime as { env?: Record<string, unknown> } | undefined;
+    const envObj = rawLocals?.env as Record<string, unknown> | undefined;
+    const db = (rawLocals?.DB || runtime?.env?.DB || envObj?.DB) as D1DatabaseBinding | undefined;
+    if (db && typeof db.prepare === "function") {
+      return db;
+    }
+  } catch {
+    // Memory fallback
+  }
+  return undefined;
+}
+
+/**
  * Cloudflare D1 Storage Provider
  * Implements atomic SQL Compare-and-Swap (CAS): UPDATE game SET ... WHERE id = 1 AND version = ?
  */

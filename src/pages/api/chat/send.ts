@@ -44,7 +44,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
       JSON.stringify({ ok: true, message: newMessage, history: updatedHistory }),
       {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "CDN-Cache-Control": "no-store",
+          "Cloudflare-CDN-Cache-Control": "no-store",
+        },
       }
     );
   } catch {

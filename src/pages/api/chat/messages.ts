@@ -38,12 +38,14 @@ export interface MinimalKV {
 
 /**
  * Retrieves the KV namespace from the Cloudflare runtime context.
+ * Resolves from both `locals.CHAT_KV` and `locals.runtime.env.CHAT_KV`.
  * Returns `null` when running outside Cloudflare (local dev).
  */
 export function getKVNamespace(locals: App.Locals): MinimalKV | null {
   try {
     const rawLocals = locals as unknown as Record<string, unknown>;
-    const kv = rawLocals?.CHAT_KV as MinimalKV | undefined;
+    const runtime = rawLocals?.runtime as { env?: Record<string, unknown> } | undefined;
+    const kv = (rawLocals?.CHAT_KV || runtime?.env?.CHAT_KV) as MinimalKV | undefined;
     if (kv && typeof kv.get === "function" && typeof kv.put === "function") {
       return kv;
     }
@@ -93,7 +95,9 @@ export const GET: APIRoute = async ({ locals }) => {
     status: 200,
     headers: {
       "Content-Type": "application/json",
-      "Cache-Control": "no-cache, no-store, must-revalidate",
+      "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
+      "CDN-Cache-Control": "no-store",
+      "Cloudflare-CDN-Cache-Control": "no-store",
     },
   });
 };
