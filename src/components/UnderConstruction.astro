@@ -1,0 +1,138 @@
+---
+import Container from "./primitives/Container.astro";
+import LinkButton from "./primitives/LinkButton.astro";
+import ChessIcons from "./navigation/ChessIcons.astro";
+import DoodleIcon from "./ui/DoodleIcon.astro";
+
+interface Props {
+  /** eyebrow label, e.g. "Section · Research" */
+  eyebrow: string;
+  /** Fraunces display heading, e.g. "Research in progress" */
+  title: string;
+  /** Primary explanation sentence — what this section will hold */
+  summary: string;
+  /** Longer explanation, one short paragraph */
+  description?: string;
+  /** Chess piece used as the central engraving visual */
+  piece?: "king" | "queen" | "rook" | "bishop" | "knight" | "pawn";
+  /** Timeframe / ETA line (mono). Optional. */
+  eta?: string;
+  /** Primary CTA */
+  cta?: { label: string; href: string };
+  /** Secondary / ghost CTA */
+  secondaryCta?: { label: string; href: string };
+}
+
+const {
+  eyebrow,
+  title,
+  summary,
+  description,
+  piece = "pawn",
+  eta,
+  cta = { label: "Return home", href: "/" },
+  secondaryCta,
+} = Astro.props;
+---
+
+<Container width="default" class="animate-reveal py-14 md:py-20 lg:py-24">
+  <section
+    aria-labelledby="under-construction-heading"
+    class="relative mx-auto grid max-w-3xl grid-cols-1 items-center gap-10 md:grid-cols-[auto_1fr] md:gap-14"
+  >
+    {/* Engraved chess-piece marker */}
+    <figure
+      class="border-border-custom bg-surface relative flex size-24 shrink-0 items-center justify-center rounded-sm border-[var(--stroke-structural)] md:size-32"
+      style="box-shadow: 4px 4px 0 var(--color-ink);"
+      aria-hidden="true"
+    >
+      <ChessIcons piece={piece} variant="woodcut" class="text-primary size-14 md:size-20" />
+      {/* Corner stamps */}
+      <span
+        class="border-border-custom bg-surface-subtle absolute -top-1.5 -left-1.5 size-3 rounded-[1px] border"
+      ></span>
+      <span
+        class="border-border-custom bg-surface-subtle absolute -right-1.5 -bottom-1.5 size-3 rounded-[1px] border"
+      ></span>
+    </figure>
+
+    <div class="space-y-5">
+      {/* Eyebrow */}
+      <p
+        class="text-caption text-primary font-mono font-bold tracking-[0.2em] uppercase"
+        aria-label={`Section: ${eyebrow}`}
+      >
+        {eyebrow}
+      </p>
+
+      {/* Title */}
+      <h1
+        id="under-construction-heading"
+        class="text-h1 font-display text-text font-bold tracking-tight text-balance"
+      >
+        {title}
+      </h1>
+
+      {/* Lead sentence — italic Fraunces per ContentStyleGuide empty-state pattern */}
+      <p class="text-body-large font-display text-text max-w-[52ch] leading-snug italic">
+        {summary}
+      </p>
+
+      {/* Optional explanatory paragraph */}
+      {
+        description && (
+          <p class="text-body text-text-muted max-w-[62ch] leading-relaxed">{description}</p>
+        )
+      }
+
+      {/* Scrawl catchphrase — playful but honest */}
+      <p
+        class="font-hand text-h4 text-primary inline-block origin-left -rotate-1"
+        aria-hidden="true"
+      >
+        pieces still on the back rank
+      </p>
+
+      {/* ETA */}
+      {
+        eta && (
+          <p class="text-caption text-text-muted font-mono font-semibold tracking-widest uppercase">
+            {eta}
+          </p>
+        )
+      }
+
+      {/* Action row */}
+      <div class="flex flex-wrap items-center gap-3 pt-2">
+        <LinkButton href={cta.href} variant="primary" size="md">
+          {cta.label}
+        </LinkButton>
+        {
+          secondaryCta && (
+            <LinkButton href={secondaryCta.href} variant="ghost" size="md">
+              {secondaryCta.label}
+            </LinkButton>
+          )
+        }
+      </div>
+
+      {/* Footnote ornament */}
+      <div class="flex items-center gap-3 pt-4" aria-hidden="true">
+        <span class="bg-border-custom h-[var(--stroke-hatch)] w-16"></span>
+        <DoodleIcon name="interface/pin" class="text-text-muted size-3.5" />
+        <span class="text-micro text-text-muted font-mono tracking-[0.18em] uppercase">
+          Pinned for future work
+        </span>
+      </div>
+    </div>
+  </section>
+
+  {/* Closing hatch rule */}
+  <div class="mt-16 flex items-center gap-4 md:mt-20" aria-hidden="true">
+    <span class="bg-border-custom block h-[var(--stroke-hatch)] flex-1"></span>
+    <span class="text-micro text-text-muted font-mono font-bold tracking-[0.22em] uppercase">
+      Draft · under construction
+    </span>
+    <span class="bg-border-custom block h-[var(--stroke-hatch)] flex-1"></span>
+  </div>
+</Container>

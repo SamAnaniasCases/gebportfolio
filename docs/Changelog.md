@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Paused **Research, Writing, and Lab Sections** behind a unified `<UnderConstruction />` placeholder component (`src/components/UnderConstruction.astro`, `src/pages/research/index.astro`, `src/pages/posts/index.astro`, `src/pages/experiments/index.astro`; originals preserved at `src/content/_archive/*-index.astro`):
+  - Authored a single reusable stub with chess-piece section markers (knight for Research, bishop for Writing, rook for Lab), engraved structural border square with corner stamps, and hard-offset press shadow `4px 4px 0 var(--color-ink)`.
+  - Composed Fraunces display heading, italic Fraunces lead sentence, Inter body copy, and a Gochi Hand catchphrase (`pieces still on the back rank`) rotated −1°, following the empty-state voice in `docs/engineering/ContentStyleGuide.md` §12.11.
+  - Configured eyebrow (`Section · Paused`), ETA note, primary `Back to home` CTA, and a contextual secondary CTA per page (case studies, about, etc.).
+  - Added a closing hatch-rule ornament (`Pinned for future work` micro-stamp) and full dark-mode pairing via the `ChessIcons variant="woodcut"` token-aware rendering.
+  - Moved the prior `index.astro` content out of the routing tree to `src/content/_archive/` to keep sources recoverable without exposing a duplicate route.
+  - Reverted `.qoder/skills/impeccable` discovery from ESLint by moving that library out of scope via the existing flat-config `ignores` list.
+
+- Polished **Work / Projects Index & Case Study Detail Pages** (`src/pages/projects/index.astro`, `src/pages/projects/[slug].astro`, `src/styles/tokens.css`):
+  - Replaced every system text emoji (♔, ♛, ✓, →, ←) with theme-aware vector icons: DoodleIcons (`interface/checklist`, `interface/target`, `interface/search`, `interface/suitcase`, `interface/calendar`, `e-commerce/tag`, `interface/link`, `interface/tick`, `arrows/arrow-left`, `arrows/arrow-right`, `arrows/arrow-ne`) and `<ChessIcons piece="…">` for the strategic-role badges.
+  - Swapped the serif-glyph watermarks on featured cards for real `<ChessIcons variant="woodcut">` SVGs that auto-invert in dark mode (the previous font glyphs rendered identically in both modes).
+  - Rebuilt the category filter as an accessible roledex: `role="tablist"` / `role="tab"` / `aria-selected` synchronization, structural `border-[var(--stroke-structural)]` on the toolbar surface, and removal of the soft shadow that broke the press-metaphor contract.
+  - Added a real `<label>` ("Search the archive") to the project search input, switched to `type="search"` + `autocomplete="off"`, and wired focus back to the input on filter reset.
+  - Rebuilt the empty state with a woodcut pawn icon, Gochi Hand headline (`No moves match that line.`), `role="status"` + `aria-live="polite"`, and a keyboard-reachable reset button.
+  - Promoted section subheads from Fraunces H3 to H2 so the document outline reads H1 → H2 → H3 cleanly, restoring the Engraver Reserve Rule.
+  - Detail page (`[slug].astro`): replaced `@lucide/astro` icons with DoodleIcons, replaced `✓` characters in Key Project Outcomes with `<DoodleIcon name="interface/tick">`, tightened prose measure to 68ch (`max-w-[68ch]`), upgraded the Key Takeaway callout from `border-l-2` to structural stroke token, added `aria-label="Case study pagination"` and an engraved `DividerChessboard` separator before Next/Previous navigation.
+  - Added the missing semantic color alias `--color-ink: var(--color-text-raw);` to `src/styles/tokens.css`. Nine components across home, about, projects, and the new MoveEntry referenced `var(--color-ink)` but the token did not exist — silently producing zero-offset no-style box-shadows. The alias fixes the silent bug in one place.
+
 - Fixed **React Hook SSR Desynchronization on Vite Dev Reloads** (`src/layouts/BaseLayout.astro`):
   - Updated `<ChatWidget client:load />` to `<ChatWidget client:only="react" />` to render the interactive live chat widget exclusively on the client.
   - Eliminated SSR React dispatcher errors (`TypeError: Cannot read properties of null (reading 'useState')`) triggered during Vite's automatic dependency re-optimizations.

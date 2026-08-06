@@ -1,107 +1,25 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import Container from "../../components/primitives/Container.astro";
-import LinkButton from "../../components/primitives/LinkButton.astro";
-import DividerKnight from "../../components/primitives/DividerKnight.astro";
-import { getCollection } from "astro:content";
-import { BookOpen, User, Calendar, ExternalLink } from "@lucide/astro";
+import UnderConstruction from "../../components/UnderConstruction.astro";
 
-// Fetch research entries
-const publications = await getCollection("research");
-const sortedPublications = publications.sort(
-  (a, b) => b.data.date.getTime() - a.data.date.getTime()
-);
+/**
+ * Research / Publications — temporarily paused.
+ * Original implementation preserved at src/content/_archive/research-index.astro.
+ */
 ---
 
-<BaseLayout title="Research">
-  <Container width="default" class="animate-reveal space-y-12 py-12">
-    <!-- Header -->
-    <header class="border-border-custom space-y-3 border-b pb-6">
-      <h1 class="text-h1 font-display text-text font-bold tracking-tight">
-        Research & Publications
-      </h1>
-      <p class="text-body-large text-text-muted max-w-2xl leading-relaxed">
-        Academic papers, peer-reviewed telemetry indexing publications, and consensus simulations.
-      </p>
-    </header>
-
-    <!-- Research List -->
-    <div class="flex flex-col">
-      {
-        sortedPublications.map((pub, index) => {
-          const primaryLink = pub.data.publicationLinks?.[0];
-          return (
-            <>
-              {index > 0 && <DividerKnight class="my-6" />}
-              <div class="border-border-custom bg-surface duration-normal space-y-4 rounded-2xl border p-6 transition-all hover:shadow-sm">
-                <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
-                  <div class="space-y-2">
-                    <span class="text-caption text-text-muted flex items-center gap-1.5 font-mono tracking-wider uppercase">
-                      <Calendar class="size-4" />
-                      {pub.data.date.toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                      })}
-                      <span class="text-border-custom">|</span>
-                      <span class="capitalize">{pub.data.status.replace("_", " ")}</span>
-                    </span>
-                    <h2 class="text-h3 font-display text-text hover:text-primary font-bold transition-colors">
-                      <a href={`/research/${pub.id}`}>{pub.data.title}</a>
-                    </h2>
-                    <div class="text-small text-primary flex items-center gap-1.5 font-medium">
-                      <User class="size-4 shrink-0" />
-                      <span>
-                        Sam Ananias
-                        {pub.data.collaborators.length > 0 &&
-                          `, ${pub.data.collaborators.join(", ")}`}
-                      </span>
-                    </div>
-                  </div>
-                  {primaryLink && (
-                    <LinkButton
-                      href={primaryLink.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      size="sm"
-                      variant="secondary"
-                      class="shrink-0 self-start"
-                    >
-                      {primaryLink.label}
-                      <ExternalLink class="size-3.5" />
-                    </LinkButton>
-                  )}
-                </div>
-
-                <div class="border-border-custom bg-surface-subtle mt-4 border-l-4 py-2 pl-4">
-                  <h3 class="text-caption text-text mb-1 flex items-center gap-1.5 font-mono font-semibold tracking-wider uppercase">
-                    <BookOpen class="text-primary size-4" />
-                    Abstract
-                  </h3>
-                  <p class="text-small text-text-muted leading-relaxed italic">
-                    {pub.data.abstract}
-                  </p>
-                </div>
-
-                {pub.data.publicationLinks && pub.data.publicationLinks.length > 1 && (
-                  <div class="flex flex-wrap items-center gap-2 pt-2">
-                    <span class="text-caption text-text-muted">Additional Links:</span>
-                    {pub.data.publicationLinks.slice(1).map((link) => (
-                      <a
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="text-caption text-primary font-medium hover:underline"
-                      >
-                        {link.label}
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </>
-          );
-        })
-      }
-    </div>
-  </Container>
+<BaseLayout
+  title="Research & Publications"
+  description="Research papers, telemetry studies, and formal publications — in development."
+>
+  <UnderConstruction
+    eyebrow="Research · Paused"
+    title="This section is being built."
+    summary="Formal publications, telemetry studies, and consensus simulations will land here soon. Right now the energy is going into the work itself."
+    description="The research feed will return with first-party evidence — abstract, methods, and findings — once there is a paper worth publishing. Until then, the bibliography stays short on purpose."
+    piece="knight"
+    eta="Under construction · reopening when content is verified"
+    cta={{ label: "Back to home", href: "/" }}
+    secondaryCta={{ label: "Open case studies", href: "/projects" }}
+  />
 </BaseLayout>
