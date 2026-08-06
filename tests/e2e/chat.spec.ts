@@ -1,12 +1,20 @@
 import { test, expect, type Page } from "@playwright/test";
 
 async function openChatModal(page: Page) {
-  const menuOpen = page.locator("#menu-open");
-  if (await menuOpen.isVisible()) {
-    await menuOpen.click();
-    await page.locator("#mobile-menu button", { hasText: "Live Chat" }).click();
+  const isMobile = await page.locator("#menu-open").isVisible();
+  if (isMobile) {
+    const mobileMenu = page.getByRole("navigation", { name: "Mobile navigation" });
+    if (!(await mobileMenu.isVisible())) {
+      await page.locator("#menu-open").click();
+      await expect(mobileMenu).toBeVisible();
+    }
+    const trigger = page.locator("#mobile-menu button", { hasText: "Live Chat" });
+    await expect(trigger).toBeVisible();
+    await trigger.click();
   } else {
-    await page.locator("aside button", { hasText: "Live Chat" }).click();
+    const trigger = page.locator("aside button", { hasText: "Live Chat" });
+    await expect(trigger).toBeVisible();
+    await trigger.click();
   }
 }
 

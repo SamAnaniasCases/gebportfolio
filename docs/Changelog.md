@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Created **Hand-Sketched Vector Logo Component & Sketched Thumbnail Skill** (`.agents/skills/sketched-thumbnail-generator/SKILL.md`, `src/components/ui/AvegaLogo.astro`, `public/images/avega-logo.svg`, `src/assets/logos/avega-logo.svg`):
+  - Authored the `/sketched-thumbnail-generator` agent skill specifying SVG filter definitions (`#wobble`, `#wobble2`), crayon noise texturing (`#crayonRed`, `#crayonBlue`, `#crayonWhite`), double-pass inked stroke outlines, 100% transparent canvas backgrounds, and borderless container workflows.
+  - Built the `AvegaLogo.astro` hand-sketched vector logo component with separate A and V monogram letterform shapes, scaled for full-bleed edge-to-edge app-icon badges.
+
+- Polished **Work Page App-Icon Layout & Interactive Hover Peek Preview Animation** (`src/pages/projects/index.astro`, `src/components/ui/AvegaLogo.astro`):
+  - Redesigned project thumbnail presentation into edge-to-edge rounded square app-icon badges (`rounded-2xl flex size-16 md:size-20 overflow-hidden`) placed on the left side of featured cards.
+  - Implemented an interactive cursor-swipe hover peek preview window (`.peek-window`) displaying full, uncropped project screenshots (`/images/projects/bits/dashboard.png`, `/images/projects/portfolio-architecture.png`) with smooth spring transitions and 3D parallax cursor tracking (`translate3d` + subtle rotation).
+  - Removed bottom-right engraved woodcut chess piece watermarks from card footers for a clean, modern card aesthetic.
+
 - Implemented **Chess Evaluation Scrollbar** (`src/components/navigation/EvalBarScroll.astro`, `src/styles/global.css`, `src/layouts/BaseLayout.astro`):
   - Converted native browser scrollbar into a sleek, full-height right-edge Chess Evaluation Bar on desktop viewports (`fixed right-0 top-0 bottom-0`).
   - Removed text labels and floating badges (`+0.0`, `#M`) for a minimal, pure dual-tone visual bar.

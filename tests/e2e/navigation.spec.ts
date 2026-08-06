@@ -48,7 +48,14 @@ test.describe("Global Navigation & Header Verification", () => {
     // nav, which must be opened via the hamburger before each navigation.
     const openMenuIfMobile = async () => {
       if (isMobile) {
-        await page.getByRole("button", { name: "Open navigation menu" }).click();
+        await page.waitForLoadState("domcontentloaded");
+        const openBtn = page.getByRole("button", { name: "Open navigation menu" });
+        await expect(openBtn).toBeVisible();
+        const mobileMenu = page.getByRole("navigation", { name: "Mobile navigation" });
+        if (!(await mobileMenu.isVisible())) {
+          await openBtn.click();
+        }
+        await expect(mobileMenu).toBeVisible();
       }
     };
     const navigation = () =>

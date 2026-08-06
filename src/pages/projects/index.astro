@@ -3,6 +3,8 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Container from "../../components/primitives/Container.astro";
 import DoodleIcon from "../../components/ui/DoodleIcon.astro";
 import ChessIcons from "../../components/navigation/ChessIcons.astro";
+import Logo from "../../components/primitives/Logo.astro";
+import AvegaLogo from "../../components/ui/AvegaLogo.astro";
 import { getCollection } from "astro:content";
 
 // Retrieve all projects
@@ -83,7 +85,7 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
     >
       <h2 id="filter-bar-heading" class="sr-only">Filter and search projects</h2>
       <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <!-- Category Filter Tabs (rolodex) -->
+        <!-- Category Filter Tabs -->
         <div
           role="tablist"
           aria-label="Project categories"
@@ -116,7 +118,7 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
           </button>
         </div>
 
-        <!-- Real-time Search Input with visible label -->
+        <!-- Real-time Search Input -->
         <div class="relative min-w-[240px] md:w-72">
           <label
             for="search-input"
@@ -154,7 +156,7 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
         </span>
       </div>
 
-      <!-- Responsive Grid for Featured Projects -->
+      <!-- 2-Column Grid for Featured Projects -->
       <div class="grid grid-cols-1 items-stretch gap-6 pt-2 pb-2 md:grid-cols-2">
         {/* King Signature Hero Card (BITS) */}
         {
@@ -164,15 +166,19 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
               data-category={kingProject.data.category}
               data-status={kingProject.data.status}
               data-search-text={`${kingProject.data.title} ${kingProject.data.summary} ${kingProject.data.tags.join(" ")}`}
-              class="group bg-surface border-primary relative flex flex-col justify-between overflow-hidden rounded-md border-[var(--stroke-structural)] p-5 transition-all duration-200 hover:-translate-y-1 md:p-6"
+              class="group bg-surface border-primary hover:border-primary/70 relative flex cursor-pointer flex-col justify-between overflow-hidden rounded-xl border-[var(--stroke-structural)] p-5 transition-all duration-300 hover:-translate-y-1 md:p-6"
               style="box-shadow: 3px 3px 0 var(--color-ink);"
             >
               <div class="relative z-10 space-y-4">
-                <div class="flex items-center justify-between gap-2">
+                {/* Header Pills Row */}
+                <div class="flex flex-wrap items-center justify-between gap-2">
                   <div class="flex items-center gap-2 font-mono text-xs">
                     <span class="bg-primary text-surface inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 font-bold tracking-wider uppercase">
                       <ChessIcons piece="king" class="size-3.5 shrink-0" />
                       <span>{PIECE_TITLES.king.label}</span>
+                    </span>
+                    <span class="border-border-custom bg-surface-subtle text-text-muted text-micro hidden rounded-md border px-2.5 py-1 font-mono font-semibold tracking-wider uppercase sm:inline-flex">
+                      AVEGA SHIPPING
                     </span>
                   </div>
                   <span
@@ -186,31 +192,53 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
                   </span>
                 </div>
 
-                {kingProject.data.heroImage && (
-                  <div class="border-border-custom relative aspect-video w-full overflow-hidden rounded-md border">
+                {/* Horizontal Content Row: Full-bleed App Icon Logo on LEFT */}
+                <div class="flex items-start gap-4 pt-1">
+                  {/* Left: Edge-to-Edge App Icon Container */}
+                  <div class="border-border-custom relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border md:size-20">
+                    <AvegaLogo size="full" class="h-full w-full" />
+                  </div>
+
+                  {/* Right: Title & Description */}
+                  <div class="min-w-0 flex-1 space-y-1.5">
+                    <h3 class="text-h3 font-display text-text group-hover:text-primary leading-tight font-bold transition-colors">
+                      <a
+                        href={`/projects/${kingProject.id}`}
+                        class="focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
+                      >
+                        {kingProject.data.title}
+                      </a>
+                    </h3>
+                    <p class="text-small text-text-muted line-clamp-3 leading-relaxed">
+                      {kingProject.data.summary}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Interactive Hover Peek Window (Full uncropped picture) */}
+              {kingProject.data.heroImage && (
+                <div
+                  class="peek-window border-primary/60 bg-surface pointer-events-none absolute top-14 right-4 z-30 hidden w-72 translate-y-4 scale-90 overflow-hidden rounded-xl border-2 opacity-0 shadow-2xl transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 md:w-80 lg:block lg:w-[380px]"
+                  style="box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);"
+                >
+                  <div class="border-border-custom bg-surface-subtle/95 text-text-muted flex items-center justify-between border-b px-3.5 py-2 font-mono text-[11px] font-bold tracking-wider uppercase">
+                    <span class="text-primary flex items-center gap-1.5">
+                      <DoodleIcon name="interface/search" class="size-3.5" />
+                      <span>Full Work Preview</span>
+                    </span>
+                    <span class="text-caption font-bold">FULL PICTURE</span>
+                  </div>
+                  <div class="bg-surface-subtle relative w-full overflow-hidden p-1.5">
                     <img
                       src={kingProject.data.heroImage}
-                      alt={kingProject.data.title}
-                      class="size-full object-cover contrast-105 grayscale transition-all duration-300 group-hover:scale-102 group-hover:grayscale-0"
+                      alt={`${kingProject.data.title} full screenshot preview`}
+                      class="h-auto max-h-[380px] w-full rounded-lg object-contain transition-transform duration-500 group-hover:scale-[1.02]"
                       loading="lazy"
                     />
                   </div>
-                )}
-
-                <div class="space-y-2">
-                  <h3 class="text-h3 font-display text-text group-hover:text-primary line-clamp-2 leading-tight font-bold transition-colors">
-                    <a
-                      href={`/projects/${kingProject.id}`}
-                      class="focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
-                    >
-                      {kingProject.data.title}
-                    </a>
-                  </h3>
-                  <p class="text-small text-text-muted leading-relaxed">
-                    {kingProject.data.summary}
-                  </p>
                 </div>
-              </div>
+              )}
 
               <div class="border-border-custom relative z-10 mt-4 flex items-center justify-between border-t pt-4">
                 <a
@@ -224,14 +252,6 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
                   />
                 </a>
               </div>
-
-              {/* Engraved woodcut chess piece watermark */}
-              <div
-                class="text-primary/15 dark:text-primary/25 pointer-events-none absolute right-2 bottom-0 origin-bottom-right -rotate-6 transition-transform select-none group-hover:scale-105 group-hover:rotate-[-3deg]"
-                aria-hidden="true"
-              >
-                <ChessIcons piece="king" variant="woodcut" class="size-32 opacity-60 md:size-40" />
-              </div>
             </article>
           )
         }
@@ -244,15 +264,19 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
               data-category={queenProject.data.category}
               data-status={queenProject.data.status}
               data-search-text={`${queenProject.data.title} ${queenProject.data.summary} ${queenProject.data.tags.join(" ")}`}
-              class="group bg-surface border-border-custom relative flex flex-col justify-between overflow-hidden rounded-md border-[var(--stroke-structural)] p-5 transition-all duration-200 hover:-translate-y-1 md:p-6"
+              class="group bg-surface border-border-custom hover:border-primary/70 relative flex cursor-pointer flex-col justify-between overflow-hidden rounded-xl border-[var(--stroke-structural)] p-5 transition-all duration-300 hover:-translate-y-1 md:p-6"
               style="box-shadow: 3px 3px 0 var(--color-ink);"
             >
               <div class="relative z-10 space-y-4">
-                <div class="flex items-center justify-between gap-2">
+                {/* Header Pills Row */}
+                <div class="flex flex-wrap items-center justify-between gap-2">
                   <div class="flex items-center gap-2 font-mono text-xs">
                     <span class="text-primary bg-primary/10 border-primary/20 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 font-bold tracking-wider uppercase">
                       <ChessIcons piece="queen" class="size-3.5 shrink-0" />
                       <span>{PIECE_TITLES.queen.label}</span>
+                    </span>
+                    <span class="border-border-custom bg-surface-subtle text-text-muted text-micro hidden rounded-md border px-2.5 py-1 font-mono font-semibold tracking-wider uppercase sm:inline-flex">
+                      ASTRO V5 ARCHITECTURE
                     </span>
                   </div>
                   <span
@@ -266,31 +290,53 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
                   </span>
                 </div>
 
-                {queenProject.data.heroImage && (
-                  <div class="border-border-custom relative aspect-video w-full overflow-hidden rounded-md border">
+                {/* Horizontal Content Row: Full App Icon Logo on LEFT */}
+                <div class="flex items-start gap-4 pt-1">
+                  {/* Left: App Icon / Logo Thumbnail */}
+                  <div class="border-border-custom bg-surface-subtle relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border md:size-20">
+                    <Logo class="text-text h-full w-full object-contain p-2.5 transition-transform group-hover:scale-105" />
+                  </div>
+
+                  {/* Right: Title & Description */}
+                  <div class="min-w-0 flex-1 space-y-1.5">
+                    <h3 class="text-h3 font-display text-text group-hover:text-primary leading-tight font-bold transition-colors">
+                      <a
+                        href={`/projects/${queenProject.id}`}
+                        class="focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
+                      >
+                        {queenProject.data.title}
+                      </a>
+                    </h3>
+                    <p class="text-small text-text-muted line-clamp-3 leading-relaxed">
+                      {queenProject.data.summary}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Interactive Hover Peek Window (Full uncropped picture) */}
+              {queenProject.data.heroImage && (
+                <div
+                  class="peek-window border-primary/60 bg-surface pointer-events-none absolute top-14 right-4 z-30 hidden w-72 translate-y-4 scale-90 overflow-hidden rounded-xl border-2 opacity-0 shadow-2xl transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 md:w-80 lg:block lg:w-[380px]"
+                  style="box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);"
+                >
+                  <div class="border-border-custom bg-surface-subtle/95 text-text-muted flex items-center justify-between border-b px-3.5 py-2 font-mono text-[11px] font-bold tracking-wider uppercase">
+                    <span class="text-primary flex items-center gap-1.5">
+                      <DoodleIcon name="interface/search" class="size-3.5" />
+                      <span>Full Work Preview</span>
+                    </span>
+                    <span class="text-caption font-bold">FULL PICTURE</span>
+                  </div>
+                  <div class="bg-surface-subtle relative w-full overflow-hidden p-1.5">
                     <img
                       src={queenProject.data.heroImage}
-                      alt={queenProject.data.title}
-                      class="size-full object-cover contrast-105 grayscale transition-all duration-300 group-hover:scale-102 group-hover:grayscale-0"
+                      alt={`${queenProject.data.title} full screenshot preview`}
+                      class="h-auto max-h-[380px] w-full rounded-lg object-contain transition-transform duration-500 group-hover:scale-[1.02]"
                       loading="lazy"
                     />
                   </div>
-                )}
-
-                <div class="space-y-2">
-                  <h3 class="text-h3 font-display text-text group-hover:text-primary line-clamp-2 leading-tight font-bold transition-colors">
-                    <a
-                      href={`/projects/${queenProject.id}`}
-                      class="focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
-                    >
-                      {queenProject.data.title}
-                    </a>
-                  </h3>
-                  <p class="text-small text-text-muted leading-relaxed">
-                    {queenProject.data.summary}
-                  </p>
                 </div>
-              </div>
+              )}
 
               <div class="border-border-custom relative z-10 mt-4 flex items-center justify-between border-t pt-4">
                 <a
@@ -303,14 +349,6 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
                     class="size-3.5 transition-transform group-hover:translate-x-0.5"
                   />
                 </a>
-              </div>
-
-              {/* Engraved woodcut chess piece watermark */}
-              <div
-                class="text-primary/15 dark:text-primary/25 pointer-events-none absolute right-2 bottom-0 origin-bottom-right -rotate-6 transition-transform select-none group-hover:scale-105 group-hover:rotate-[-3deg]"
-                aria-hidden="true"
-              >
-                <ChessIcons piece="queen" variant="woodcut" class="size-32 opacity-60 md:size-32" />
               </div>
             </article>
           )
@@ -349,7 +387,7 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
                 data-category={project.data.category}
                 data-status={project.data.status}
                 data-search-text={`${project.data.title} ${project.data.summary} ${project.data.tags.join(" ")}`}
-                class="group hover:bg-surface-subtle/60 flex flex-col justify-between gap-4 p-4 transition-colors md:flex-row md:items-center md:p-5"
+                class="group hover:bg-surface-subtle/60 relative flex cursor-pointer flex-col justify-between gap-4 p-4 transition-colors md:flex-row md:items-center md:p-5"
               >
                 <div class="space-y-1.5 md:max-w-2xl">
                   <div class="text-text-muted flex flex-wrap items-center gap-2.5 font-mono text-xs">
@@ -382,6 +420,29 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
                     {project.data.summary}
                   </p>
                 </div>
+
+                {/* Interactive Peek Window for Archive Projects (Full uncropped picture) */}
+                {project.data.heroImage && (
+                  <div
+                    class="peek-window border-primary/60 bg-surface pointer-events-none absolute top-2 right-24 z-30 hidden w-72 translate-y-3 scale-90 overflow-hidden rounded-xl border-2 opacity-0 shadow-2xl transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 md:w-80 lg:block"
+                    style="box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);"
+                  >
+                    <div class="border-border-custom bg-surface-subtle/95 text-text-muted flex items-center justify-between border-b px-3.5 py-1.5 font-mono text-[10px] font-bold tracking-wider uppercase">
+                      <span class="text-primary flex items-center gap-1.5">
+                        <DoodleIcon name="interface/search" class="size-3" />
+                        <span>Work Preview</span>
+                      </span>
+                    </div>
+                    <div class="bg-surface-subtle relative w-full overflow-hidden p-1">
+                      <img
+                        src={project.data.heroImage}
+                        alt={`${project.data.title} full screenshot preview`}
+                        class="h-auto max-h-[300px] w-full rounded-lg object-contain transition-transform duration-500 group-hover:scale-[1.02]"
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
+                )}
 
                 <div class="flex shrink-0 items-center gap-4">
                   <a
@@ -431,7 +492,7 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
     </section>
   </Container>
 
-  <!-- Client-side Script for Live Filtering & Real-time Search -->
+  <!-- Client-side Script for Live Filtering, Real-time Search, and Cursor Swipe Peek Animation -->
   <script is:inline>
     const tabs = Array.from(document.querySelectorAll("#category-tabs [role='tab']"));
     const searchInput = document.getElementById("search-input");
@@ -495,6 +556,29 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
       if (allTab) setActiveTab(allTab);
       filterProjects();
       searchInput?.focus();
+    });
+
+    // Interactive Swipe & Parallax Cursor Hover Peek Animation
+    cards.forEach((card) => {
+      const peekWin = card.querySelector(".peek-window");
+      if (!peekWin) return;
+
+      card.addEventListener("mousemove", (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Calculate offset percentage (-15px to 15px shift)
+        const xOffset = (x / rect.width - 0.5) * 20;
+        const yOffset = (y / rect.height - 0.5) * 16;
+        const rotate = (x / rect.width - 0.5) * 4;
+
+        peekWin.style.transform = `translate3d(${xOffset}px, ${yOffset}px, 0) rotate(${rotate}deg) scale(1.02)`;
+      });
+
+      card.addEventListener("mouseleave", () => {
+        peekWin.style.transform = "";
+      });
     });
   </script>
 </BaseLayout>

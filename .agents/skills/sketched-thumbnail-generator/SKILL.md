@@ -15,13 +15,13 @@ All project card thumbnails, logos, and case study hero illustrations must share
 
 Every sketched SVG thumbnail must incorporate these 5 design pillars:
 
-| Pillar | Implementation | Effect |
-|---|---|---|
-| **1. Transparent Background & Borderless Canvas** | No canvas `<rect fill="...">` or outer notebook border frame. Canvas is 100% transparent (`fill="none"`). | Allows the sketched card and symbol to float naturally over layout surfaces and dark/light mode cards. |
-| **2. Organic Hand-Wobble Filters** | `feTurbulence` + `feDisplacementMap` (`#wobble`, `#wobble2`) | Distorts straight vector paths into hand-sketched, hand-drawn lines with natural wobble. |
-| **3. Crayon & Noise Texturing** | `feTurbulence` + `feColorMatrix` + `feComposite` (`#crayonRed`, `#crayonBlue`, `#crayonWhite`) | Replicates colored-pencil and crayon filling over paper surfaces. |
-| **4. Double-Stroke Ink Pass** | Primary path (`stroke-width="5"`, `#wobble`) + Secondary offset path (`stroke-width="2.5"`, `opacity="0.6"`, `#wobble2`) | Simulates loose, double-pass hand-inked outlines. |
-| **5. Corner Crosshatch Shading** | 3-line parallel diagonal hatch groups (`stroke-width="2"`, `opacity="0.35"`) | Adds handcrafted woodcut crosshatch shading to card corners. |
+| Pillar                                            | Implementation                                                                                                           | Effect                                                                                                 |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| **1. Transparent Background & Borderless Canvas** | No canvas `<rect fill="...">` or outer notebook border frame. Canvas is 100% transparent (`fill="none"`).                | Allows the sketched card and symbol to float naturally over layout surfaces and dark/light mode cards. |
+| **2. Organic Hand-Wobble Filters**                | `feTurbulence` + `feDisplacementMap` (`#wobble`, `#wobble2`)                                                             | Distorts straight vector paths into hand-sketched, hand-drawn lines with natural wobble.               |
+| **3. Crayon & Noise Texturing**                   | `feTurbulence` + `feColorMatrix` + `feComposite` (`#crayonRed`, `#crayonBlue`, `#crayonWhite`)                           | Replicates colored-pencil and crayon filling over paper surfaces.                                      |
+| **4. Double-Stroke Ink Pass**                     | Primary path (`stroke-width="5"`, `#wobble`) + Secondary offset path (`stroke-width="2.5"`, `opacity="0.6"`, `#wobble2`) | Simulates loose, double-pass hand-inked outlines.                                                      |
+| **5. Corner Crosshatch Shading**                  | 3-line parallel diagonal hatch groups (`stroke-width="2"`, `opacity="0.35"`)                                             | Adds handcrafted woodcut crosshatch shading to card corners.                                           |
 
 ---
 
@@ -93,6 +93,7 @@ Every sketched SVG asset **must** include the following standard filter definiti
 When creating a new thumbnail for a project or case study:
 
 ### Step 1: Transparent Canvas (No Outer Borders)
+
 Ensure the top-level `<svg>` element has **no background rect** and **no outer border box**:
 
 ```xml
@@ -100,6 +101,7 @@ Ensure the top-level `<svg>` element has **no background rect** and **no outer b
 ```
 
 ### Step 2: Main Sketched Card Body
+
 Draw the primary sketched background card with rounded corners (`rx="26"`), heavy outline (`stroke-width="7"`), and `#wobble` + `#crayonRed`/`#crayonBlue` filters:
 
 ```xml
@@ -110,6 +112,7 @@ Draw the primary sketched background card with rounded corners (`rx="26"`), heav
 ```
 
 ### Step 3: Corner Crosshatching
+
 Add 3-line parallel diagonal hatch marks to the top-right and bottom-left card corners:
 
 ```xml
@@ -124,6 +127,7 @@ Add 3-line parallel diagonal hatch marks to the top-right and bottom-left card c
 ```
 
 ### Step 4: Main Vector Symbol / Monogram
+
 Draw the project symbol or monogram path using cream parchment fill (`#fdf6e3`), heavy dark stroke (`#8a1f16`, `stroke-width="5"`), `#wobble`, and `#crayonWhite`:
 
 ```xml
@@ -137,6 +141,7 @@ Draw the project symbol or monogram path using cream parchment fill (`#fdf6e3`),
 ```
 
 ### Step 5: Loose Pencil Scribble Shading
+
 Add subtle curved accent paths inside letterforms or symbol facets:
 
 ```xml
@@ -179,8 +184,23 @@ const dimensionClass = typeof size === "number" ? "" : sizeMap[size] || sizeMap.
 const customStyle = typeof size === "number" ? `width: ${size}px; height: ${size}px;` : "";
 ---
 
-<div class:list={["relative inline-flex shrink-0 items-center justify-center transition-transform hover:scale-105", dimensionClass, className]} style={customStyle} aria-label={ariaLabel} role="img">
-  <svg viewBox="140 150 820 560" fill="none" class="h-full w-full select-none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<div
+  class:list={[
+    "relative inline-flex shrink-0 items-center justify-center transition-transform hover:scale-105",
+    dimensionClass,
+    className,
+  ]}
+  style={customStyle}
+  aria-label={ariaLabel}
+  role="img"
+>
+  <svg
+    viewBox="140 150 820 560"
+    fill="none"
+    class="h-full w-full select-none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
     <!-- Filter defs & sketched card paths -->
   </svg>
 </div>
