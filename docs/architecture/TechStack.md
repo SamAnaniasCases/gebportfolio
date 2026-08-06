@@ -11,7 +11,8 @@ The core technology dependencies, choices, and alternatives.
 - **Fonts**: Fontsource (`Inter Variable`, `Manrope Variable`, `Fraunces Variable`, `JetBrains Mono`, `Gochi Hand`) — three-voice type system detailed in [DesignSystem.md](../design/DesignSystem.md).
 - **Icons**: `@lucide/astro` (v1.24.0) - SVG icon library.
 - **Editor/CMS**: Keystatic (Local/Git mode) - Visual editor without database overhead.
-- **Chat State**: Cloudflare KV - Cross-isolate shared message storage for the live chat feature (HTTP polling, no WebSockets).
+- **Chat State**: Cloudflare KV - Cross-isolate shared message storage for the live chat feature (`CHAT_KV`, HTTP polling).
+- **Database**: Cloudflare D1 (`DB`) - Serverless SQLite database for the anonymous shared chess game feature (`9100d65e-3df5-4256-9c14-3f93831c04fa`).
 - **Language**: TypeScript (strict mode).
 - **Package Manager**: pnpm.
 - **Linting/Formatting**: ESLint + Prettier.

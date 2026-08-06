@@ -1,0 +1,20 @@
+{
+  "name": "gebportfolio",
+  "compatibility_date": "2026-07-27",
+  "kv_namespaces": [
+    {
+      "binding": "CHAT_KV",
+      "id": "d2a813a39ef94064a1da851bf730a7c8",
+    },
+    {
+      "binding": "SESSION",
+      "id": "affb22f0d6314bf1ac2466e8b18a1f21",
+    },
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_id": "9100d65e-3df5-4256-9c14-3f93831c04fa",
+    },
+  ],
+}

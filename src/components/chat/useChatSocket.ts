@@ -100,7 +100,6 @@ function getAvatarForSession(sessionToken: string): string {
  * PartyKit deployment became unavailable.
  */
 export function useChatSocket(): UseChatSocketReturn {
-
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [displayName, setDisplayNameState] = useState<string>(getInitialDisplayName);
   const [avatar, setAvatar] = useState<string>("knight");

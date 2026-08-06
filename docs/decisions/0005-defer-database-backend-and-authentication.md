@@ -19,5 +19,5 @@ We will **defer** all database, dedicated server backends, and authentication la
 
 ## Consequences
 
-- **Positive**: Zero database costs, zero SQL migrations, no risk of password leaks or database connection outages.
-- **Negative**: Cannot support authenticated user-specific dashboards or dynamic comment feeds initially. If needed, these will be implemented via serverless database wrappers (e.g., Cloudflare D1 + Drizzle) in later phases.
+- **Positive**: Zero database costs for static content, zero SQL migrations for core content, no risk of password leaks or database connection outages.
+- **Negative**: Cannot support authenticated user-specific dashboards or dynamic comment feeds initially. Ephemeral/interactive features use lightweight Cloudflare serverless bindings (Cloudflare D1 `DB` for shared chess game CAS state, Cloudflare KV `CHAT_KV` for live chat state) as specified in feature plans.

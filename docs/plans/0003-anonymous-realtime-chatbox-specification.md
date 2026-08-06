@@ -1,6 +1,8 @@
 # Anonymous Real-Time Chatbox Architecture & Design Specification
 
-<callout icon="♞">**Status:** Draft · **Owner:** Gen · **Date:** 2026-07-27</callout>
+<callout icon="♞">**Status:** Implemented (Migrated to HTTP Polling + Cloudflare KV) · **Owner:** Gen · **Date:** 2026-07-27 (Updated 2026-08-06)</callout>
+
+> **Implementation Note (2026-08-06):** In production, the chat transport was migrated from PartyKit WebSockets to HTTP polling (3s interval) with Cloudflare KV (`CHAT_KV` binding) for cross-isolate message state. This avoids external third-party zone domain limits while keeping the feature lightweight, serverless, and fully operational on Cloudflare Pages.
 
 ---
 
