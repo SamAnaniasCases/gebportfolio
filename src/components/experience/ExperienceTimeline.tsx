@@ -80,10 +80,7 @@ export const ExperienceTimeline: React.FC<ExperienceTimelineProps> = ({
                       : "border-border-custom bg-surface/65 text-text-muted hover:border-primary/50 hover:bg-surface/80"
                   }`}
                 >
-                  {label}{" "}
-                  <span className={isActive ? "opacity-90" : "opacity-75"}>
-                    ({count})
-                  </span>
+                  {label} <span className={isActive ? "opacity-90" : "opacity-75"}>({count})</span>
                 </button>
               );
             })}
