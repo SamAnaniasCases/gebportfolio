@@ -42,7 +42,7 @@ test-results/
 
 # AI Agent Skills & Impeccable State
 .impeccable/
-.agents/skills/
+.agents/skills/impeccable/
 .github/skills/
 .codex/
 .github/hooks/

@@ -1,0 +1,120 @@
+---
+/* Full-Height Right-Edge Chess Evaluation Scrollbar */
+---
+
+<!-- Native Scrollbar Replacement: Chess Eval Bar on right edge -->
+<div
+  id="eval-scrollbar-container"
+  class="fixed top-0 right-0 bottom-0 z-50 hidden w-2.5 cursor-pointer select-none transition-[width] duration-150 hover:w-3.5 sm:block"
+  aria-label="Chess Evaluation Scrollbar"
+  title="Scroll position · Chess Eval Bar"
+>
+  <!-- Eval Bar Track (Full 100vh height, clean structural border) -->
+  <div
+    id="eval-scrollbar-track"
+    class="border-border-custom relative h-full w-full overflow-hidden border-l"
+  >
+    <!-- Dynamic Advantage Fill (Grows from top downwards as user scrolls down) -->
+    <div
+      id="eval-scrollbar-fill"
+      class="absolute top-0 right-0 left-0 w-full transition-[height] duration-75 ease-out"
+      style="height: 0%;"
+    >
+    </div>
+
+    <!-- Fine Evaluation Divider Line -->
+    <div
+      id="eval-scrollbar-divider"
+      class="bg-primary/80 absolute right-0 left-0 h-[2px] w-full transition-[top] duration-75 ease-out"
+      style="top: 0%;"
+    >
+    </div>
+  </div>
+</div>
+
+<style>
+  /* In Light Mode:
+     - At top (scroll = 0%): Track background is 100% White.
+     - As user scrolls down (0% -> 100%): Black fill grows from the top downwards.
+  */
+  #eval-scrollbar-track {
+    background-color: var(--color-bg-raw, #ffffff);
+  }
+  #eval-scrollbar-fill {
+    background-color: var(--color-text-raw, #1a1614);
+  }
+
+  /* In Dark Mode:
+     - At top (scroll = 0%): Track background is 100% Dark.
+     - As user scrolls down (0% -> 100%): White fill grows from the top downwards.
+  */
+  :global(.dark) #eval-scrollbar-track {
+    background-color: var(--color-bg-raw, #12100e);
+  }
+  :global(.dark) #eval-scrollbar-fill {
+    background-color: var(--color-text-raw, #f2e8d5);
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    const container = document.getElementById("eval-scrollbar-container");
+    const track = document.getElementById("eval-scrollbar-track");
+    const fill = document.getElementById("eval-scrollbar-fill");
+    const divider = document.getElementById("eval-scrollbar-divider");
+
+    if (!container || !track || !fill || !divider) return;
+
+    let isDragging = false;
+
+    function updateEvalBar() {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollHeight <= 0) {
+        container.style.display = "none";
+        return;
+      }
+      container.style.display = "block";
+
+      const scrolledRatio = Math.min(Math.max(window.scrollY / scrollHeight, 0), 1);
+      // As user scrolls down (scrolledRatio 0 -> 1), Fill height grows from top down 0% -> 100%
+      const percentage = (scrolledRatio * 100).toFixed(1);
+
+      fill.style.height = percentage + "%";
+      divider.style.top = percentage + "%";
+    }
+
+    function scrollToY(clientY) {
+      const rect = container.getBoundingClientRect();
+      const clickY = Math.min(Math.max(clientY - rect.top, 0), rect.height);
+      const ratio = clickY / rect.height;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+      window.scrollTo({
+        top: ratio * scrollHeight,
+        behavior: isDragging ? "auto" : "smooth",
+      });
+    }
+
+    container.addEventListener("mousedown", function (e) {
+      isDragging = true;
+      scrollToY(e.clientY);
+      e.preventDefault();
+    });
+
+    window.addEventListener("mousemove", function (e) {
+      if (isDragging) {
+        scrollToY(e.clientY);
+      }
+    });
+
+    window.addEventListener("mouseup", function () {
+      isDragging = false;
+    });
+
+    window.addEventListener("scroll", updateEvalBar, { passive: true });
+    window.addEventListener("resize", updateEvalBar, { passive: true });
+
+    // Initial positioning
+    updateEvalBar();
+  })();
+</script>

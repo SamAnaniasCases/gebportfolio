@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Implemented **Chess Evaluation Scrollbar** (`src/components/navigation/EvalBarScroll.astro`, `src/styles/global.css`, `src/layouts/BaseLayout.astro`):
+  - Converted native browser scrollbar into a sleek, full-height right-edge Chess Evaluation Bar on desktop viewports (`fixed right-0 top-0 bottom-0`).
+  - Removed text labels and floating badges (`+0.0`, `#M`) for a minimal, pure dual-tone visual bar.
+  - Configured scroll-driven fill dynamics: starts 100% White in light mode at top, receding to Black as user scrolls down to 100%; automatically inverts in dark mode.
+  - Enabled interactive click and drag-to-scroll navigation.
+
+- Refined **About Page Content & Career Move Ledger** (`src/content/pages/about.json`, `src/pages/about.astro`):
+  - Commented out `<CredentialsFootnote />` section in `src/pages/about.astro` until official certifications are acquired.
+  - Broadened "Current focus" in `about.json` from specific web development to `Practical software systems, network infrastructure, documented decisions`.
+  - Removed framework-specific assumptions (e.g. Astro defaults) across move entries, broadening Sam's narrative to apply across versatile technical roles (software, networking, and hardware systems).
+  - Clarified chess-notation score sheet terminology across page headers and closing annotations to explicitly read `Career move ledger · six moves`.
+
 - Paused **Research, Writing, and Lab Sections** behind a unified `<UnderConstruction />` placeholder component (`src/components/UnderConstruction.astro`, `src/pages/research/index.astro`, `src/pages/posts/index.astro`, `src/pages/experiments/index.astro`; originals preserved at `src/content/_archive/*-index.astro`):
   - Authored a single reusable stub with chess-piece section markers (knight for Research, bishop for Writing, rook for Lab), engraved structural border square with corner stamps, and hard-offset press shadow `4px 4px 0 var(--color-ink)`.
   - Composed Fraunces display heading, italic Fraunces lead sentence, Inter body copy, and a Gochi Hand catchphrase (`pieces still on the back rank`) rotated −1°, following the empty-state voice in `docs/engineering/ContentStyleGuide.md` §12.11.

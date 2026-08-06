@@ -107,22 +107,34 @@
   background-size: 48px 48px;
 }
 .dark .chess-grid::before {
-  --chess-grid-color: color-mix(in srgb, var(--color-border-raw) 35%, transparent);
-  filter: blur(0.75px);
-  transform: translateZ(0);
+  /* Engraved-plate read: crisp 1px grid over a hatched micro texture, with a
+     radial vignette that keeps the center visible and pulls the edges into
+     darkness (WoodcutTheme.md §3.4). */
+  --chess-grid-color: color-mix(in srgb, var(--color-border-raw) 55%, transparent);
+  --chess-hatch-color: color-mix(in srgb, var(--color-border-raw) 20%, transparent);
+  background-image:
+    linear-gradient(to right, var(--chess-grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--chess-grid-color) 1px, transparent 1px),
+    repeating-linear-gradient(45deg, var(--chess-hatch-color) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(-45deg, var(--chess-hatch-color) 0 1px, transparent 1px 6px);
+  background-size:
+    48px 48px,
+    48px 48px,
+    6px 6px,
+    6px 6px;
   -webkit-mask-image: radial-gradient(
     ellipse 1400px 900px at 50% 30%,
-    transparent 0%,
-    color-mix(in srgb, black 20%, transparent) 30%,
-    color-mix(in srgb, black 55%, transparent) 70%,
-    transparent 98%
+    black 0%,
+    color-mix(in srgb, black 90%, transparent) 50%,
+    color-mix(in srgb, black 40%, transparent) 80%,
+    transparent 100%
   );
   mask-image: radial-gradient(
     ellipse 1400px 900px at 50% 30%,
-    transparent 0%,
-    color-mix(in srgb, black 20%, transparent) 30%,
-    color-mix(in srgb, black 55%, transparent) 70%,
-    transparent 98%
+    black 0%,
+    color-mix(in srgb, black 90%, transparent) 50%,
+    color-mix(in srgb, black 40%, transparent) 80%,
+    transparent 100%
   );
 }
 
@@ -239,6 +251,31 @@
   .mobile-nav-link {
     animation-delay: 0ms !important;
   }
+}
+
+/* Hide default main window scrollbar on desktop (replaced by Chess Eval Bar) */
+@media (min-width: 640px) {
+  html {
+    scrollbar-width: none;
+  }
+  html::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+}
+
+/* Global Browser Scrollbar Fallback (Mobile) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-raw);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-border-raw);
+  border-radius: 4px;
 }
 
 /* Primary Navigation & General Custom Scrollbar Utility */
