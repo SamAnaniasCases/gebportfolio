@@ -41,7 +41,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose }) => {
     sendMessage,
     setUsername,
     clearError,
-  } = useChatSocket();
+  } = useChatSocket({ isOpen });
 
   const [inputText, setInputText] = useState("");
   const [onboardingInput, setOnboardingInput] = useState("");

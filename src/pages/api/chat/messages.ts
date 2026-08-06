@@ -62,8 +62,17 @@ export function getKVNamespace(locals: App.Locals): MinimalKV | null {
 export async function getChatHistory(locals: App.Locals): Promise<ChatMessage[]> {
   const kv = getKVNamespace(locals);
   if (kv) {
-    const raw = await kv.get(CHAT_KV_KEY, "json");
-    return Array.isArray(raw) ? (raw as ChatMessage[]) : [];
+    try {
+      const raw = await kv.get(CHAT_KV_KEY, "json");
+      if (Array.isArray(raw) && raw.length > 0) {
+        return raw as ChatMessage[];
+      }
+      // Seed KV with initial welcome message if empty
+      await kv.put(CHAT_KV_KEY, JSON.stringify(localChatHistory));
+      return localChatHistory;
+    } catch (e) {
+      console.error("[getChatHistory KV Error]:", e);
+    }
   }
   return localChatHistory;
 }

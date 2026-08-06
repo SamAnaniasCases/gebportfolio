@@ -1,4 +1,4 @@
-  import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 export interface ChatMessage {
   id: string;
@@ -11,6 +11,7 @@ export interface ChatMessage {
 
 export interface UseChatSocketOptions {
   roomName?: string;
+  isOpen?: boolean;
 }
 
 export interface UseChatSocketReturn {
@@ -34,7 +35,7 @@ const DISPLAY_NAME_KEY = "portfolio_chat_display_name_v1";
 const SESSION_STORAGE_KEY = "portfolio_chat_session_token_v1";
 
 /** Polling interval in milliseconds. */
-const POLL_INTERVAL_MS = 3000;
+const POLL_INTERVAL_MS = 5000;
 
 const CHESS_AVATARS = ["knight", "rook", "bishop", "pawn", "king", "queen"];
 const RESERVED_NAMES = ["admin", "system", "mod", "moderator", "owner"];
@@ -96,10 +97,12 @@ function getAvatarForSession(sessionToken: string): string {
 
 /**
  * React Hook managing chat via HTTP polling against `/api/chat/messages`
- * and `/api/chat/send`. Replaces the former WebSocket-based hook after
- * PartyKit deployment became unavailable.
+ * and `/api/chat/send`. Polls strictly when `isOpen` is true and the tab
+ * is visible (`!document.hidden`).
  */
-export function useChatSocket(): UseChatSocketReturn {
+export function useChatSocket(options: UseChatSocketOptions = {}): UseChatSocketReturn {
+  const { isOpen = false } = options;
+
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [displayName, setDisplayNameState] = useState<string>(getInitialDisplayName);
   const [avatar, setAvatar] = useState<string>("knight");
@@ -140,12 +143,35 @@ export function useChatSocket(): UseChatSocketReturn {
     }
   }, []);
 
-  // Poll for messages continuously
+  // Poll for messages ONLY when chat modal is open and browser tab is visible
   useEffect(() => {
+    if (!isOpen) {
+      setIsConnected(false);
+      return;
+    }
+
+    // Initial fetch on modal open
     fetchMessages();
-    const interval = setInterval(fetchMessages, POLL_INTERVAL_MS);
-    return () => clearInterval(interval);
-  }, [fetchMessages]);
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden && isOpen) {
+        fetchMessages();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    const interval = setInterval(() => {
+      if (!document.hidden) {
+        fetchMessages();
+      }
+    }, POLL_INTERVAL_MS);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [isOpen, fetchMessages]);
 
   // Action: Set Initial Username (Onboarding)
   const setUsername = useCallback((newName: string): boolean => {

@@ -97,19 +97,78 @@ export function getD1Database(locals: unknown): D1DatabaseBinding | undefined {
   return undefined;
 }
 
+async function ensureD1Tables(d1Binding: D1DatabaseBinding): Promise<void> {
+  try {
+    await d1Binding
+      .prepare(
+        `CREATE TABLE IF NOT EXISTS game (
+          id INTEGER PRIMARY KEY CHECK (id = 1),
+          version INTEGER NOT NULL,
+          fen TEXT NOT NULL,
+          history TEXT NOT NULL,
+          position_keys TEXT NOT NULL,
+          contributors INTEGER NOT NULL,
+          last_move_at TEXT NOT NULL
+        )`
+      )
+      .run();
+
+    await d1Binding
+      .prepare(
+        `CREATE TABLE IF NOT EXISTS finished_game (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          pgn TEXT NOT NULL,
+          outcome TEXT NOT NULL,
+          contributors INTEGER NOT NULL,
+          ended_at TEXT NOT NULL
+        )`
+      )
+      .run();
+
+    await d1Binding
+      .prepare(
+        `INSERT OR IGNORE INTO game (id, version, fen, history, position_keys, contributors, last_move_at)
+         VALUES (1, 0, '${INITIAL_FEN}', '[]', '${JSON.stringify([INITIAL_FEN.split(" ")[0]])}', 0, '${new Date().toISOString()}')`
+      )
+      .run();
+  } catch (e) {
+    console.error("[D1 Auto-Schema Error]:", e);
+  }
+}
+
 /**
  * Cloudflare D1 Storage Provider
  * Implements atomic SQL Compare-and-Swap (CAS): UPDATE game SET ... WHERE id = 1 AND version = ?
  */
 export function createD1StorageProvider(d1Binding: D1DatabaseBinding): StorageProvider {
+  let isInitialized = false;
+
+  const initSchema = async () => {
+    if (!isInitialized) {
+      await ensureD1Tables(d1Binding);
+      isInitialized = true;
+    }
+  };
+
   return {
     async getGame(): Promise<StoredGameState | null> {
       try {
+        await initSchema();
         const row = (await d1Binding.prepare("SELECT * FROM game WHERE id = 1").first()) as Record<
           string,
           unknown
         > | null;
-        if (!row) return null;
+
+        if (!row) {
+          return {
+            version: 0,
+            fen: INITIAL_FEN,
+            history: [],
+            positionKeys: [INITIAL_FEN.split(" ")[0]],
+            contributors: 0,
+            lastMoveAt: new Date().toISOString(),
+          };
+        }
 
         return {
           version: Number(row.version),
@@ -130,6 +189,7 @@ export function createD1StorageProvider(d1Binding: D1DatabaseBinding): StoragePr
       nextState: StoredGameState
     ): Promise<{ ok: true; state: StoredGameState } | { ok: false; reason: "superseded" }> {
       try {
+        await initSchema();
         const stmt = d1Binding.prepare(`
           UPDATE game
           SET version       = ?,
