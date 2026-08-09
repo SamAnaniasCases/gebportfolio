@@ -19,16 +19,18 @@ test.describe("Search Functionality Verification", () => {
     const statusText = page.locator("#search-status");
     await expect(statusText).toContainText("Search across", { timeout: 10000 });
 
-    // 2. Perform a search query matching a seeded post
-    await searchInput.fill("Raft");
+    // 2. Perform a search query matching an active project
+    await searchInput.fill("BITS");
 
     // Wait for the results grid to update
     const resultsContainer = page.locator("#search-results");
     await expect(resultsContainer).toBeVisible();
 
-    // Verify it lists the "Simulating Raft Consensus in Rust" post
-    const raftPostLink = page.getByRole("link", { name: /Simulating Raft Consensus/i });
-    await expect(raftPostLink).toBeVisible();
+    // Verify it lists the "Biometrics Integrated Timekeeping System (BITS)" project
+    const projectLink = page.getByRole("link", {
+      name: /Biometrics Integrated Timekeeping System/i,
+    });
+    await expect(projectLink).toBeVisible();
 
     // 3. Search for a query that yields no matches
     await searchInput.fill("nonexistentqueryxyz");

@@ -70,6 +70,62 @@
   }
 }
 
+/* Woodcut "ink press" theme crossfade (WoodcutTheme.md §5.6).
+   Armed only while .theme-transition lives on <html> during a manual toggle,
+   so first paint and route swaps stay instant. The whole palette — surfaces,
+   ink linework, hard-offset shadows, and currentColor SVGs — crossfades
+   together; transform is preserved so resting hover states keep working. */
+html.theme-transition,
+html.theme-transition body,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition:
+    background-color var(--transition-deliberate) var(--ease-standard),
+    color var(--transition-deliberate) var(--ease-standard),
+    border-color var(--transition-deliberate) var(--ease-standard),
+    box-shadow var(--transition-deliberate) var(--ease-standard),
+    fill var(--transition-deliberate) var(--ease-standard),
+    stroke var(--transition-deliberate) var(--ease-standard),
+    transform var(--transition-deliberate) var(--ease-standard),
+    opacity var(--transition-fast) var(--ease-standard);
+}
+
+/* The entering sun/moon mark "stamps" itself in, like a seal pressed into
+   the paper — a small rotation paired with the palette crossfade above. */
+@keyframes theme-icon-stamp {
+  from {
+    transform: rotate(-60deg) scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: rotate(8deg) scale(1.08);
+    opacity: 1;
+  }
+  to {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+}
+
+html.theme-transition .theme-toggle .theme-icon {
+  animation: theme-icon-stamp var(--transition-deliberate) var(--ease-standard);
+}
+
+/* Honor reduced-motion: the swap is instant and the icon does not pulse. */
+@media (prefers-reduced-motion: reduce) {
+  html.theme-transition,
+  html.theme-transition body,
+  html.theme-transition *,
+  html.theme-transition *::before,
+  html.theme-transition *::after {
+    transition-duration: 0ms !important;
+  }
+  .theme-toggle .theme-icon {
+    animation: none !important;
+  }
+}
+
 /* Fraunces "Engraver" voice — enable WONK hand-cut terminals and automatic
    optical sizing wherever the display font is applied (WoodcutTheme.md §4.1). */
 .font-display {

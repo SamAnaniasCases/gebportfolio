@@ -2,6 +2,7 @@
 import Container from "../primitives/Container.astro";
 import LinkButton from "../primitives/LinkButton.astro";
 import DoodleIcon from "../ui/DoodleIcon.astro";
+import ChessIcons from "../navigation/ChessIcons.astro";
 import { getEntry } from "astro:content";
 
 // Fetch about page data singleton
@@ -10,29 +11,12 @@ const aboutData = aboutEntry?.data;
 
 const biographySection = aboutData?.sections?.find((s) => s.id === "biography");
 const philosophySection = aboutData?.sections?.find((s) => s.id === "philosophy");
+const moves = aboutData?.moves ?? [];
 
-const focusAreas = [
-  {
-    title: "Web Standards & SSG",
-    desc: "Astro, TypeScript, clean HTML, and CSS-first design systems.",
-    icon: "globe",
-  },
-  {
-    title: "Software Architecture",
-    desc: "Structured problem decomposition and maintainable system boundaries.",
-    icon: "layer",
-  },
-  {
-    title: "Automated Verification",
-    desc: "End-to-end testing, accessibility audits, and automated linting.",
-    icon: "checklist",
-  },
-  {
-    title: "AI-Paired Workflows",
-    desc: "Human architectural ownership accelerated by interactive AI partners.",
-    icon: "bot",
-  },
-];
+// Key moves preview for home page ledger summary (Avega Shipping internship & Active Repertoire)
+const highlightMoves = moves.filter(
+  (m) => m.id === "internship-move" || m.id === "active-repertoire"
+);
 ---
 
 <section class="relative overflow-hidden py-10 md:py-14 lg:py-16">
@@ -41,13 +25,14 @@ const focusAreas = [
     <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
       <div class="max-w-2xl space-y-3">
         <span class="text-caption text-primary font-mono font-semibold tracking-widest uppercase">
-          05 · Background & Trajectory
+          04 · Background & Trajectory
         </span>
         <h2 class="text-h2 font-display text-text font-bold tracking-tight">
-          05. Background & Trajectory
+          Background & Trajectory
         </h2>
         <p class="text-body text-text-muted leading-relaxed">
-          Educational foundation, engineering values, and active focus areas.
+          Educational foundation at CTU Danao, industry experience at Avega Shipping, and documented
+          engineering principles.
         </p>
       </div>
       <div>
@@ -57,60 +42,146 @@ const focusAreas = [
       </div>
     </div>
 
-    <!-- Main Card Container -->
-    <div
-      class="bg-surface border-ink rounded-xl border-[2.5px] p-6 transition-all md:p-8"
-      style="box-shadow: 3px 3px 0 var(--color-ink);"
-    >
-      <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
-        <!-- Biography & Philosophy Column -->
-        <div class="space-y-6 lg:col-span-7">
-          <div class="space-y-3">
-            <h3 class="text-h4 font-display text-text font-bold">
-              {biographySection?.heading || "Biography"}
-            </h3>
-            <p class="text-body text-text-muted leading-relaxed">
-              {
-                biographySection?.content ||
-                  "Sam Ananias Cases is a Bachelor of Industrial Technology major in Computer based in Cebu, Philippines. He focuses on software engineering fundamentals, problem decomposition, web standards, and leveraging AI as an interactive development partner."
-              }
-            </p>
-          </div>
-
-          <div class="border-ink/10 space-y-3 border-t pt-6">
-            <h3 class="text-h4 font-display text-text font-bold">
-              {philosophySection?.heading || "Engineering Philosophy"}
-            </h3>
-            <p class="text-body text-text-muted leading-relaxed">
-              {
-                philosophySection?.content ||
-                  "I believe in building software thoughtfully—writing clear specifications, planning maintainable architecture, evaluating trade-offs, and verifying every build through rigorous automated testing."
-              }
-            </p>
-          </div>
-        </div>
-
-        <!-- Focus Areas Column -->
+    <!-- Main Grid Container -->
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
+      <!-- Biography & Philosophy Column (7 Cols) -->
+      <div class="lg:col-span-7">
         <div
-          class="bg-surface-subtle/60 border-ink/15 space-y-4 rounded-lg border p-6 lg:col-span-5"
+          class="bg-surface border-ink flex flex-col justify-between rounded-xl border-[2.5px] p-6 transition-all md:p-8"
+          style="box-shadow: 3px 3px 0 var(--color-ink);"
         >
-          <h4 class="text-caption text-text font-mono font-semibold tracking-wider uppercase">
-            Core Focus Areas
-          </h4>
-          <div class="space-y-4">
-            {
-              focusAreas.map((area) => (
-                <div class="space-y-1">
-                  <div class="flex items-center gap-2">
-                    <DoodleIcon name={area.icon} class="text-primary size-4 shrink-0" />
-                    <span class="text-small font-display text-text font-bold">{area.title}</span>
-                  </div>
-                  <p class="text-caption text-text-muted pl-6 leading-normal">{area.desc}</p>
-                </div>
-              ))
-            }
+          <div class="space-y-6">
+            <!-- Biography -->
+            <div class="space-y-3">
+              <div class="flex items-center gap-2">
+                <DoodleIcon name="interface/user" class="text-primary size-5" />
+                <h3 class="text-h4 font-display text-text font-bold">
+                  {biographySection?.heading || "Biography"}
+                </h3>
+              </div>
+              <p class="text-body text-text-muted leading-relaxed">
+                {
+                  biographySection?.content ||
+                    "Sam Ananias Cases is a Computer-focused Industrial Technology graduate based in Cebu, Philippines. He focuses on core engineering fundamentals, network infrastructure, programming logic, and leveraging AI responsibly as an interactive development partner."
+                }
+              </p>
+            </div>
+
+            <!-- Engineering Philosophy -->
+            <div class="border-ink/10 space-y-3 border-t pt-6">
+              <div class="flex items-center gap-2">
+                <DoodleIcon name="misc/chip" class="text-primary size-5" />
+                <h3 class="text-h4 font-display text-text font-bold">
+                  {philosophySection?.heading || "Engineering Philosophy"}
+                </h3>
+              </div>
+              <p class="text-body text-text-muted leading-relaxed">
+                {
+                  philosophySection?.content ||
+                    "I believe in building systems thoughtfully—thinking through requirements before implementation, documenting key decisions for future context, evaluating trade-offs, and verifying every build through rigorous checks."
+                }
+              </p>
+            </div>
           </div>
         </div>
+      </div>
+
+      <!-- Career Move Highlights Column (5 Cols) -->
+      <div class="lg:col-span-5">
+        {
+          highlightMoves.length > 0 && (
+            <div
+              class="bg-surface border-ink relative flex flex-col justify-between rounded-xl border-[2.5px] p-6 transition-all"
+              style="box-shadow: 3px 3px 0 var(--color-ink);"
+            >
+              <div>
+                <div class="mb-4 flex items-center justify-between border-b border-dashed pb-3">
+                  <span class="text-caption text-text-muted flex items-center gap-2 font-mono font-bold tracking-[0.16em] uppercase">
+                    <DoodleIcon name="files/doc" class="text-primary size-4" />
+                    <span>Career Moves Excerpt</span>
+                  </span>
+                  <a
+                    href="/about"
+                    class="text-caption text-primary font-mono font-bold hover:underline"
+                  >
+                    View all 6 moves ↗
+                  </a>
+                </div>
+
+                <div class="space-y-4">
+                  {highlightMoves.map((move) => (
+                    <div class="group bg-surface-subtle/70 border-border-custom relative flex items-start gap-3.5 rounded-lg border p-3.5 transition-all hover:-translate-y-0.5">
+                      <div
+                        class="border-ink bg-text text-bg flex size-9 shrink-0 items-center justify-center rounded-[2px] font-mono text-xs font-bold"
+                        aria-hidden="true"
+                      >
+                        {move.piece && (
+                          <ChessIcons
+                            piece={move.piece}
+                            variant="nav"
+                            class="[&>svg]:text-bg [&>svg_*]:stroke-bg size-5"
+                          />
+                        )}
+                      </div>
+                      <div class="min-w-0 flex-1 space-y-0.5">
+                        <div class="flex flex-wrap items-baseline justify-between gap-1.5">
+                          <h4 class="text-small font-display text-text group-hover:text-primary font-bold transition-colors">
+                            <a href="/about" class="hover:underline">
+                              {move.notation} {move.heading}
+                            </a>
+                          </h4>
+                          {move.dateRange && (
+                            <span class="text-micro text-text-muted font-mono font-semibold tracking-wider uppercase">
+                              {move.dateRange}
+                            </span>
+                          )}
+                        </div>
+                        {move.lead && (
+                          <p class="text-caption text-text-muted line-clamp-2 leading-snug">
+                            {move.lead}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Authorised Signature & Chess Strip Footer */}
+              <div class="border-border-custom mt-6 space-y-3 border-t pt-4">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-micro text-text-muted font-mono font-bold tracking-[0.14em] uppercase">
+                      Authorised by
+                    </p>
+                    <p class="font-hand text-h4 text-primary origin-left -rotate-1 select-none">
+                      Sam.Cases
+                    </p>
+                  </div>
+                  <span class="text-micro text-text-muted font-mono tracking-widest uppercase">
+                    Score sheet · v1.0
+                  </span>
+                </div>
+
+                {/* Chess coordinate strip */}
+                <div
+                  class="border-border-custom grid grid-cols-8 overflow-hidden rounded-sm border"
+                  aria-hidden="true"
+                >
+                  {["a", "b", "c", "d", "e", "f", "g", "h"].map((file, i) => (
+                    <span
+                      class={`text-micro flex aspect-square items-center justify-center font-mono font-bold tracking-[0.2em] uppercase ${
+                        i % 2 === 0 ? "bg-surface text-text-muted" : "bg-text text-bg"
+                      }`}
+                    >
+                      {file}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )
+        }
       </div>
     </div>
   </Container>

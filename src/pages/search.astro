@@ -1,28 +1,28 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Container from "../components/primitives/Container.astro";
-import { Search } from "@lucide/astro";
+import DoodleIcon from "../components/ui/DoodleIcon.astro";
 ---
 
-<BaseLayout title="Search Articles & Work">
+<BaseLayout title="Search Projects & Case Studies">
   <Container width="default" class="animate-reveal space-y-8 py-12">
     <!-- Header -->
     <header class="border-border-custom space-y-3 border-b pb-6">
       <h1 class="text-h1 font-display text-text font-bold tracking-tight">Global Search</h1>
       <p class="text-body-large text-text-muted max-w-2xl leading-relaxed">
-        Search across all technical write-ups, engineering case studies, and research publications.
+        Search across all engineering case studies, systems architecture, and project work.
       </p>
     </header>
 
     <!-- Search Input Box -->
     <div class="relative w-full max-w-3xl">
       <span class="text-text-muted absolute inset-y-0 left-0 flex items-center pl-4">
-        <Search class="size-5" />
+        <DoodleIcon name="interface/search" class="size-5" />
       </span>
       <input
         type="search"
         id="search-input"
-        placeholder="Type keywords (e.g. Rust, Raft, Telemetry) to filter..."
+        placeholder="Type keywords (e.g. BITS, Architecture, Systems) to filter..."
         class="bg-surface border-border-custom text-text focus-visible:ring-focus text-body duration-fast w-full rounded-xl border py-3.5 pr-4 pl-11 transition-shadow outline-none focus-visible:ring-2"
         autocomplete="off"
       />
@@ -30,7 +30,7 @@ import { Search } from "@lucide/astro";
 
     <!-- Search Status Indicator -->
     <div id="search-status" class="text-small text-text-muted min-h-6 font-medium">
-      Type to search articles and cases...
+      Type to search case studies and projects...
     </div>
 
     <!-- Search Results Container -->
@@ -54,7 +54,7 @@ import { Search } from "@lucide/astro";
       isLoading = true;
       statusText.innerText = "Loading search index...";
 
-      fetch("/search.json")
+      fetch("/search.json?t=" + Date.now(), { cache: "no-store" })
         .then((res) => {
           if (!res.ok) throw new Error("Failed to fetch search index");
           return res.json();

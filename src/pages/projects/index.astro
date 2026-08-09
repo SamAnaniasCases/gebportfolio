@@ -216,10 +216,10 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
                 </div>
               </div>
 
-              {/* Interactive Hover Peek Window (Full uncropped picture) */}
+              {/* Interactive Hover & Tap Peek Window (Full uncropped picture) */}
               {kingProject.data.heroImage && (
                 <div
-                  class="peek-window border-primary/60 bg-surface pointer-events-none absolute top-14 right-4 z-30 hidden w-72 translate-y-4 scale-90 overflow-hidden rounded-xl border-2 opacity-0 shadow-2xl transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 md:w-80 lg:block lg:w-[380px]"
+                  class="peek-window border-primary/60 bg-surface pointer-events-none absolute top-14 right-2 z-30 w-[calc(100%-1rem)] max-w-xs translate-y-4 scale-90 overflow-hidden rounded-xl border-2 opacity-0 shadow-2xl transition-all duration-300 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 sm:right-4 sm:w-80 lg:w-[380px] [&.is-active]:pointer-events-auto [&.is-active]:translate-y-0 [&.is-active]:scale-100 [&.is-active]:opacity-100"
                   style="box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);"
                 >
                   <div class="border-border-custom bg-surface-subtle/95 text-text-muted flex items-center justify-between border-b px-3.5 py-2 font-mono text-[11px] font-bold tracking-wider uppercase">
@@ -227,7 +227,16 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
                       <DoodleIcon name="interface/search" class="size-3.5" />
                       <span>Full Work Preview</span>
                     </span>
-                    <span class="text-caption font-bold">FULL PICTURE</span>
+                    <div class="flex items-center gap-2">
+                      <span class="text-caption font-bold">FULL PICTURE</span>
+                      <button
+                        type="button"
+                        class="peek-close-btn text-text-muted hover:text-text cursor-pointer rounded p-0.5 transition-colors focus:outline-none"
+                        aria-label="Close preview"
+                      >
+                        <DoodleIcon name="cross" class="size-3.5" />
+                      </button>
+                    </div>
                   </div>
                   <div class="bg-surface-subtle relative w-full overflow-hidden p-1.5">
                     <img
@@ -314,10 +323,10 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
                 </div>
               </div>
 
-              {/* Interactive Hover Peek Window (Full uncropped picture) */}
+              {/* Interactive Hover & Tap Peek Window (Full uncropped picture) */}
               {queenProject.data.heroImage && (
                 <div
-                  class="peek-window border-primary/60 bg-surface pointer-events-none absolute top-14 right-4 z-30 hidden w-72 translate-y-4 scale-90 overflow-hidden rounded-xl border-2 opacity-0 shadow-2xl transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 md:w-80 lg:block lg:w-[380px]"
+                  class="peek-window border-primary/60 bg-surface pointer-events-none absolute top-14 right-2 z-30 w-[calc(100%-1rem)] max-w-xs translate-y-4 scale-90 overflow-hidden rounded-xl border-2 opacity-0 shadow-2xl transition-all duration-300 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 sm:right-4 sm:w-80 lg:w-[380px] [&.is-active]:pointer-events-auto [&.is-active]:translate-y-0 [&.is-active]:scale-100 [&.is-active]:opacity-100"
                   style="box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);"
                 >
                   <div class="border-border-custom bg-surface-subtle/95 text-text-muted flex items-center justify-between border-b px-3.5 py-2 font-mono text-[11px] font-bold tracking-wider uppercase">
@@ -325,7 +334,16 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
                       <DoodleIcon name="interface/search" class="size-3.5" />
                       <span>Full Work Preview</span>
                     </span>
-                    <span class="text-caption font-bold">FULL PICTURE</span>
+                    <div class="flex items-center gap-2">
+                      <span class="text-caption font-bold">FULL PICTURE</span>
+                      <button
+                        type="button"
+                        class="peek-close-btn text-text-muted hover:text-text cursor-pointer rounded p-0.5 transition-colors focus:outline-none"
+                        aria-label="Close preview"
+                      >
+                        <DoodleIcon name="cross" class="size-3.5" />
+                      </button>
+                    </div>
                   </div>
                   <div class="bg-surface-subtle relative w-full overflow-hidden p-1.5">
                     <img
@@ -421,10 +439,10 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
                   </p>
                 </div>
 
-                {/* Interactive Peek Window for Archive Projects (Full uncropped picture) */}
+                {/* Interactive Hover & Tap Peek Window for Archive Projects (Full uncropped picture) */}
                 {project.data.heroImage && (
                   <div
-                    class="peek-window border-primary/60 bg-surface pointer-events-none absolute top-2 right-24 z-30 hidden w-72 translate-y-3 scale-90 overflow-hidden rounded-xl border-2 opacity-0 shadow-2xl transition-all duration-300 group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 md:w-80 lg:block"
+                    class="peek-window border-primary/60 bg-surface pointer-events-none absolute top-2 right-2 z-30 w-[calc(100%-1rem)] max-w-xs translate-y-3 scale-90 overflow-hidden rounded-xl border-2 opacity-0 shadow-2xl transition-all duration-300 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100 md:right-24 md:w-80 [&.is-active]:pointer-events-auto [&.is-active]:translate-y-0 [&.is-active]:scale-100 [&.is-active]:opacity-100"
                     style="box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);"
                   >
                     <div class="border-border-custom bg-surface-subtle/95 text-text-muted flex items-center justify-between border-b px-3.5 py-1.5 font-mono text-[10px] font-bold tracking-wider uppercase">
@@ -432,6 +450,13 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
                         <DoodleIcon name="interface/search" class="size-3" />
                         <span>Work Preview</span>
                       </span>
+                      <button
+                        type="button"
+                        class="peek-close-btn text-text-muted hover:text-text cursor-pointer rounded p-0.5 transition-colors focus:outline-none"
+                        aria-label="Close preview"
+                      >
+                        <DoodleIcon name="cross" class="size-3" />
+                      </button>
                     </div>
                     <div class="bg-surface-subtle relative w-full overflow-hidden p-1">
                       <img
@@ -558,11 +583,12 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
       searchInput?.focus();
     });
 
-    // Interactive Swipe & Parallax Cursor Hover Peek Animation
+    // Interactive Swipe & Parallax Cursor Hover Peek Animation + Mobile Click/Tap Toggle
     cards.forEach((card) => {
       const peekWin = card.querySelector(".peek-window");
       if (!peekWin) return;
 
+      // Mouse move parallax shift on desktop
       card.addEventListener("mousemove", (e) => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -577,8 +603,52 @@ const PIECE_TITLES: Record<string, { label: string; short: string }> = {
       });
 
       card.addEventListener("mouseleave", () => {
-        peekWin.style.transform = "";
+        if (!peekWin.classList.contains("is-active")) {
+          peekWin.style.transform = "";
+        }
       });
+
+      // Click / Tap Handler for Mobile & Desktop
+      card.addEventListener("click", (e) => {
+        // If clicking direct anchor link inside card, allow normal navigation
+        if (e.target.closest("a")) return;
+
+        // If clicking close button inside peek window, close preview
+        if (e.target.closest(".peek-close-btn")) {
+          e.stopPropagation();
+          peekWin.classList.remove("is-active");
+          peekWin.style.transform = "";
+          return;
+        }
+
+        // Otherwise toggle active state on this card's peek window
+        const isActive = peekWin.classList.contains("is-active");
+
+        // Close any other active peek windows
+        document.querySelectorAll(".peek-window.is-active").forEach((pw) => {
+          if (pw !== peekWin) {
+            pw.classList.remove("is-active");
+            pw.style.transform = "";
+          }
+        });
+
+        if (isActive) {
+          peekWin.classList.remove("is-active");
+          peekWin.style.transform = "";
+        } else {
+          peekWin.classList.add("is-active");
+        }
+      });
+    });
+
+    // Dismiss active peek windows when clicking outside cards
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest("[data-project-card]")) {
+        document.querySelectorAll(".peek-window.is-active").forEach((pw) => {
+          pw.classList.remove("is-active");
+          pw.style.transform = "";
+        });
+      }
     });
   </script>
 </BaseLayout>

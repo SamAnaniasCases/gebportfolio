@@ -66,83 +66,68 @@ export default function GitHubChessGrid({
   });
 
   const [liveTotal, setLiveTotal] = useState<number>(initialTotal || 488);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileView, setMobileView] = useState<"recent" | "full">("recent");
 
-  // Client-side live fetch fallback if needed
+  // Detect mobile viewport width (< 640px)
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Client-side live fetch from Edge API route to keep contributions 100% updated in production
   useEffect(() => {
     async function fetchLive() {
       try {
-        const res = await fetch(`https://github.com/users/${username}/contributions`);
+        const res = await fetch("/api/github/contributions.json");
         if (!res.ok) return;
-        const html = await res.text();
+        const json = await res.json();
 
-        const totalMatch = html.match(/([\d,]+)\s+contributions\s+in the last year/i);
-        if (totalMatch) {
-          const parsedTotal = parseInt(totalMatch[1].replace(/,/g, ""), 10);
-          if (parsedTotal > 0) {
-            setLiveTotal(parsedTotal);
+        if (json && Array.isArray(json.days) && json.days.length > 0) {
+          setData(
+            json.days.sort((a: ContributionDay, b: ContributionDay) => a.date.localeCompare(b.date))
+          );
+          if (json.totalContributions > 0) {
+            setLiveTotal(json.totalContributions);
           }
-        }
-
-        const tooltipMap = new Map<string, string>();
-        const tooltipRegex = /<tool-tip[^>]*for="([^"]+)"[^>]*>([^<]+)<\/tool-tip>/g;
-        let tMatch;
-        while ((tMatch = tooltipRegex.exec(html)) !== null) {
-          tooltipMap.set(tMatch[1], tMatch[2]);
-        }
-
-        const regex = /<td[^>]*data-date="([^"]+)"[^>]*data-level="([^"]+)"[^>]*>/g;
-        const tdIdRegex = /id="([^"]+)"/;
-        const fetchedDays: ContributionDay[] = [];
-        let match;
-
-        while ((match = regex.exec(html)) !== null) {
-          const date = match[1];
-          const level = Math.min(4, Math.max(0, parseInt(match[2], 10))) as 0 | 1 | 2 | 3 | 4;
-          const fullTd = match[0];
-          const idMatch = tdIdRegex.exec(fullTd);
-          let count = level > 0 ? 1 : 0;
-
-          if (idMatch && tooltipMap.has(idMatch[1])) {
-            const text = tooltipMap.get(idMatch[1]) || "";
-            const cMatch = text.match(/^([\d,]+)\s+contribution/);
-            if (cMatch) {
-              count = parseInt(cMatch[1].replace(/,/g, ""), 10);
-            }
-          }
-          fetchedDays.push({ date, level, count });
-        }
-
-        if (fetchedDays.length > 0) {
-          fetchedDays.sort((a, b) => a.date.localeCompare(b.date));
-          setData(fetchedDays);
         }
       } catch (e) {
         console.warn("Using fallback contribution data:", e);
       }
     }
 
-    if (!initialDays || initialDays.length === 0) {
-      fetchLive();
-    }
-  }, [initialDays, username]);
+    fetchLive();
+  }, []);
 
   const displayTotal = useMemo(() => {
     const sum = data.reduce((acc, curr) => acc + curr.count, 0);
     return Math.max(liveTotal, sum, 488);
   }, [data, liveTotal]);
 
-  // Find index of peak activity day for ♔ King piece
+  // On mobile viewports (<640px), slice to recent 20 weeks (~140 days) so grid fits 100% without horizontal scrolling
+  const visibleDays = useMemo(() => {
+    if (isMobile && mobileView === "recent" && data.length > 140) {
+      return data.slice(-140);
+    }
+    return data;
+  }, [data, isMobile, mobileView]);
+
+  // Find index of peak activity day for ♔ King piece within visibleDays
   const peakIndex = useMemo(() => {
-    let maxIdx = data.length - 1;
+    let maxIdx = visibleDays.length - 1;
     let maxCount = -1;
-    data.forEach((day, idx) => {
+    visibleDays.forEach((day, idx) => {
       if (day.count > maxCount) {
         maxCount = day.count;
         maxIdx = idx;
       }
     });
     return maxIdx;
-  }, [data]);
+  }, [visibleDays]);
 
   // Woodcut Theme Intensity Swatches (matching GitHub levels)
   const squareClasses = [
@@ -156,8 +141,8 @@ export default function GitHubChessGrid({
   return (
     <div className="mx-auto max-w-5xl space-y-4">
       {/* Top Header Row */}
-      <div className="flex items-center justify-between">
-        <h3 className="font-display text-text text-lg font-bold tracking-tight sm:text-xl">
+      <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
+        <h3 className="font-display text-text text-base font-bold tracking-tight sm:text-xl">
           {displayTotal.toLocaleString()} contributions in the last year
         </h3>
 
@@ -165,7 +150,7 @@ export default function GitHubChessGrid({
           href={profileUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-primary text-small group flex items-center gap-1 font-mono font-semibold hover:underline"
+          className="text-primary font-mono text-xs font-semibold hover:underline sm:text-sm"
         >
           @{username}
           <span className="inline-block transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
@@ -175,12 +160,45 @@ export default function GitHubChessGrid({
       </div>
 
       {/* Main GitHub Calendar Outer Container (Centered Layout) */}
-      <div className="bg-surface border-ink/15 flex flex-col items-center rounded-xl border p-4 shadow-xs sm:p-6">
-        <div className="flex w-full scrollbar-thin justify-center overflow-x-auto pb-2">
+      <div className="bg-surface border-ink/15 flex flex-col rounded-xl border p-4 shadow-xs sm:p-6">
+        {/* Mobile View Toggle Bar */}
+        {isMobile && (
+          <div className="border-ink/10 mb-3 flex items-center justify-between border-b pb-2.5">
+            <span className="text-text-muted font-mono text-[11px]">
+              {mobileView === "recent" ? "Recent Activity (~5 mos)" : "Full 1-Year Grid"}
+            </span>
+            <div className="border-ink/15 bg-surface-subtle inline-flex rounded-lg border p-0.5 font-mono text-[11px]">
+              <button
+                type="button"
+                onClick={() => setMobileView("recent")}
+                className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-all ${
+                  mobileView === "recent"
+                    ? "bg-primary font-bold text-white shadow-xs"
+                    : "text-text-muted hover:text-text"
+                }`}
+              >
+                Fits Screen
+              </button>
+              <button
+                type="button"
+                onClick={() => setMobileView("full")}
+                className={`cursor-pointer rounded-md px-2.5 py-1 font-medium transition-all ${
+                  mobileView === "full"
+                    ? "bg-primary font-bold text-white shadow-xs"
+                    : "text-text-muted hover:text-text"
+                }`}
+              >
+                Full Year
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="flex w-full scrollbar-thin justify-center overflow-x-auto pb-1">
           <div className="inline-block">
-            {/* 52-Week Activity Grid (No Months / No Day Labels) */}
+            {/* Activity Grid (Fits screen 100% on mobile in 'recent' view) */}
             <div className="grid grid-flow-col grid-rows-7 gap-[3px] py-1">
-              {data.map((day, idx) => {
+              {visibleDays.map((day, idx) => {
                 const isPeak = idx === peakIndex;
                 const [year, month, dNum] = day.date.split("-").map(Number);
                 const formattedDate = new Date(year, month - 1, dNum).toLocaleDateString("en-US", {
@@ -209,7 +227,7 @@ export default function GitHubChessGrid({
             </div>
 
             {/* Bottom Legend Row */}
-            <div className="text-text-muted border-ink/10 mt-4 flex w-full items-center justify-between gap-4 border-t pt-3 font-mono text-[11px]">
+            <div className="text-text-muted border-ink/10 mt-4 flex w-full flex-col gap-3.5 border-t pt-3 font-mono text-[11px] sm:flex-row sm:items-center sm:justify-between sm:gap-4">
               <a
                 href={profileUrl}
                 target="_blank"
@@ -219,7 +237,7 @@ export default function GitHubChessGrid({
                 Learn how we count contributions
               </a>
 
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 self-end sm:self-auto">
                 <span>Less</span>
                 <span className="border-ink/10 bg-surface-subtle/80 h-2.5 w-2.5 rounded-[1px] border" />
                 <span className="border-primary/30 bg-primary/25 h-2.5 w-2.5 rounded-[1px] border" />

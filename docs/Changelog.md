@@ -7,6 +7,103 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Fixed **Astro Cloudflare Adapter Options Type Error** (`astro.config.ts`):
+  - Removed deprecated and invalid `mode: "advanced"` property from `cloudflare()` adapter configuration in `astro.config.ts`, resolving TypeScript error with `@astrojs/cloudflare` v14+.
+
+- Added **Release & Versioning Workflow Specification** (`docs/engineering/ReleaseWorkflow.md`, `docs/README.md`):
+  - Documented the multi-branch Git strategy (`bug-fixes` / feature branch → `main`), step-by-step version tagging flow (`package.json`, `Changelog.md`, Git tags), dynamic sidebar footer versioning, and Cloudflare auto-deployment pipeline.
+
+- Refined **Dynamic Sidebar Footer Version Binding** (`src/layouts/BaseLayout.astro`, `package.json`):
+  - Wired the desktop sidebar footer version string (`v{pkg.version}`) dynamically to `package.json`, ensuring the UI footer automatically stays synced with project releases.
+
+- Refined **Chess Widget Alert Banner Vector SVG Icons** (`src/components/chess/ChessWidget.tsx`):
+  - Replaced system text warning emojis (`⚠️`) in the King in Check alert banner with `src/assets/chess-icons/blunder.svg` vector SVG artwork, enforcing the repository's strict Emoji & UI Icon Rule.
+
+- Refined **Interactive Avatar Mobile Badge Layout** (`src/components/primitives/InteractiveAvatar.astro`):
+  - Added `whitespace-nowrap` and responsive font size tracking (`text-[9px] md:text-[10px]`) to the `Hover for Photo` pill badge, preventing text from breaking into two stacked lines on small mobile screens.
+
+- Implemented **Production Live GitHub Contributions Edge API & Rebuild Cron** (`src/pages/api/github/contributions.json.ts`, `src/components/islands/GitHubChessGrid.tsx`, `.github/workflows/ci.yml`):
+  - Created a Cloudflare Edge Serverless API route (`/api/github/contributions.json`) that proxies and parses live GitHub contributions with a 1-hour CDN cache (`max-age=3600`), updating production contribution activity hourly without GitHub rate-limiting or CORS issues.
+  - Updated client component `GitHubChessGrid.tsx` to fetch from `/api/github/contributions.json` on client mount, automatically re-hydrating the grid with live commits.
+  - Added a daily 12:00 AM UTC cron trigger (`0 0 * * *`) in `.github/workflows/ci.yml` to trigger automated daily builds.
+
+- Adapted **GitHub Contributions Grid Mobile Responsiveness** (`src/components/islands/GitHubChessGrid.tsx`):
+  - Implemented zero-horizontal-scroll mobile grid mode (<640px) that renders the most recent 20 weeks (~5 months) of contribution activity to fit 100% inside mobile phone screen widths without horizontal scrollbars.
+  - Added an interactive mobile view toggle (`[Fits Screen]` vs `[Full Year]`) allowing mobile users to switch between zero-scroll recent activity and full 52-week horizontal scroll view on demand.
+  - Refactored header username link and bottom legend layout for small screen viewports.
+
+- Adapted **Section 02 Mobile Responsiveness, Horizontal Overflow & Touch Swiping** (`src/components/sections/CoreMindset.astro`, `src/components/sections/CoreMindsetCarousel.tsx`):
+  - Fixed horizontal page overflow (`overflow-x-clip`) preventing mobile devices from swiping the entire webpage sideways.
+  - Scoped 200vh sticky scrolljacking exclusively to desktop viewports (`md:min-h-[200vh] md:sticky md:top-0`), restoring smooth, un-trapped vertical scrolling on mobile touch screens (<768px).
+  - Added native horizontal touch swipe gestures (`onTouchStart`/`onTouchEnd`) to allow intuitive card sliding on mobile phones.
+  - Adjusted mobile slide width (`88%`), card padding (`p-5`), and 3D Pawn top-right corner offset (`3.0rem`) to prevent card text squeezing and badge overlaps.
+
+- Polished **Section 02 Interaction Design & Focus States** (`src/components/sections/CoreMindsetCarousel.tsx`):
+  - Added explicit focus ring styles (`focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2`) to pagination tab buttons.
+  - Finalized optical alignment across 3D Turned-Wood Pawn header slot, responsive slide track, and keyboard navigation.
+
+- Clarified **Section 02 H2 Heading Typography** (`src/components/sections/CoreMindset.astro`):
+  - Removed duplicate `02.` numerical prefix from H2 heading text (`Core Mindset & Principles`), leaving ordinal tracking exclusively in the uppercase manuscript eyebrow (`02 · Opening Principles`).
+
+- Hardened **Section 02 Accessibility & Motion Sensitivity** (`src/components/sections/CoreMindsetCarousel.tsx`, `src/components/sections/ThreePawnCanvas.tsx`):
+  - Bound `prefers-reduced-motion` media queries across the carousel and 3D canvas: disables scale transforms, track sliding transitions, and 3D hop physics arcs for motion-sensitive users.
+  - Enhanced keyboard focusability on slide cards (`tabIndex={0}`) with 2px blue focus rings (`focus-visible:ring-2 focus-visible:ring-focus`) and Enter / Space navigation support.
+
+- Optimized **3D Pawn WebGL Render Loop Performance** (`src/components/sections/ThreePawnCanvas.tsx`):
+  - Wrapped Three.js 60 FPS animation loop with an `IntersectionObserver` (`threshold: 0.05`) to pause `requestAnimationFrame` when Section 02 is off-screen.
+  - Automatically resumes render loop when scrolling back into viewport, eliminating background GPU/CPU overhead.
+
+- Adapted **Home Page Section 02 Carousel Mobile Viewports & Touch Targets** (`src/components/sections/CoreMindsetCarousel.tsx`):
+  - Implemented responsive slide width scaling: 85% width on mobile viewports (<768px) with peek preview card margins, and 42% width on desktop screens (≥768px).
+  - Dynamically adjusted WebGL 3D Pawn horizontal offset calculation based on mobile vs desktop slide width.
+  - Enlarged touch target tap area on square pagination tab buttons to `44×44px` minimum using invisible pseudo-element bounds (`before:absolute before:-inset-3.5`) for WCAG 2.2 AA touch compliance.
+  - Added keyboard focusability (`tabIndex={isActive ? 0 : -1}`) and keydown handlers (Enter / Space) to slide cards.
+
+- Refined **Global Search Index & Removed Sample Placeholder Content** (`src/content/posts/`, `src/content/research/`, `src/pages/search.json.ts`, `src/pages/search.astro`, `tests/e2e/search.spec.ts`):
+  - Removed sample placeholder posts (`raft-consensus-simulation.md`, `welcome-to-astro.md`) and sample research (`distributed-indexing-telemetry.md`) while preserving Content Layer schemas and route infrastructure for future real content.
+  - Updated `search.json.ts` response headers to `Cache-Control: no-cache, no-store, must-revalidate` and added cache-busting `fetch("/search.json?t=" + Date.now(), { cache: "no-store" })` to prevent browsers from displaying stale cached search results.
+  - Updated search input placeholder keywords to active project tags (`Type keywords (e.g. BITS, Architecture, Systems) to filter...`).
+  - Updated search header description, page title, and status indicator text (`Type to search case studies and projects...`).
+  - Replaced `@lucide/astro` Search icon with theme-aware `<DoodleIcon name="interface/search" />`.
+
+- Redesigned & Refined **Home Page Section 02 Core Mindset & Principles** (`src/components/sections/CoreMindset.astro`, `src/components/sections/CoreMindsetCarousel.tsx`, `src/components/sections/ThreePawnCanvas.tsx`):
+  - Fixed 3D Pawn top clipping during movement jump arcs by switching slides viewport to `overflow-visible`, expanding container dimensions (`h-24 md:h-28`), and optimizing Three.js camera vertical headroom.
+  - Implemented realistic player move physics for `<ThreePawnCanvas />`: anticipation crouch, upward 3D arc hop, movement pitch tilt (leaning in direction of travel), and landing impact squash upon settling into the active card.
+  - Added a 135° Back-Right Directional Cast Shadow plane behind the turned-wood 3D Pawn, with dynamic opacity falloff and height diffusion.
+  - Aligned the 3D Pawn strictly INSIDE the active card's top header slot, moving in lockstep with the track container.
+  - Converted Section 02 into a sticky scroll-driven section (`min-h-[220vh]` with `sticky top-0`) where vertical scrolling scrubs horizontally through cards before proceeding to Section 03.
+  - Removed left/right arrow buttons and implemented connected-track square pagination (`size-4 rounded-xs bg-primary` on a horizontal line track) matching the user reference layout.
+
+- Enhanced **Shared 3D Chess Board** (`src/components/chess/ChessBoard3D.tsx`, `src/components/chess/ChessWidget.tsx`, `src/lib/chess/audio.ts`):
+  - Fixed mobile 3D piece touch interactions by adding `touch-manipulation`, pointer event bindings, and removing wrapper click interceptors.
+  - Implemented 0ms latency Web Audio API synthesizer (`playClick()`, `playMove()`, `playCheck()`) for tactile wood contact pops, move thuds, and check alert chimes.
+  - Added King in Check visual indicators: pulsing red check ring on the target King square, a `CHECK!` toast, and an animated alert banner (`⚠️ YOUR KING IS IN CHECK!`).
+
+- Fixed **Live Chat Typing Latency & Desktop Performance** (`src/components/chat/ChatBox.tsx`, `src/components/chess/ChessWidget.tsx`, `src/components/chess/ChessBoard3D.tsx`):
+  - Extracted `<ChatInputForm>` and `<MessageList>` into memoized components, completely isolating input typing state from the parent `ChatBox` modal.
+  - Wrapped `ChessWidget` and `ChessBoard3D` in `React.memo` with stable callback refs (`onGameStateChangeRef`), preventing WebGL / 3D Canvas re-renders during keystrokes for instantaneous 60fps typing.
+
+- Polished **Home Page Featured Case Studies Section** (`src/components/sections/FeaturedProjects.astro`):
+  - Added app-icon / logo thumbnail containers (`size-14 md:size-16 rounded-2xl overflow-hidden`) to the left of each featured project title (hand-sketched `AvegaLogo` for BITS Timekeeping, `Logo` for Portfolio Architecture).
+  - Configured dynamic grid layout (`grid-cols-2` when 2 projects present; `grid-cols-3` when 3 projects present) to maintain balanced spacing and future scalability.
+  - Simplified card content to a clean 1-sentence description, removing outcome bullet points.
+  - Redesigned tech stack badges into alternating chess board square tiles (`bg-surface text-text` vs `bg-text text-bg` with 1.5px ink border and hard press shadow).
+
+- Refined **Home Page Background & Trajectory Section** (`src/components/sections/AboutSummary.astro`):
+  - Dynamically aligned Biography, Philosophy, and Career Move Highlights directly with `src/content/pages/about.json`.
+  - Removed redundant Quick Reference Index sidebar from the Home page layout.
+  - Balanced Biography & Philosophy (7 cols) with mini Score Sheet Ledger Excerpt (5 cols) featuring Move 2 (Avega Shipping IT Internship), Move 4 (Active Repertoire), `Gochi Hand` signature block, and chess file coordinate strip (`a`–`h`).
+
+- Enhanced **Work Page Project Photo Peek Preview for Mobile & Desktop** (`src/pages/projects/index.astro`):
+  - Removed `hidden lg:block` desktop-only CSS restriction from `.peek-window` elements, enabling full screenshot photo previews across all screen sizes (mobile, tablet, desktop).
+  - Added tap/click toggle interaction so mobile and touch users can tap project cards/thumbnails to toggle full screenshot photo previews on and off.
+  - Added close button (`<DoodleIcon name="cross" />`) to preview window headers and added global click-outside dismissal.
+
+- Removed **Lab & Learning Explorations Section on Home Page** (`src/pages/index.astro`, `src/components/sections/LabExplorations.astro`, `src/components/sections/AboutSummary.astro`, `src/components/sections/GitHubActivity.astro`, `src/components/sections/ContactCTA.astro`):
+  - Removed Section 04 (`LabExplorations`) from the Home page (`/`) while research & lab content remains under construction/unreleased.
+  - Re-indexed subsequent section numbers across Home page components: Background & Trajectory (`04`), GitHub Contributions (`05`), and Contact & Collaboration (`06`).
+  - Removed unused `src/components/sections/LabExplorations.astro` component file.
+
 - Migrated **Live Chat Transport from PartyKit WebSockets to HTTP Polling + Cloudflare KV** (`src/pages/api/chat/messages.ts`, `src/pages/api/chat/send.ts`, `src/components/chat/useChatSocket.ts`, `src/components/chat/ChatBox.tsx`, `src/components/chat/ChatWidget.tsx`):
   - Replaced WebSocket transport with HTTP polling at 3-second intervals after PartyKit's shared `partykit.dev` zone exceeded Cloudflare's 10,000 custom domain limit, making `npx partykit deploy` unavailable.
   - Chat API routes (`/api/chat/messages`, `/api/chat/send`) now read and write from Cloudflare KV (`CHAT_KV` binding) for cross-isolate shared state in production, with an in-memory fallback for local development.

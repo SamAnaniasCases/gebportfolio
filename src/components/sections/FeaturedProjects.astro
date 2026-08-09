@@ -1,12 +1,21 @@
 ---
 import Container from "../primitives/Container.astro";
-import Grid from "../primitives/Grid.astro";
 import LinkButton from "../primitives/LinkButton.astro";
+import DoodleIcon from "../ui/DoodleIcon.astro";
+import AvegaLogo from "../ui/AvegaLogo.astro";
+import Logo from "../primitives/Logo.astro";
+import ChessIcons from "../navigation/ChessIcons.astro";
 import { getCollection } from "astro:content";
 
 // Fetch featured projects from content collections
 const projects = await getCollection("projects");
 const featuredProjects = projects.filter((p) => p.data.featured).slice(0, 3);
+
+// Dynamic grid layout class to ensure balanced spacing for 2 or 3 projects
+const gridColsClass =
+  featuredProjects.length === 2
+    ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-2"
+    : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
 ---
 
 <section class="relative overflow-hidden py-10 md:py-14 lg:py-16">
@@ -18,10 +27,10 @@ const featuredProjects = projects.filter((p) => p.data.featured).slice(0, 3);
           03 · Proof of Work
         </span>
         <h2 class="text-h2 font-display text-text font-bold tracking-tight">
-          03. Featured Case Studies
+          Featured Case Studies
         </h2>
         <p class="text-body text-text-muted leading-relaxed">
-          Real projects where I planned the approach, documented key decisions, and built for
+          Signature projects where I planned the approach, documented key decisions, and built for
           long-term reliability.
         </p>
       </div>
@@ -32,63 +41,109 @@ const featuredProjects = projects.filter((p) => p.data.featured).slice(0, 3);
       </div>
     </div>
 
-    <!-- Featured Projects Grid -->
-    <Grid cols="1 md:2 lg:3" gap="6">
+    <!-- Featured Projects Grid (Scales automatically for 2 or 3 projects) -->
+    <div class={`grid ${gridColsClass} gap-6 md:gap-8`}>
       {
         featuredProjects.map((project) => (
           <article
-            class="group bg-surface border-ink relative flex flex-col justify-between space-y-6 rounded-xl border-[2.5px] p-6 transition-all duration-200 hover:-translate-y-1"
+            class="group bg-surface border-ink relative flex flex-col justify-between space-y-6 rounded-xl border-[2.5px] p-6 transition-all duration-300 hover:-translate-y-1 md:p-7"
             style="box-shadow: 3px 3px 0 var(--color-ink);"
           >
             <div class="space-y-5">
-              <div class="flex items-center justify-between">
+              {/* Top Metadata Row */}
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2 font-mono text-xs">
+                  {project.data.chessPiece ? (
+                    <span class="text-primary bg-primary/10 border-primary/20 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 font-mono text-[10px] font-bold tracking-wider uppercase">
+                      <ChessIcons piece={project.data.chessPiece} class="size-3.5 shrink-0" />
+                      <span>
+                        {project.data.chessPiece === "king" ? "Signature Hero" : "Architecture"}
+                      </span>
+                    </span>
+                  ) : (
+                    <span class="text-primary bg-primary/10 border-primary/20 rounded border px-2.5 py-1 font-mono text-[10px] font-bold tracking-wider uppercase">
+                      {project.data.role || "Case Study"}
+                    </span>
+                  )}
+                </div>
                 <span class="text-caption text-text-muted font-mono">{project.data.dates}</span>
-                <span class="text-primary bg-primary/10 border-primary/20 rounded border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
-                  {project.data.role || "Case Study"}
-                </span>
               </div>
 
-              <div class="space-y-2">
-                <h3 class="text-h4 font-display text-text group-hover:text-primary font-bold transition-colors">
-                  <a href={`/projects/${project.id}`} class="focus:underline focus:outline-none">
-                    {project.data.title}
-                  </a>
-                </h3>
-                <p class="text-small text-text-muted leading-relaxed">{project.data.summary}</p>
+              {/* Main Content: App Icon Logo on Left, Title & 1-Sentence Summary on Right */}
+              <div class="flex items-start gap-4 pt-1">
+                {/* Left App Icon / Logo Container */}
+                <div class="border-border-custom bg-surface-subtle relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border md:size-16">
+                  {project.id === "bits-timekeeping" || project.data.chessPiece === "king" ? (
+                    <AvegaLogo size="full" class="h-full w-full" />
+                  ) : project.id === "portfolio-architecture" ||
+                    project.data.chessPiece === "queen" ? (
+                    <Logo class="text-text h-full w-full object-contain p-2 transition-transform group-hover:scale-105" />
+                  ) : project.data.heroImage ? (
+                    <img
+                      src={project.data.heroImage}
+                      alt={`${project.data.title} preview logo`}
+                      class="h-full w-full rounded-xl object-cover p-1"
+                    />
+                  ) : (
+                    <DoodleIcon name="misc/chip" class="text-primary size-7" />
+                  )}
+                </div>
+
+                {/* Right Title & 1-Sentence Description */}
+                <div class="min-w-0 flex-1 space-y-1.5">
+                  <h3 class="text-h4 font-display text-text group-hover:text-primary leading-tight font-bold transition-colors">
+                    <a href={`/projects/${project.id}`} class="hover:underline focus:outline-none">
+                      {project.data.title}
+                    </a>
+                  </h3>
+                  <p class="text-small text-text-muted leading-relaxed">{project.data.summary}</p>
+                </div>
               </div>
 
-              {project.data.outcomes && project.data.outcomes.length > 0 && (
-                <ul class="border-ink/10 space-y-1.5 border-t pt-2">
-                  {project.data.outcomes.slice(0, 2).map((outcome) => (
-                    <li class="text-small text-text flex items-start gap-2">
-                      <span class="text-primary font-bold">✓</span>
-                      <span>{outcome}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              <div class="flex flex-wrap gap-1.5 pt-2">
-                {project.data.tags.map((tag) => (
-                  <span class="text-text-muted bg-surface-subtle border-ink/15 rounded border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
-                    {tag}
-                  </span>
-                ))}
+              {/* Chess Board Alternating Tech Stack Badges */}
+              <div class="border-ink/10 space-y-2 border-t pt-4">
+                <p class="text-micro text-text-muted font-mono font-bold tracking-[0.14em] uppercase">
+                  Tech Stack Repertoire
+                </p>
+                <div class="flex flex-wrap gap-2">
+                  {project.data.tags.map((tag, i) => {
+                    const isWhiteSquare = i % 2 === 0;
+                    return (
+                      <span
+                        class={`border-ink inline-flex items-center gap-1.5 rounded-sm border-[1.5px] px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase transition-transform group-hover:scale-[1.02] ${
+                          isWhiteSquare
+                            ? "bg-surface text-text shadow-[1.5px_1.5px_0_var(--color-ink)]"
+                            : "bg-text text-bg shadow-[1.5px_1.5px_0_var(--color-ink)]"
+                        }`}
+                      >
+                        <span
+                          class={`size-1.5 rounded-full ${isWhiteSquare ? "bg-text" : "bg-bg"}`}
+                          aria-hidden="true"
+                        />
+                        <span>{tag}</span>
+                      </span>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
+            {/* Footer Link */}
             <div class="border-ink/10 flex items-center justify-between border-t pt-4">
               <a
                 href={`/projects/${project.id}`}
-                class="text-small text-primary flex items-center gap-1 font-semibold group-hover:underline"
+                class="text-small text-primary inline-flex items-center gap-1.5 font-semibold group-hover:underline"
               >
                 <span>Read case study</span>
-                <span class="transition-transform group-hover:translate-x-1">→</span>
+                <DoodleIcon
+                  name="arrows/arrow-right"
+                  class="size-3.5 transition-transform group-hover:translate-x-0.5"
+                />
               </a>
             </div>
           </article>
         ))
       }
-    </Grid>
+    </div>
   </Container>
 </section>

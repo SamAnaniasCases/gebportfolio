@@ -1,14 +1,14 @@
 {
   "name": "peaceful-proxima",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.2.0",
   "engines": {
     "node": ">=22.12.0"
   },
   "packageManager": "pnpm@11.18.0",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && esbuild dist/server/entry.mjs --bundle --outfile=dist/client/_worker.js --format=esm --target=es2022 --external:cloudflare:workers",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check && pnpm run check-links",

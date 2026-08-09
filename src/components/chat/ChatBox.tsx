@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useChatSocket, validateUsername } from "./useChatSocket";
 import { ChessWidget } from "../chess/ChessWidget";
 import { GameDetailsModal, type PublicGameState } from "../chess/GameDetailsModal";
@@ -30,6 +30,155 @@ function formatRelativeTime(timestamp: number): string {
   return `${days}d ago`;
 }
 
+// Memoized Chat Input Form — keeps input typing state completely isolated from ChatBox and 3D Canvas
+interface ChatInputFormProps {
+  onSend: (text: string) => void;
+  assignedName: string;
+}
+
+const ChatInputForm: React.FC<ChatInputFormProps> = React.memo(({ onSend, assignedName }) => {
+  const [inputText, setInputText] = useState("");
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => inputRef.current?.focus(), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const trimmed = inputText.trim();
+    if (!trimmed) return;
+    onSend(trimmed);
+    setInputText("");
+  };
+
+  return (
+    <footer className="border-border-custom/60 mt-3 shrink-0 border-t pt-3">
+      <div className="text-text-muted mb-1.5 font-mono text-[11px]">
+        chatting as <span className="text-text font-bold">{assignedName}</span>
+      </div>
+
+      <form onSubmit={handleSubmit} className="flex items-center gap-2">
+        <div className="relative flex-1">
+          <input
+            ref={inputRef}
+            type="text"
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            maxLength={280}
+            placeholder="say something..."
+            className="bg-surface border-border-custom text-text placeholder:text-text-muted focus:ring-primary w-full rounded-xl border py-2 pr-12 pl-3 font-sans text-xs outline-none focus:ring-2"
+          />
+          <span className="text-text-muted absolute top-1/2 right-2.5 -translate-y-1/2 font-mono text-[9px]">
+            {inputText.length}/280
+          </span>
+        </div>
+
+        <button
+          type="submit"
+          disabled={!inputText.trim()}
+          className="bg-primary border-primary shrink-0 cursor-pointer rounded-xl border px-3 py-2 font-mono text-xs font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40"
+        >
+          send ↵
+        </button>
+      </form>
+    </footer>
+  );
+});
+
+// Memoized Message List — avoids re-rendering live message items when irrelevant state changes
+interface MessageListProps {
+  messages: ReturnType<typeof useChatSocket>["messages"];
+  assignedName: string;
+  displayName: string;
+}
+
+const MessageList: React.FC<MessageListProps> = React.memo(
+  ({ messages, assignedName, displayName }) => {
+    const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
+    if (messages.length === 0) {
+      return (
+        <div className="custom-scrollbar flex-1 space-y-3 overflow-y-auto pr-1">
+          <div className="flex h-full flex-col items-center justify-center p-4 text-center">
+            <span className="font-display text-primary text-3xl">♞</span>
+            <h4 className="font-display text-text mt-2 text-sm font-bold">
+              Welcome to Live Portfolio Chat!
+            </h4>
+            <p className="text-text-muted mt-1 font-sans text-xs leading-relaxed">
+              No messages sent yet. Be the first to start the conversation!
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="custom-scrollbar flex-1 space-y-3 overflow-y-auto pr-1">
+        {messages.map((msg) => {
+          const isMe = msg.sender === (assignedName || displayName);
+          const isSystemMsg = msg.isSystem || msg.sender === "System";
+          const avatarSymbol = CHESS_SYMBOLS[msg.avatar] || "♞";
+
+          if (isSystemMsg) {
+            return (
+              <div key={msg.id} className="my-2 text-center">
+                <span className="bg-surface-subtle border-border-custom/50 text-text-muted inline-block rounded-full border px-3 py-0.5 font-mono text-[10px] italic">
+                  {msg.text}
+                </span>
+              </div>
+            );
+          }
+
+          return (
+            <div
+              key={msg.id}
+              className={`flex items-start gap-2.5 ${isMe ? "flex-row-reverse" : "flex-row"}`}
+            >
+              {/* Avatar Circle */}
+              <div
+                title={msg.sender}
+                className={`flex size-8 shrink-0 items-center justify-center rounded-full border text-xs font-bold shadow-xs select-none ${
+                  isMe
+                    ? "bg-primary border-primary text-white"
+                    : "bg-surface border-border-custom text-primary"
+                }`}
+              >
+                {avatarSymbol}
+              </div>
+
+              {/* Message Content & Metadata */}
+              <div className={`flex max-w-[82%] flex-col ${isMe ? "items-end" : "items-start"}`}>
+                <div className="text-text-muted mb-1 flex items-center gap-1.5 font-mono text-[10px]">
+                  <span className="font-bold">{msg.sender}</span>
+                  <span>·</span>
+                  <span>{formatRelativeTime(msg.timestamp)}</span>
+                </div>
+
+                <div
+                  className={`rounded-2xl border px-3.5 py-2 font-sans text-xs leading-relaxed break-words shadow-sm ${
+                    isMe
+                      ? "bg-primary border-primary rounded-tr-xs text-white"
+                      : "bg-surface-subtle/90 border-border-custom/60 text-text rounded-tl-xs"
+                  }`}
+                >
+                  {msg.text}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+        <div ref={messagesEndRef} />
+      </div>
+    );
+  }
+);
+
 export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose }) => {
   const {
     messages,
@@ -43,7 +192,6 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose }) => {
     clearError,
   } = useChatSocket({ isOpen });
 
-  const [inputText, setInputText] = useState("");
   const [onboardingInput, setOnboardingInput] = useState("");
   const [validationError, setValidationError] = useState<string | null>(null);
   const [mobileTab, setMobileTab] = useState<"chat" | "chess">("chat");
@@ -53,29 +201,17 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose }) => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [gameState, setGameState] = useState<PublicGameState | null>(null);
 
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const onboardingInputRef = useRef<HTMLInputElement | null>(null);
 
-  // Auto-scroll message feed to bottom
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  // Stable callback for updating game state from ChessWidget
+  const handleGameStateChange = useCallback((state: PublicGameState | null) => {
+    setGameState(state);
+  }, []);
 
+  // Focus input when onboarding opens
   useEffect(() => {
-    if (isOpen && hasOnboarded) {
-      scrollToBottom();
-    }
-  }, [messages, isOpen, hasOnboarded]);
-
-  // Focus input when onboarding opens or chat opens
-  useEffect(() => {
-    if (isOpen) {
-      if (!hasOnboarded) {
-        setTimeout(() => onboardingInputRef.current?.focus(), 100);
-      } else {
-        setTimeout(() => inputRef.current?.focus(), 100);
-      }
+    if (isOpen && !hasOnboarded) {
+      setTimeout(() => onboardingInputRef.current?.focus(), 100);
     }
   }, [isOpen, hasOnboarded]);
 
@@ -117,18 +253,6 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose }) => {
       return;
     }
     setValidationError(null);
-  };
-
-  const handleSend = (e?: React.SyntheticEvent) => {
-    if (e) e.preventDefault();
-    if (!inputText.trim()) return;
-
-    sendMessage(inputText.trim());
-    setInputText("");
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputText(e.target.value);
   };
 
   const activeError = validationError || error;
@@ -344,109 +468,14 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose }) => {
             )}
 
             {/* Live Message Feed */}
-            <div className="custom-scrollbar flex-1 space-y-3 overflow-y-auto pr-1">
-              {messages.length === 0 ? (
-                <div className="flex h-full flex-col items-center justify-center p-4 text-center">
-                  <span className="font-display text-primary text-3xl">♞</span>
-                  <h4 className="font-display text-text mt-2 text-sm font-bold">
-                    Welcome to Live Portfolio Chat!
-                  </h4>
-                  <p className="text-text-muted mt-1 font-sans text-xs leading-relaxed">
-                    No messages sent yet. Be the first to start the conversation!
-                  </p>
-                </div>
-              ) : (
-                messages.map((msg) => {
-                  const isMe = msg.sender === (assignedName || displayName);
-                  const isSystemMsg = msg.isSystem || msg.sender === "System";
-                  const avatarSymbol = CHESS_SYMBOLS[msg.avatar] || "♞";
-
-                  if (isSystemMsg) {
-                    return (
-                      <div key={msg.id} className="my-2 text-center">
-                        <span className="bg-surface-subtle border-border-custom/50 text-text-muted inline-block rounded-full border px-3 py-0.5 font-mono text-[10px] italic">
-                          {msg.text}
-                        </span>
-                      </div>
-                    );
-                  }
-
-                  return (
-                    <div
-                      key={msg.id}
-                      className={`flex items-start gap-2.5 ${isMe ? "flex-row-reverse" : "flex-row"}`}
-                    >
-                      {/* Avatar Circle */}
-                      <div
-                        title={msg.sender}
-                        className={`flex size-8 shrink-0 items-center justify-center rounded-full border text-xs font-bold shadow-xs select-none ${
-                          isMe
-                            ? "bg-primary border-primary text-white"
-                            : "bg-surface border-border-custom text-primary"
-                        }`}
-                      >
-                        {avatarSymbol}
-                      </div>
-
-                      {/* Message Content & Metadata */}
-                      <div
-                        className={`flex max-w-[82%] flex-col ${isMe ? "items-end" : "items-start"}`}
-                      >
-                        <div className="text-text-muted mb-1 flex items-center gap-1.5 font-mono text-[10px]">
-                          <span className="font-bold">{msg.sender}</span>
-                          <span>·</span>
-                          <span>{formatRelativeTime(msg.timestamp)}</span>
-                        </div>
-
-                        <div
-                          className={`rounded-2xl border px-3.5 py-2 font-sans text-xs leading-relaxed break-words shadow-sm ${
-                            isMe
-                              ? "bg-primary border-primary rounded-tr-xs text-white"
-                              : "bg-surface-subtle/90 border-border-custom/60 text-text rounded-tl-xs"
-                          }`}
-                        >
-                          {msg.text}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-              <div ref={messagesEndRef} />
-            </div>
+            <MessageList
+              messages={messages}
+              assignedName={assignedName}
+              displayName={displayName}
+            />
 
             {/* Footer Input Form */}
-            <footer className="border-border-custom/60 mt-3 shrink-0 border-t pt-3">
-              <div className="text-text-muted mb-1.5 font-mono text-[11px]">
-                chatting as{" "}
-                <span className="text-text font-bold">{assignedName || displayName}</span>
-              </div>
-
-              <form onSubmit={handleSend} className="flex items-center gap-2">
-                <div className="relative flex-1">
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={inputText}
-                    onChange={handleInputChange}
-                    maxLength={280}
-                    placeholder="say something..."
-                    className="bg-surface border-border-custom text-text placeholder:text-text-muted focus:ring-primary w-full rounded-xl border py-2 pr-12 pl-3 font-sans text-xs outline-none focus:ring-2"
-                  />
-                  <span className="text-text-muted absolute top-1/2 right-2.5 -translate-y-1/2 font-mono text-[9px]">
-                    {inputText.length}/280
-                  </span>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={!inputText.trim()}
-                  className="bg-primary border-primary shrink-0 cursor-pointer rounded-xl border px-3 py-2 font-mono text-xs font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40"
-                >
-                  send ↵
-                </button>
-              </form>
-            </footer>
+            <ChatInputForm onSend={sendMessage} assignedName={assignedName || displayName} />
           </div>
 
           {/* CENTER SPACER: Allows Portfolio Hero / Content to show cleanly between the two panels */}
@@ -461,7 +490,7 @@ export const ChatBox: React.FC<ChatBoxProps> = ({ isOpen, onClose }) => {
             <ChessWidget
               displayName={assignedName || displayName}
               is3D={is3D}
-              onGameStateChange={setGameState}
+              onGameStateChange={handleGameStateChange}
             />
           </div>
         </div>

@@ -5,6 +5,9 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+  schedule:
+    # Daily automatic rebuild trigger at 12:00 AM UTC to keep SSG HTML current
+    - cron: "0 0 * * *"
 
 jobs:
   verify:

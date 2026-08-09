@@ -1,16 +1,8 @@
 ---
 import Container from "../primitives/Container.astro";
-import Grid from "../primitives/Grid.astro";
 import DividerChessboard from "../primitives/DividerChessboard.astro";
-
-interface MindsetPrinciple {
-  id: string;
-  number: string;
-  badge: string;
-  title: string;
-  summary: string;
-  description: string;
-}
+import { CoreMindsetCarousel } from "./CoreMindsetCarousel";
+import type { MindsetPrinciple } from "./CoreMindsetCarousel";
 
 const principles: MindsetPrinciple[] = [
   {
@@ -62,66 +54,41 @@ const principles: MindsetPrinciple[] = [
 ];
 ---
 
-<section class="bg-surface-subtle/50 relative overflow-hidden">
-  <!-- Top Boundary Divider -->
-  <Container width="default">
-    <DividerChessboard />
-  </Container>
+<section class="bg-surface-subtle/50 relative min-h-0 overflow-x-clip md:min-h-[200vh]">
+  <!-- Viewport Container: natural flow on mobile, sticky scroll-driven on desktop -->
+  <div
+    class="relative py-6 md:sticky md:top-0 md:flex md:min-h-screen md:flex-col md:justify-center md:py-10"
+  >
+    <!-- Top Boundary Divider -->
+    <Container width="default">
+      <DividerChessboard />
+    </Container>
 
-  <!-- Inner Content -->
-  <Container width="default" class="space-y-12 py-10 md:py-14 lg:py-16">
-    <!-- Section Header -->
-    <div class="max-w-2xl space-y-3">
-      <div class="inline-flex items-center gap-2">
-        <span class="text-caption text-primary font-mono font-semibold tracking-widest uppercase">
-          02 · Opening Principles
-        </span>
+    <!-- Inner Content -->
+    <Container width="default" class="space-y-8 py-6 md:space-y-10 md:py-8">
+      <!-- Section Header -->
+      <div class="max-w-2xl space-y-2.5">
+        <div class="inline-flex items-center gap-2">
+          <span class="text-caption text-primary font-mono font-semibold tracking-widest uppercase">
+            02 · Opening Principles
+          </span>
+        </div>
+        <h2 class="text-h2 font-display text-text font-bold tracking-tight">
+          Core Mindset & Principles
+        </h2>
+        <p class="text-body text-text-muted leading-relaxed">
+          The core principles that guide how I plan, document, and build software with discipline
+          and long-term clarity.
+        </p>
       </div>
-      <h2 class="text-h2 font-display text-text font-bold tracking-tight">
-        02. Core Mindset & Principles
-      </h2>
-      <p class="text-body text-text-muted leading-relaxed">
-        The core principles that guide how I plan, document, and build software with discipline and
-        long-term clarity.
-      </p>
-    </div>
 
-    <!-- 5 Mindset Cards Grid -->
-    <Grid cols="1 md:2 lg:3" gap="6">
-      {
-        principles.map((p) => (
-          <article
-            class="group bg-surface border-ink relative flex flex-col justify-between space-y-6 rounded-xl border-[2.5px] p-6 transition-all duration-200 hover:-translate-y-1"
-            style="box-shadow: 3px 3px 0 var(--color-ink);"
-          >
-            <div class="space-y-5">
-              <div class="flex items-center justify-between">
-                <span class="text-caption text-primary bg-primary/10 border-primary/20 rounded border px-2 py-0.5 font-mono font-bold">
-                  {p.number}
-                </span>
-                <span class="text-text-muted bg-surface-subtle border-ink/15 rounded border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase">
-                  {p.badge}
-                </span>
-              </div>
+      <!-- Interactive 3D Chess-Inspired Scroll-Driven Carousel -->
+      <CoreMindsetCarousel client:only="react" principles={principles} />
+    </Container>
 
-              <div class="space-y-3">
-                <h3 class="text-h4 font-display text-text group-hover:text-primary font-bold transition-colors">
-                  {p.title}
-                </h3>
-                <p class="text-small text-text leading-snug font-semibold">{p.summary}</p>
-                <p class="text-small text-text-muted leading-relaxed">{p.description}</p>
-              </div>
-            </div>
-
-            <div class="bg-ink/10 group-hover:bg-primary h-1 w-full rounded-full transition-colors" />
-          </article>
-        ))
-      }
-    </Grid>
-  </Container>
-
-  <!-- Bottom Boundary Divider -->
-  <Container width="default">
-    <DividerChessboard />
-  </Container>
+    <!-- Bottom Boundary Divider -->
+    <Container width="default">
+      <DividerChessboard />
+    </Container>
+  </div>
 </section>

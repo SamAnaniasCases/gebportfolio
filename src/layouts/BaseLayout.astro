@@ -10,6 +10,7 @@ import knightMarker from "../assets/chess-nav/knight.svg?raw";
 import navIndicator from "../assets/chess-icons/correct.svg?raw";
 import { ChatWidget } from "../components/chat/ChatWidget";
 import EvalBarScroll from "../components/navigation/EvalBarScroll.astro";
+import pkg from "../../package.json";
 
 interface Props {
   title?: string;
@@ -421,7 +422,7 @@ const groupLabels = ["WORK", "WRITING", "META"];
           </div>
           <ThemeToggle />
           <p class="text-caption text-text-muted mt-2 font-mono">
-            &copy; {new Date().getFullYear()} · v1.0.0
+            &copy; {new Date().getFullYear()} · v{pkg.version}
           </p>
         </div>
       </nav>
