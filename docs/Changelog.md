@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Fixed **Astro Cloudflare Adapter Options Type Error** (`astro.config.ts`):
+- Fixed **GitHub Actions CI Workflow & Build Scripts** (`.github/workflows/ci.yml`, `astro.config.ts`, `package.json`):
+  - Removed explicit `version: 11` parameter from `pnpm/action-setup@v4` steps in `.github/workflows/ci.yml`, resolving pnpm version mismatch error with `packageManager` in `package.json`.
   - Removed deprecated and invalid `mode: "advanced"` property from `cloudflare()` adapter configuration in `astro.config.ts`, resolving TypeScript error with `@astrojs/cloudflare` v14+.
+  - Added `esbuild` to `devDependencies` in `package.json` so Cloudflare Pages CI build containers can execute the worker bundling script (`esbuild dist/server/entry.mjs ...`).
 
 - Added **Release & Versioning Workflow Specification** (`docs/engineering/ReleaseWorkflow.md`, `docs/README.md`):
   - Documented the multi-branch Git strategy (`bug-fixes` / feature branch → `main`), step-by-step version tagging flow (`package.json`, `Changelog.md`, Git tags), dynamic sidebar footer versioning, and Cloudflare auto-deployment pipeline.
