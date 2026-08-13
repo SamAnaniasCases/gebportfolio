@@ -4,7 +4,7 @@ test.describe("Core Mindset Carousel", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
     const carousel = page.getByRole("region", { name: "Core Mindset Principles" });
-    await expect(carousel).toBeVisible();
+    await expect(carousel).toBeVisible({ timeout: 15_000 });
   });
 
   test("should render all 5 principles as slides", async ({ page }) => {

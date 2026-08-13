@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Configured Playwright `webServer` (`playwright.config.ts`) to execute `astro dev --force` with `ASTRO_DEV_BACKGROUND: "1"` across both local and CI environments, resolving `@astrojs/cloudflare` preview adapter hangs on GitHub Actions runner (`Error: Timed out waiting 180000ms from config.webServer`).
   - Implemented 1500ms `scrollLockoutUntilRef` lockout guard and absolute `elementTop` target scroll calculations in `CoreMindsetCarousel.tsx`, resolving Firefox programmatically-triggered slide scroll races and achieving 100% E2E test pass rate across Chromium, Firefox, WebKit, Mobile Chrome, and Mobile Safari (100/100 tests passed).
   - Added pre-hydration click listener tracking (`window.__portfolio_chat_requested`) in `ChatWidget.tsx` and `BaseLayout.astro`, preventing missing modal open event triggers prior to React hydration.
-  - Updated E2E test helpers (`openChatModal`, `openChessModal`, pawn selection) and mobile navigation menu checks with retryable `toPass()` assertions to handle mobile close animations and dynamic team assignment.
+  - Updated `core-mindset-carousel.spec.ts` test setup with `toBeVisible({ timeout: 15_000 })` to accommodate 3D WebGL bundle hydration on 2-core Linux CI virtual machines.
   - Added `waitUntil: "domcontentloaded"` and `waitForLoadState("load")` in `a11y.spec.ts`, achieving 100% clean WCAG 2.2 AA accessibility audit passes across 8 core routes in all 5 target environments (40/40 tests passed).
 
 - Fixed **Core Mindset Carousel & E2E Navigation Tests** (`src/components/sections/CoreMindsetCarousel.tsx`, `src/components/sections/CoreMindset.astro`, `tests/e2e/navigation.spec.ts`):
