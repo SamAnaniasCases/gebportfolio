@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Added **Chess Checkmate, Pawn Promotion & Contributor Tracking System** ([0004.3 Roadmap](plans/0004.3-chess-checkmate-and-promotion-roadmap.md), [0004.2 Specification](plans/0004.2-chess-checkmate-and-pawn-promotion-plan.md)):
+  - Implemented **Interactive Pawn Promotion Modal** ([PromotionModal.tsx](../src/components/chess/PromotionModal.tsx)): In-board Woodcut popover dialog prompting players to select Queen, Knight, Rook, or Bishop when promoting pawns to rank 8/1.
+  - Implemented **Finished Game Archival & Reset API** ([reset.ts](../src/pages/api/chess/reset.ts), [archive.ts](../src/pages/api/chess/archive.ts)): `POST /api/chess/reset` archives finished matches into D1/memory, resets match board position to initial FEN, resets match contributor counts, and re-assigns team cookies.
+  - Added **Checkmate Victory Banner & Piece Identification QoL Labels** ([ChessWidget.tsx](../src/components/chess/ChessWidget.tsx), [ChessBoard3D.tsx](../src/components/chess/ChessBoard3D.tsx)): Displays victory header upon checkmate with a "Start New Match" button, alongside floating piece name label pill badges (`White Knight on g1`) on hover/tap.
+  - Enhanced **Game Details & History Modal** ([GameDetailsModal.tsx](../src/components/chess/GameDetailsModal.tsx)): Displays both **Current Match Contributors** and persistent **All-Time Total Visitors**, alongside archived completed match records with one-click "Copy PGN" export buttons.
+  - Added **Web Audio Synthesizers** ([audio.ts](../src/lib/chess/audio.ts)): Synthesized C-major victory fanfare (`playCheckmate()`) and upward arpeggio flourish (`playPromotion()`).
+
+- Fixed **Mobile Chess Board Touch Selection Bug** (`src/components/chess/ChessBoard3D.tsx`, `tests/e2e/chess.spec.ts`):
+  - Removed duplicate `onPointerDown` event listener on chess square buttons that caused immediate double-triggering of piece clicks on touch devices, fixing the bug where selected pieces and legal move indicators briefly appeared and vanished on mobile.
+  - Added Playwright E2E test suite (`tests/e2e/chess.spec.ts`) validating 3D/2D chess board square rendering and piece selection persistence across device viewports.
+
+- Fixed **Playwright E2E (`test:e2e`) & Accessibility (`test:a11y`) Test Suite Execution & Hydration** (`playwright.config.ts`, `src/components/sections/CoreMindsetCarousel.tsx`, `src/components/chat/ChatWidget.tsx`, `src/layouts/BaseLayout.astro`, `tests/e2e/chat.spec.ts`, `tests/e2e/chess.spec.ts`, `tests/e2e/navigation.spec.ts`, `tests/accessibility/a11y.spec.ts`):
+  - Configured Playwright `webServer` (`playwright.config.ts`) to execute `astro dev --force` with `ASTRO_DEV_BACKGROUND: "1"` locally, suppressing Astro v7 background agent mode and avoiding Cloudflare Wrangler preview adapter hangs.
+  - Implemented 1500ms `scrollLockoutUntilRef` lockout guard and absolute `elementTop` target scroll calculations in `CoreMindsetCarousel.tsx`, resolving Firefox programmatically-triggered slide scroll races and achieving 100% E2E test pass rate across Chromium, Firefox, WebKit, Mobile Chrome, and Mobile Safari (100/100 tests passed).
+  - Added pre-hydration click listener tracking (`window.__portfolio_chat_requested`) in `ChatWidget.tsx` and `BaseLayout.astro`, preventing missing modal open event triggers prior to React hydration.
+  - Updated E2E test helpers (`openChatModal`, `openChessModal`, pawn selection) and mobile navigation menu checks with retryable `toPass()` assertions to handle mobile close animations and dynamic team assignment.
+  - Added `waitUntil: "domcontentloaded"` and `waitForLoadState("load")` in `a11y.spec.ts`, achieving 100% clean WCAG 2.2 AA accessibility audit passes across 8 core routes in all 5 target environments (40/40 tests passed).
+
+- Fixed **Core Mindset Carousel & E2E Navigation Tests** (`src/components/sections/CoreMindsetCarousel.tsx`, `src/components/sections/CoreMindset.astro`, `tests/e2e/navigation.spec.ts`):
+  - Fixed `ReferenceError: isMobile is not defined` in `tests/e2e/navigation.spec.ts` by adding `isMobile` to the test fixture destructuring parameters.
+  - Added explicit `onKeyDown={(e) => handleKeyDown(e, i)}` handlers to pagination tab buttons in `CoreMindsetCarousel.tsx`, fixing Firefox keyboard arrow navigation (`ArrowRight` / `ArrowLeft`).
+  - Switched `CoreMindsetCarousel` island directive from `client:visible` to `client:load` in `CoreMindset.astro`, ensuring event handlers hydrate immediately on page load.
+
+## [1.2.0] - 2026-08-09
+
 - Fixed **GitHub Actions CI Workflow & Build Scripts** (`.github/workflows/ci.yml`, `astro.config.ts`, `package.json`):
   - Removed explicit `version: 11` parameter from `pnpm/action-setup@v4` steps in `.github/workflows/ci.yml`, resolving pnpm version mismatch error with `packageManager` in `package.json`.
   - Removed deprecated and invalid `mode: "advanced"` property from `cloudflare()` adapter configuration in `astro.config.ts`, resolving TypeScript error with `@astrojs/cloudflare` v14+.

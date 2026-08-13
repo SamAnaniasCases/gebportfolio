@@ -47,6 +47,7 @@ export const ChessBoard3D: React.FC<ChessBoard3DProps> = React.memo(
     onSquareClick,
   }) => {
     const [prefersReduced, setPrefersReduced] = useState(false);
+    const [hoveredSquare, setHoveredSquare] = useState<string | null>(null);
 
     useEffect(() => {
       if (typeof window !== "undefined") {
@@ -101,8 +102,27 @@ export const ChessBoard3D: React.FC<ChessBoard3DProps> = React.memo(
       return a.x - b.x;
     });
 
+    const activeSquare = hoveredSquare || selectedSquare;
+    let activeBadgeLabel: string | null = null;
+    if (activeSquare) {
+      const activeObj = pieceObjects.find((p) => p.square === activeSquare);
+      if (activeObj) {
+        const rawName = PIECE_STYLES[activeObj.type.toLowerCase()]?.name ?? activeObj.type;
+        const pieceName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+        const colorName = activeObj.color === "w" ? "White" : "Black";
+        activeBadgeLabel = `${colorName} ${pieceName} on ${activeSquare}`;
+      }
+    }
+
     return (
       <div className="relative mx-auto flex w-full max-w-[390px] touch-manipulation flex-col items-center justify-center p-2 select-none">
+        {/* Active Piece Identification QoL Pill Badge */}
+        {activeBadgeLabel && (
+          <div className="bg-surface/90 border-border text-text animate-in fade-in zoom-in-95 pointer-events-none absolute -top-3 z-40 rounded-full border px-3 py-0.5 font-mono text-[11px] font-bold tracking-wide shadow-xs backdrop-blur-xs transition-all duration-200">
+            {activeBadgeLabel}
+          </div>
+        )}
+
         {/* Ground Soft Radial Shadow for Desk Placement Realism */}
         {use3D && (
           <div
@@ -148,8 +168,11 @@ export const ChessBoard3D: React.FC<ChessBoard3DProps> = React.memo(
                     const isCheckSquare = checkSquare === squareName;
                     const isDisabled = isSubmitting || isGameOver;
 
-                    const pieceName = cell
+                    const rawPieceName = cell
                       ? (PIECE_STYLES[cell.type.toLowerCase()]?.name ?? cell.type)
+                      : "";
+                    const pieceName = rawPieceName
+                      ? rawPieceName.charAt(0).toUpperCase() + rawPieceName.slice(1)
                       : "";
 
                     const ariaLabelText = cell
@@ -161,12 +184,10 @@ export const ChessBoard3D: React.FC<ChessBoard3DProps> = React.memo(
                         key={squareName}
                         type="button"
                         onClick={() => handleCellClick(squareName, cell)}
-                        onPointerDown={(e) => {
-                          // Ensure mobile touch events trigger cell clicks instantly without lag
-                          if (e.pointerType === "touch") {
-                            handleCellClick(squareName, cell);
-                          }
-                        }}
+                        onPointerEnter={() => setHoveredSquare(squareName)}
+                        onPointerLeave={() =>
+                          setHoveredSquare((prev) => (prev === squareName ? null : prev))
+                        }
                         aria-disabled={isDisabled}
                         aria-label={ariaLabelText}
                         className={`pointer-events-auto relative flex touch-manipulation items-center justify-center transition-colors duration-150 ${

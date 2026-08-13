@@ -48,4 +48,6 @@ For quick iteration, copy the standard template from [0000-template.md](0000-tem
 | `0003.1` | [Anonymous Real-Time Chatbox Implementation Roadmap & Checkpoints](0003.1-anonymous-realtime-chatbox-implementation-roadmap.md)  | `Implemented` | 2026-07-27 |
 | `0004`   | [Anonymous Shared Chess Game Architecture & Specification](0004-anonymous-shared-chess-game-specification.md)                    | `Approved`    | 2026-07-28 |
 | `0004.1` | [Anonymous Shared Chess Game Implementation Roadmap & Checkpoints](0004.1-anonymous-shared-chess-game-implementation-roadmap.md) | `Active`      | 2026-07-28 |
+| `0004.2` | [Chess Checkmate Handling, Match Reset & Pawn Promotion Specification](0004.2-chess-checkmate-and-pawn-promotion-plan.md)        | `Approved`    | 2026-08-13 |
+| `0004.3` | [Chess Checkmate, Pawn Promotion & Contributor Tracking Implementation Roadmap](0004.3-chess-checkmate-and-promotion-roadmap.md) | `Active`      | 2026-08-13 |
 | `0005`   | [Experience Page Architecture, Schema & Content Specification](0005-experience-page-specification.md)                            | `Approved`    | 2026-07-31 |

@@ -1,26 +1,31 @@
 import { test, expect, type Page } from "@playwright/test";
 
 async function openChatModal(page: Page) {
-  const isMobile = await page.locator("#menu-open").isVisible();
-  if (isMobile) {
-    const mobileMenu = page.getByRole("navigation", { name: "Mobile navigation" });
-    if (!(await mobileMenu.isVisible())) {
-      await page.locator("#menu-open").click();
-      await expect(mobileMenu).toBeVisible();
+  await page.waitForLoadState("domcontentloaded");
+  const dialog = page.getByRole("dialog", { name: "Real-time live chat room" });
+
+  await expect(async () => {
+    const isMobile = await page.locator("#menu-open").isVisible();
+    if (isMobile) {
+      const mobileMenu = page.getByRole("navigation", { name: "Mobile navigation" });
+      if (!(await mobileMenu.isVisible())) {
+        await page.locator("#menu-open").click();
+        await expect(mobileMenu).toBeVisible();
+      }
+      const trigger = page.locator("#mobile-menu button", { hasText: "Live Chat" });
+      await trigger.click();
+    } else {
+      const trigger = page.locator("aside button", { hasText: "Live Chat" });
+      await trigger.click();
     }
-    const trigger = page.locator("#mobile-menu button", { hasText: "Live Chat" });
-    await expect(trigger).toBeVisible();
-    await trigger.click();
-  } else {
-    const trigger = page.locator("aside button", { hasText: "Live Chat" });
-    await expect(trigger).toBeVisible();
-    await trigger.click();
-  }
+    await expect(dialog).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 10000 });
 }
 
 test.describe("Anonymous Real-Time Chatbox Onboarding & Verification", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
+    await page.evaluate(() => window.localStorage.clear()).catch(() => {});
   });
 
   test("should render navigation live chat trigger button", async ({ page }) => {

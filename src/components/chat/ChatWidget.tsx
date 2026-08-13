@@ -55,6 +55,16 @@ export const ChatWidget: React.FC = () => {
       setIsOpen(true);
       playClickSound();
     };
+
+    if (
+      typeof window !== "undefined" &&
+      (window as unknown as { __portfolio_chat_requested?: boolean }).__portfolio_chat_requested
+    ) {
+      handleOpenEvent();
+      (window as unknown as { __portfolio_chat_requested?: boolean }).__portfolio_chat_requested =
+        false;
+    }
+
     window.addEventListener("open-portfolio-chat", handleOpenEvent);
     return () => window.removeEventListener("open-portfolio-chat", handleOpenEvent);
   }, [playClickSound]);

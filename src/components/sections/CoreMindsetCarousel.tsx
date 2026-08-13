@@ -55,9 +55,14 @@ export const CoreMindsetCarousel: React.FC<CoreMindsetCarouselProps> = ({ princi
   const slideWidth = isMobile ? 88 : 42;
   const pawnOffsetRem = isMobile ? 3.0 : 5.75;
 
+  const scrollLockoutUntilRef = useRef<number>(0);
+
   // Handle scroll progress within the sticky section wrapper (Desktop only)
   useEffect(() => {
     const handleScroll = () => {
+      // Ignore scroll events during programmatic scroll transitions (lockout period)
+      if (Date.now() < scrollLockoutUntilRef.current) return;
+
       // Only drive sticky scrolljacking on desktop (≥ 768px)
       if (window.innerWidth < 768) return;
 
@@ -72,23 +77,28 @@ export const CoreMindsetCarousel: React.FC<CoreMindsetCarouselProps> = ({ princi
 
       // Progress from 0 to 1 as section scrolls past viewport
       const rawProgress = -rect.top / scrollableHeight;
-      const progress = Math.max(0, Math.min(1, rawProgress));
+      if (rawProgress < 0 || rawProgress > 1) return;
 
-      // Map progress to nearest slide index
-      const calculatedIndex = Math.min(total - 1, Math.floor(progress * total));
+      // Map progress to nearest slide index (symmetrical with scrollToSlide calculation)
+      const calculatedIndex = Math.min(
+        total - 1,
+        Math.max(0, Math.round(rawProgress * (total - 1)))
+      );
       setActiveIndex((prev) => (prev !== calculatedIndex ? calculatedIndex : prev));
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll(); // Initial check
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, [total]);
 
   const scrollToSlide = useCallback(
     (index: number) => {
       const targetIndex = Math.max(0, Math.min(total - 1, index));
       setActiveIndex(targetIndex);
+      scrollLockoutUntilRef.current = Date.now() + 1500;
 
       // Scroll window sticky positioning ONLY on desktop viewports
       if (window.innerWidth < 768) return;
@@ -101,15 +111,15 @@ export const CoreMindsetCarousel: React.FC<CoreMindsetCarouselProps> = ({ princi
       const scrollableHeight = rect.height - window.innerHeight;
 
       if (scrollableHeight > 0) {
-        const targetScrollY =
-          window.scrollY + rect.top + (targetIndex / (total - 1 || 1)) * scrollableHeight;
+        const elementTop = window.scrollY + rect.top;
+        const targetScrollY = elementTop + (targetIndex / (total - 1 || 1)) * scrollableHeight;
         window.scrollTo({
           top: targetScrollY,
-          behavior: prefersReducedMotion ? "auto" : "smooth",
+          behavior: "auto",
         });
       }
     },
-    [total, prefersReducedMotion]
+    [total]
   );
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -129,61 +139,28 @@ export const CoreMindsetCarousel: React.FC<CoreMindsetCarouselProps> = ({ princi
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    switch (e.key) {
-      case "ArrowLeft":
-        e.preventDefault();
-        scrollToSlide(activeIndex - 1);
-        break;
-      case "ArrowRight":
-        e.preventDefault();
-        scrollToSlide(activeIndex + 1);
-        break;
-      case "Home":
-        e.preventDefault();
-        scrollToSlide(0);
-        break;
-      case "End":
-        e.preventDefault();
-        scrollToSlide(total - 1);
-        break;
-    }
-  };
-
-  const trackTransform = getTrackTransform(activeIndex, slideWidth);
-
   return (
     <div
       ref={containerRef}
-      role="region"
-      aria-roledescription="carousel"
-      aria-label="Core Mindset Principles"
-      tabIndex={0}
-      className="focus-visible:ring-focus focus-visible:ring-offset-bg relative outline-none select-none focus-visible:ring-2 focus-visible:ring-offset-2"
-      onKeyDown={handleKeyDown}
+      className="relative w-full overflow-hidden py-4"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Slides Viewport: overflow-x-clip prevents page-wide horizontal scrollbar/swiping */}
-      <div className="relative overflow-x-clip pt-8 pb-4 md:pt-14">
-        {/* Horizontal Track Container */}
+      <div role="region" aria-label="Core Mindset Principles" className="relative w-full">
+        {/* Track container */}
         <div
-          className="relative flex items-stretch"
+          className="flex transition-transform duration-500 ease-out"
           style={{
-            transform: trackTransform,
-            transition: prefersReducedMotion
-              ? "none"
-              : "transform 500ms cubic-bezier(0.4, 0, 0.2, 1)",
-            gap: `${GAP_REM}rem`,
+            transform: getTrackTransform(activeIndex, slideWidth),
           }}
         >
-          {/* WebGL 3D Turned-Wood Chess Pawn Companion — Positioned strictly INSIDE active card's top slot */}
+          {/* Animated 3D Chess Pawn Companion */}
           <div
             data-testid="mindset-pawn"
             aria-hidden="true"
             className="pointer-events-none absolute -top-4 z-30 h-20 w-16 md:-top-7 md:h-28 md:w-24"
             style={{
-              left: `calc(${activeIndex * slideWidth}% + ${activeIndex * GAP_REM}rem + ${slideWidth}% - ${pawnOffsetRem}rem)`,
+              left: `calc(${activeIndex * slideWidth}% + ${activeIndex * GAP_REM}rem + ${slideWidth / 2}% - ${pawnOffsetRem}rem)`,
               transition: prefersReducedMotion
                 ? "none"
                 : "left 600ms cubic-bezier(0.25, 1, 0.5, 1)",
@@ -210,8 +187,12 @@ export const CoreMindsetCarousel: React.FC<CoreMindsetCarouselProps> = ({ princi
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     scrollToSlide(i);
-                  } else {
-                    handleKeyDown(e);
+                  } else if (e.key === "ArrowRight" || e.key === "Right") {
+                    e.preventDefault();
+                    scrollToSlide(i + 1);
+                  } else if (e.key === "ArrowLeft" || e.key === "Left") {
+                    e.preventDefault();
+                    scrollToSlide(i - 1);
                   }
                 }}
                 className="group bg-surface border-border-custom/80 focus-visible:ring-focus focus-visible:ring-offset-bg relative flex shrink-0 cursor-pointer flex-col justify-between rounded-3xl border p-5 transition-all duration-500 ease-out outline-none focus-visible:ring-2 focus-visible:ring-offset-2 md:min-h-[340px] md:p-8"
@@ -278,7 +259,19 @@ export const CoreMindsetCarousel: React.FC<CoreMindsetCarouselProps> = ({ princi
                 aria-selected={isActive}
                 aria-label={`Go to slide ${i + 1}: ${p.title}`}
                 onClick={() => scrollToSlide(i)}
-                className={`focus-visible:ring-focus focus-visible:ring-offset-bg relative z-10 flex cursor-pointer items-center justify-center transition-all duration-300 outline-none before:absolute before:-inset-3.5 before:content-[''] focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    scrollToSlide(i);
+                  } else if (e.key === "ArrowRight" || e.key === "Right") {
+                    e.preventDefault();
+                    scrollToSlide(i + 1);
+                  } else if (e.key === "ArrowLeft" || e.key === "Left") {
+                    e.preventDefault();
+                    scrollToSlide(i - 1);
+                  }
+                }}
+                className={`focus-visible:ring-focus focus-visible:ring-offset-bg relative z-10 flex cursor-pointer items-center justify-center transition-all duration-300 outline-none before:absolute before:-inset-1.5 before:content-[''] focus-visible:ring-2 focus-visible:ring-offset-2 md:before:-inset-3.5 ${
                   isActive
                     ? "border-primary bg-primary ring-primary/40 size-4 rounded-xs shadow-sm ring-2"
                     : "bg-surface border-border-custom hover:border-primary/60 hover:bg-surface-subtle size-3 rounded-xs border"

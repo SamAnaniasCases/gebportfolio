@@ -31,6 +31,8 @@ export const GET: APIRoute = async ({ cookies, locals }) => {
         history: [],
         positionKeys: [INITIAL_FEN.split(" ")[0]],
         contributors: 0,
+        seenSessions: [],
+        allTimeContributors: 0,
         lastMoveAt: new Date().toISOString(),
       };
       await storage.saveGame(0, game);
@@ -51,7 +53,7 @@ export const GET: APIRoute = async ({ cookies, locals }) => {
         sideToMove: (game.fen.split(" ")[1] === "b" ? "black" : "white") as "white" | "black",
         history: game.history,
         positionKeys: game.positionKeys,
-        seenSessions: [],
+        seenSessions: game.seenSessions || [],
         contributors: game.contributors,
         startedAt: game.lastMoveAt,
         lastMoveAt: game.lastMoveAt,
@@ -86,6 +88,7 @@ export const GET: APIRoute = async ({ cookies, locals }) => {
       canMoveNow: view.sideToMove === session.side,
       recentMoves: view.history,
       contributorCount: view.contributors,
+      allTimeContributors: game.allTimeContributors || 0,
       fen: String(view.position),
     };
 

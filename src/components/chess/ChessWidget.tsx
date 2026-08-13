@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Chess, type Square } from "chess.js";
 import { ChessBoard3D } from "./ChessBoard3D";
+import { PromotionModal } from "./PromotionModal";
 import { type PublicGameState } from "./GameDetailsModal";
 import { showToast } from "../feedback/Toast";
 import { chessAudio } from "../../lib/chess/audio";
@@ -17,6 +18,10 @@ export const ChessWidget: React.FC<ChessWidgetProps> = React.memo(
     const [gameState, setGameState] = useState<PublicGameState | null>(null);
     const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
     const [possibleMoves, setPossibleMoves] = useState<string[]>([]);
+    const [pendingPromotion, setPendingPromotion] = useState<{
+      from: string;
+      to: string;
+    } | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -98,11 +103,18 @@ export const ChessWidget: React.FC<ChessWidgetProps> = React.memo(
 
         // Check if squareName is a valid destination for selected piece
         const validMoves = chess.moves({ square: selectedSquare as Square, verbose: true });
-        const targetMove = validMoves.find((m) => m.to === squareName);
+        const targetMoves = validMoves.filter((m) => m.to === squareName);
 
-        if (targetMove) {
+        if (targetMoves.length > 0) {
+          // Check if any move requires promotion
+          const requiresPromotion = targetMoves.some((m) => m.promotion);
+          if (requiresPromotion) {
+            setPendingPromotion({ from: selectedSquare, to: squareName });
+            return;
+          }
+
           // Submit move
-          executeMove(targetMove.san);
+          executeMove(targetMoves[0].san);
           setSelectedSquare(null);
           setPossibleMoves([]);
           return;
@@ -118,6 +130,29 @@ export const ChessWidget: React.FC<ChessWidgetProps> = React.memo(
         setSelectedSquare(null);
         setPossibleMoves([]);
       }
+    };
+
+    const handlePromotionSelect = (piece: "q" | "n" | "r" | "b") => {
+      if (!pendingPromotion) return;
+
+      const tempChess = new Chess(gameState.fen);
+      const moveResult = tempChess.move({
+        from: pendingPromotion.from as Square,
+        to: pendingPromotion.to as Square,
+        promotion: piece,
+      });
+
+      if (moveResult) {
+        executeMove(moveResult.san);
+      }
+
+      setPendingPromotion(null);
+      setSelectedSquare(null);
+      setPossibleMoves([]);
+    };
+
+    const handlePromotionCancel = () => {
+      setPendingPromotion(null);
     };
 
     const executeMove = async (sanMove: string) => {
@@ -139,11 +174,17 @@ export const ChessWidget: React.FC<ChessWidgetProps> = React.memo(
           setGameState(data.state);
           onGameStateChangeRef.current?.(data.state);
 
-          // Test if move resulted in a Check or normal move for audio response
+          // Test if move resulted in Checkmate, Check, Promotion or normal move for audio response
           const newChess = new Chess(data.state.fen);
-          if (newChess.inCheck()) {
+          if (data.state.outcome?.type === "checkmate" || newChess.isCheckmate()) {
+            chessAudio.playCheckmate();
+            showToast("CHECKMATE!");
+          } else if (newChess.inCheck()) {
             chessAudio.playCheck();
             showToast("CHECK!");
+          } else if (sanMove.includes("=")) {
+            chessAudio.playPromotion();
+            showToast("PAWN PROMOTED!");
           } else {
             chessAudio.playMove();
           }
@@ -169,31 +210,76 @@ export const ChessWidget: React.FC<ChessWidgetProps> = React.memo(
       }
     };
 
+    const handleResetMatch = async () => {
+      setIsSubmitting(true);
+      try {
+        const res = await fetch("/api/chess/reset", { method: "POST" });
+        const data = await res.json();
+        if (res.ok && data.ok) {
+          setGameState(data.state);
+          onGameStateChangeRef.current?.(data.state);
+          setSelectedSquare(null);
+          setPossibleMoves([]);
+          setPendingPromotion(null);
+          showToast(`New Match Started! You are Team ${data.state.yourSide.toUpperCase()}`);
+        } else {
+          showToast(`Reset failed: ${data.reason}`);
+        }
+      } catch {
+        showToast("Failed to connect to game server.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    };
+
+    const isGameOver = !!gameState.outcome || chess.isGameOver();
+    const winner =
+      gameState.outcome?.winner ||
+      (chess.isCheckmate() ? (chess.turn() === "w" ? "black" : "white") : null);
+
     const checkedTeamName = sideInCheck === "w" ? "White" : "Black";
     const isYourKingInCheck =
       isCheck && (gameState.yourSide === "white" ? sideInCheck === "w" : sideInCheck === "b");
 
     return (
       <div className="flex h-full w-full flex-col items-center justify-center space-y-2">
-        {/* Dynamic King in Check Alert Banner */}
-        {isCheck && (
-          <div
-            className={`flex animate-bounce items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-xs font-bold shadow-md ${
-              isYourKingInCheck
-                ? "border-rose-600 bg-rose-600 text-white"
-                : "border-amber-500/40 bg-amber-500/15 text-amber-700 dark:text-amber-300"
-            }`}
-          >
-            <span
-              className="inline-flex size-4 shrink-0 items-center justify-center [&>svg]:h-full [&>svg]:w-full"
-              dangerouslySetInnerHTML={{ __html: blunderRaw }}
-            />
+        {/* Checkmate Victory Banner or King in Check Alert Banner */}
+        {isGameOver ? (
+          <div className="animate-in fade-in zoom-in-95 flex flex-col items-center gap-2 rounded-2xl border border-emerald-500/40 bg-emerald-500/15 p-3 font-mono text-xs font-bold text-emerald-700 shadow-md dark:text-emerald-300">
             <span>
-              {isYourKingInCheck
-                ? "YOUR KING IS IN CHECK!"
-                : `${checkedTeamName} King is in Check!`}
+              {winner
+                ? `★ GAME OVER - TEAM ${winner.toUpperCase()} WINS BY CHECKMATE!`
+                : "★ GAME OVER - DRAW / STALEMATE!"}
             </span>
+            <button
+              type="button"
+              onClick={handleResetMatch}
+              disabled={isSubmitting}
+              className="bg-primary hover:bg-primary/90 cursor-pointer rounded-lg px-3.5 py-1.5 font-mono text-xs font-semibold text-white shadow-xs transition-transform active:scale-95 disabled:opacity-50"
+            >
+              Start New Match
+            </button>
           </div>
+        ) : (
+          isCheck && (
+            <div
+              className={`flex animate-bounce items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-xs font-bold shadow-md ${
+                isYourKingInCheck
+                  ? "border-rose-600 bg-rose-600 text-white"
+                  : "border-amber-500/40 bg-amber-500/15 text-amber-700 dark:text-amber-300"
+              }`}
+            >
+              <span
+                className="inline-flex size-4 shrink-0 items-center justify-center [&>svg]:h-full [&>svg]:w-full"
+                dangerouslySetInnerHTML={{ __html: blunderRaw }}
+              />
+              <span>
+                {isYourKingInCheck
+                  ? "YOUR KING IS IN CHECK!"
+                  : `${checkedTeamName} King is in Check!`}
+              </span>
+            </div>
+          )
         )}
 
         {/* Pure 3D / 2D Chess Board (Direct touch-interactive canvas without parent click interceptor) */}
@@ -210,6 +296,15 @@ export const ChessWidget: React.FC<ChessWidgetProps> = React.memo(
             onSquareClick={handleSquareClick}
           />
         </div>
+
+        {/* Promotion Selector Overlay */}
+        {pendingPromotion && (
+          <PromotionModal
+            color={gameState.yourSide === "white" ? "w" : "b"}
+            onSelect={handlePromotionSelect}
+            onCancel={handlePromotionCancel}
+          />
+        )}
       </div>
     );
   }
