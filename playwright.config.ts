@@ -62,17 +62,17 @@ export default defineConfig({
   ],
 
   /* Auto-start the app so tests can run without a manually started server.
-     Locally: start the Vite dev server (Cloudflare adapter's `astro preview`
-     requires wrangler bindings that are unavailable outside CI).
-     ASTRO_DEV_BACKGROUND suppresses Astro v7's `am-i-vibing` agent detection
-     which would otherwise force daemon mode, preventing Playwright from
-     managing the server lifecycle.
-     On CI: build the production bundle and serve it via `astro preview`. */
+     Uses `astro dev --force` with `ASTRO_DEV_BACKGROUND: "1"` to suppress Astro v7's
+     `am-i-vibing` agent detection. `@astrojs/cloudflare`'s `astro preview` requires
+     Wrangler Pages bindings that hang outside Wrangler environments. */
   webServer: {
-    command: process.env.CI ? "pnpm run build && pnpm run preview" : "pnpm exec astro dev --force",
+    command: "pnpm exec astro dev --force",
     url: "http://127.0.0.1:4321",
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
-    env: process.env.CI ? {} : { ASTRO_DEV_BACKGROUND: "1" },
+    env: {
+      ...process.env,
+      ASTRO_DEV_BACKGROUND: "1",
+    },
   },
 });
