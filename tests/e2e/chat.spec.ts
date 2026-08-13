@@ -26,6 +26,7 @@ test.describe("Anonymous Real-Time Chatbox Onboarding & Verification", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
     await page.evaluate(() => window.localStorage.clear()).catch(() => {});
+    await page.reload();
   });
 
   test("should render navigation live chat trigger button", async ({ page }) => {
@@ -98,8 +99,10 @@ test.describe("Anonymous Real-Time Chatbox Onboarding & Verification", () => {
     const nameInput = page.getByPlaceholder("e.g. TacticalKnight");
     await expect(nameInput).toBeFocused();
 
-    await page.keyboard.press("Escape");
-    await expect(dialog).not.toBeVisible();
+    await expect(async () => {
+      await page.keyboard.press("Escape");
+      await expect(dialog).not.toBeVisible();
+    }).toPass({ timeout: 5000 });
   });
 
   test("should close chat modal when close button is clicked", async ({ page }) => {
@@ -108,8 +111,10 @@ test.describe("Anonymous Real-Time Chatbox Onboarding & Verification", () => {
     const dialog = page.getByRole("dialog", { name: "Real-time live chat room" });
     await expect(dialog).toBeVisible();
 
-    const closeBtn = page.getByRole("button", { name: "Close chat modal" }).first();
-    await closeBtn.click();
-    await expect(dialog).not.toBeVisible();
+    await expect(async () => {
+      const closeBtn = page.getByRole("button", { name: "Close chat modal" }).first();
+      await closeBtn.click();
+      await expect(dialog).not.toBeVisible();
+    }).toPass({ timeout: 5000 });
   });
 });

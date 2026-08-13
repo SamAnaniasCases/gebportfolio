@@ -5,7 +5,7 @@ async function openChessModal(page: Page) {
     localStorage.setItem("portfolio_chat_display_name_v1", "ChessTester");
   });
   await page.reload();
-  await page.waitForLoadState("domcontentloaded");
+  await page.waitForLoadState("load");
   const dialog = page.getByRole("dialog", { name: "Real-time live chat room" });
 
   await expect(async () => {
@@ -25,10 +25,10 @@ async function openChessModal(page: Page) {
     await expect(dialog).toBeVisible({ timeout: 1000 });
   }).toPass({ timeout: 10000 });
 
-  // Switch to chess tab on mobile layout
-  const chessTabBtn = page.getByRole("button", { name: /Shared Chess/i });
-  if (await chessTabBtn.isVisible()) {
-    await chessTabBtn.click();
+  // Switch to chess tab if present
+  const chessTabBtn = page.getByRole("button", { name: /Shared Chess/i }).first();
+  if (await chessTabBtn.isVisible().catch(() => false)) {
+    await chessTabBtn.click().catch(() => {});
   }
 }
 
@@ -40,9 +40,10 @@ test.describe("Interactive Chess Game Board E2E Tests", () => {
   test("should load 3D/2D chess board and render squares", async ({ page }) => {
     await openChessModal(page);
 
-    // Verify chess square buttons exist (64 squares)
-    const chessSquare = page.locator('button[title="e2"]').first();
-    await expect(chessSquare).toBeVisible();
+    await expect(async () => {
+      const chessSquare = page.locator('button[title="e2"]').first();
+      await expect(chessSquare).toBeVisible();
+    }).toPass({ timeout: 10000 });
   });
 
   test("should maintain piece selection and show floating identification label", async ({

@@ -72,12 +72,9 @@ test.describe("Global Navigation & Header Verification", () => {
       const navLink = navigation().locator(`a[href="${link.path}"]`).first();
       await expect(navLink).toBeVisible();
 
-      // Click link and await URL navigation concurrently
-      if (link.path === "/") {
-        await navLink.click();
-      } else {
-        await Promise.all([page.waitForURL(`**${link.path}**`), navLink.click()]);
-      }
+      await navLink.click();
+      const expectedUrlPattern = link.path === "/" ? /\/$/ : new RegExp(link.path);
+      await expect(page).toHaveURL(expectedUrlPattern);
 
       // Verify URL pathname (strip trailing slashes for static output compatibility)
       const url = new URL(page.url());

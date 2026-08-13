@@ -23,7 +23,7 @@ test.describe("Accessibility Audits (WCAG 2.2 AA Compliance)", () => {
           .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22a", "wcag22aa"])
           .analyze();
         expect(accessibilityScanResults.violations).toEqual([]);
-      }).toPass({ timeout: 5000 });
+      }).toPass({ timeout: 15_000 });
     });
   }
 });

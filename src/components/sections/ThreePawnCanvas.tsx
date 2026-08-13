@@ -56,10 +56,16 @@ export const ThreePawnCanvas: React.FC<ThreePawnCanvasProps> = ({
     camera.lookAt(0, 0.85, 0);
 
     // 3. WebGL Renderer Setup
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.appendChild(renderer.domElement);
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(renderer.domElement);
+    } catch (err) {
+      console.warn("WebGL renderer creation failed, skipping 3D pawn canvas:", err);
+      return;
+    }
 
     // 4a. Turned Wood Procedural Texture Generator
     const createWoodTexture = (): THREE.CanvasTexture => {
@@ -329,19 +335,21 @@ export const ThreePawnCanvas: React.FC<ThreePawnCanvasProps> = ({
       observer.disconnect();
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animationFrameId);
-      if (renderer.domElement && container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
+      if (renderer) {
+        if (renderer.domElement && container.contains(renderer.domElement)) {
+          container.removeChild(renderer.domElement);
+        }
+        renderer.dispose();
       }
-      renderer.dispose();
-      pawnGeo.dispose();
-      woodMaterial.dispose();
-      contactShadowGeo.dispose();
-      contactShadowMat.dispose();
-      castShadowGeo.dispose();
-      castShadowMat.dispose();
-      woodTexture.dispose();
-      contactShadowTexture.dispose();
-      castShadowTexture.dispose();
+      pawnGeo?.dispose();
+      woodMaterial?.dispose();
+      contactShadowGeo?.dispose();
+      contactShadowMat?.dispose();
+      castShadowGeo?.dispose();
+      castShadowMat?.dispose();
+      woodTexture?.dispose();
+      contactShadowTexture?.dispose();
+      castShadowTexture?.dispose();
     };
   }, []);
 

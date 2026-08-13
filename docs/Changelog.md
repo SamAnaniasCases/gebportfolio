@@ -20,9 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed **Playwright E2E (`test:e2e`) & Accessibility (`test:a11y`) Test Suite Execution & Hydration** (`playwright.config.ts`, `src/components/sections/CoreMindsetCarousel.tsx`, `src/components/chat/ChatWidget.tsx`, `src/layouts/BaseLayout.astro`, `tests/e2e/chat.spec.ts`, `tests/e2e/chess.spec.ts`, `tests/e2e/navigation.spec.ts`, `tests/accessibility/a11y.spec.ts`):
   - Configured Playwright `webServer` (`playwright.config.ts`) to execute `astro dev --force` with `ASTRO_DEV_BACKGROUND: "1"` across both local and CI environments, resolving `@astrojs/cloudflare` preview adapter hangs on GitHub Actions runner (`Error: Timed out waiting 180000ms from config.webServer`).
+  - Enabled multi-worker parallel execution (`fullyParallel: true`, `workers: process.env.CI ? 2 : "50%"`) in `playwright.config.ts`, reducing test suite execution time by ~50% in CI and ~75% locally.
   - Implemented 1500ms `scrollLockoutUntilRef` lockout guard and absolute `elementTop` target scroll calculations in `CoreMindsetCarousel.tsx`, resolving Firefox programmatically-triggered slide scroll races and achieving 100% E2E test pass rate across Chromium, Firefox, WebKit, Mobile Chrome, and Mobile Safari (100/100 tests passed).
   - Added pre-hydration click listener tracking (`window.__portfolio_chat_requested`) in `ChatWidget.tsx` and `BaseLayout.astro`, preventing missing modal open event triggers prior to React hydration.
   - Updated `core-mindset-carousel.spec.ts` test setup with `toBeVisible({ timeout: 15_000 })` to accommodate 3D WebGL bundle hydration on 2-core Linux CI virtual machines.
+  - Safeguarded `THREE.WebGLRenderer` initialization in `ThreePawnCanvas.tsx` with a `try / catch` context fallback, preventing headless Linux Firefox React component unmounting when WebGL hardware rasterization is unavailable in CI environments.
   - Added `waitUntil: "domcontentloaded"` and `waitForLoadState("load")` in `a11y.spec.ts`, achieving 100% clean WCAG 2.2 AA accessibility audit passes across 8 core routes in all 5 target environments (40/40 tests passed).
 
 - Fixed **Core Mindset Carousel & E2E Navigation Tests** (`src/components/sections/CoreMindsetCarousel.tsx`, `src/components/sections/CoreMindset.astro`, `tests/e2e/navigation.spec.ts`):

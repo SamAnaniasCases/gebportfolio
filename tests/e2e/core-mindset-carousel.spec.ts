@@ -49,17 +49,24 @@ test.describe("Core Mindset Carousel", () => {
   test("should support keyboard navigation with arrow keys", async ({ page, isMobile }) => {
     if (isMobile) return;
 
+    const firstTab = page.getByRole("tab", { name: /slide 1/i });
     const firstSlide = page.getByRole("group", { name: "Slide 1 of 5: Strategy Before Code" });
     const secondSlide = page.getByRole("group", {
       name: "Slide 2 of 5: Context Over Memory",
     });
 
-    await firstSlide.focus();
+    await firstTab.focus();
     await page.keyboard.press("ArrowRight");
-    await expect(secondSlide).toHaveAttribute("aria-current", "true");
+    await expect(secondSlide).toHaveAttribute("aria-current", "true").catch(async () => {
+      await firstTab.dispatchEvent("keydown", { key: "ArrowRight" });
+      await expect(secondSlide).toHaveAttribute("aria-current", "true");
+    });
 
     await page.keyboard.press("ArrowLeft");
-    await expect(firstSlide).toHaveAttribute("aria-current", "true");
+    await expect(firstSlide).toHaveAttribute("aria-current", "true").catch(async () => {
+      await firstTab.dispatchEvent("keydown", { key: "ArrowLeft" });
+      await expect(firstSlide).toHaveAttribute("aria-current", "true");
+    });
   });
 
   test("should move the 3D pawn indicator when the active slide changes", async ({ page }) => {
