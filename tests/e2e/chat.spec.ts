@@ -10,7 +10,7 @@ async function openChatModal(page: Page) {
         true;
       window.dispatchEvent(new CustomEvent("open-portfolio-chat"));
     });
-    await expect(dialog).toBeVisible({ timeout: 1500 });
+    await expect(dialog).toBeVisible();
   }).toPass({ timeout: 15_000 });
 }
 

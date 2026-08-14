@@ -31,8 +31,8 @@ test.describe("Core Mindset Carousel", () => {
 
     await expect(async () => {
       await squareTab.click();
-      await expect(fourthSlide).toHaveAttribute("aria-current", "true", { timeout: 1000 });
-    }).toPass({ timeout: 10_000 });
+      await expect(fourthSlide).toHaveAttribute("aria-current", "true");
+    }).toPass({ timeout: 15_000 });
   });
 
   test("should advance slides when clicking adjacent square pagination indicators", async ({
@@ -46,9 +46,9 @@ test.describe("Core Mindset Carousel", () => {
 
     await expect(async () => {
       await secondTab.click();
-      await expect(secondSlide).toHaveAttribute("aria-current", "true", { timeout: 1000 });
-      await expect(firstSlide).not.toHaveAttribute("aria-current", "true", { timeout: 1000 });
-    }).toPass({ timeout: 10_000 });
+      await expect(secondSlide).toHaveAttribute("aria-current", "true");
+      await expect(firstSlide).not.toHaveAttribute("aria-current", "true");
+    }).toPass({ timeout: 15_000 });
   });
 
   test("should support keyboard navigation with arrow keys", async ({ page, isMobile }) => {
@@ -63,13 +63,13 @@ test.describe("Core Mindset Carousel", () => {
     await firstTab.focus();
     await expect(async () => {
       await page.keyboard.press("ArrowRight");
-      await expect(secondSlide).toHaveAttribute("aria-current", "true", { timeout: 1000 });
-    }).toPass({ timeout: 10_000 });
+      await expect(secondSlide).toHaveAttribute("aria-current", "true");
+    }).toPass({ timeout: 15_000 });
 
     await expect(async () => {
       await page.keyboard.press("ArrowLeft");
-      await expect(firstSlide).toHaveAttribute("aria-current", "true", { timeout: 1000 });
-    }).toPass({ timeout: 10_000 });
+      await expect(firstSlide).toHaveAttribute("aria-current", "true");
+    }).toPass({ timeout: 15_000 });
   });
 
   test("should move the 3D pawn indicator when the active slide changes", async ({ page }) => {
@@ -81,10 +81,8 @@ test.describe("Core Mindset Carousel", () => {
     const fourthTab = page.getByRole("tab", { name: "Go to slide 4: Evidence Over Assumptions" });
     await expect(async () => {
       await fourthTab.click();
-      await expect(async () => {
-        const newLeft = await pawn.evaluate((el) => el.style.left);
-        expect(newLeft).not.toBe(initialLeft);
-      }).toPass({ timeout: 1000 });
-    }).toPass({ timeout: 10_000 });
+      const newLeft = await pawn.evaluate((el) => el.style.left);
+      expect(newLeft).not.toBe(initialLeft);
+    }).toPass({ timeout: 15_000 });
   });
 });

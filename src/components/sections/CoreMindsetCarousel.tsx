@@ -99,25 +99,6 @@ export const CoreMindsetCarousel: React.FC<CoreMindsetCarouselProps> = ({ princi
       const targetIndex = Math.max(0, Math.min(total - 1, index));
       setActiveIndex(targetIndex);
       scrollLockoutUntilRef.current = Date.now() + 4000;
-
-      // Scroll window sticky positioning ONLY on desktop viewports
-      if (window.innerWidth < 768) return;
-
-      if (!containerRef.current) return;
-      const parent = containerRef.current.closest("section") || containerRef.current.parentElement;
-      if (!parent) return;
-
-      const rect = parent.getBoundingClientRect();
-      const scrollableHeight = rect.height - window.innerHeight;
-
-      if (scrollableHeight > 0) {
-        const elementTop = window.scrollY + rect.top;
-        const targetScrollY = elementTop + (targetIndex / (total - 1 || 1)) * scrollableHeight;
-        window.scrollTo({
-          top: targetScrollY,
-          behavior: "auto",
-        });
-      }
     },
     [total]
   );
