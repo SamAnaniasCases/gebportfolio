@@ -2,13 +2,15 @@
 -- Singleton game row guarantees structurally that only one live board exists at any time.
 
 CREATE TABLE IF NOT EXISTS game (
-  id            INTEGER PRIMARY KEY CHECK (id = 1),
-  version       INTEGER NOT NULL,
-  fen           TEXT    NOT NULL,
-  history       TEXT    NOT NULL,  -- JSON array of SAN notation strings
-  position_keys TEXT    NOT NULL,  -- JSON array of position keys for threefold repetition
-  contributors  INTEGER NOT NULL,
-  last_move_at  TEXT    NOT NULL
+  id                    INTEGER PRIMARY KEY CHECK (id = 1),
+  version               INTEGER NOT NULL,
+  fen                   TEXT    NOT NULL,
+  history               TEXT    NOT NULL,  -- JSON array of SAN notation strings
+  position_keys         TEXT    NOT NULL,  -- JSON array of position keys for threefold repetition
+  contributors          INTEGER NOT NULL,
+  seen_sessions         TEXT    NOT NULL DEFAULT '[]',
+  all_time_contributors INTEGER NOT NULL DEFAULT 0,
+  last_move_at          TEXT    NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS finished_game (

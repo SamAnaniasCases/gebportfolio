@@ -13,13 +13,14 @@ test.describe("Global Navigation & Header Verification", () => {
   test("should support accessible skip link keyboard focus and targeting", async ({
     page,
     browserName,
+    isMobile,
   }) => {
     // Initially skip link is screen-reader only (hidden visually)
     const skipLink = page.getByRole("link", { name: "Skip to content" });
     await expect(skipLink).toHaveClass(/sr-only/);
 
-    // Tab onto the page to focus the skip link (skip focus check on Webkit due to native link tab-focus limitations)
-    if (browserName !== "webkit") {
+    // Tab onto the page to focus the skip link (skip focus check on Webkit/mobile due to native link tab-focus limitations)
+    if (browserName !== "webkit" && !isMobile) {
       await page.keyboard.press("Tab");
       await expect(skipLink).toBeFocused();
     }
@@ -52,10 +53,13 @@ test.describe("Global Navigation & Header Verification", () => {
         const openBtn = page.getByRole("button", { name: "Open navigation menu" });
         await expect(openBtn).toBeVisible();
         const mobileMenu = page.getByRole("navigation", { name: "Mobile navigation" });
-        if (!(await mobileMenu.isVisible())) {
-          await openBtn.click();
-        }
-        await expect(mobileMenu).toBeVisible();
+
+        await expect(async () => {
+          if (!(await mobileMenu.isVisible())) {
+            await openBtn.click();
+          }
+          await expect(mobileMenu).toBeVisible();
+        }).toPass({ timeout: 5000 });
       }
     };
     const navigation = () =>
@@ -68,12 +72,9 @@ test.describe("Global Navigation & Header Verification", () => {
       const navLink = navigation().locator(`a[href="${link.path}"]`).first();
       await expect(navLink).toBeVisible();
 
-      // Click link and await URL navigation concurrently
-      if (link.path === "/") {
-        await navLink.click();
-      } else {
-        await Promise.all([page.waitForURL(`**${link.path}**`), navLink.click()]);
-      }
+      await navLink.click();
+      const expectedUrlPattern = link.path === "/" ? /\/$/ : new RegExp(link.path);
+      await expect(page).toHaveURL(expectedUrlPattern);
 
       // Verify URL pathname (strip trailing slashes for static output compatibility)
       const url = new URL(page.url());

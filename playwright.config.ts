@@ -13,13 +13,13 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests",
   /* Run tests in files in parallel */
-  fullyParallel: false,
+  fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: 1,
+  /* Parallel worker allocation: 2 in CI and locally for dev server stability */
+  workers: process.env.CI ? 2 : 2,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -62,12 +62,17 @@ export default defineConfig({
   ],
 
   /* Auto-start the app so tests can run without a manually started server.
-     Locally: reuse a running dev server when available.
-     On CI: build the production bundle and serve it via `astro preview`. */
+     Uses `astro dev --force` with `ASTRO_DEV_BACKGROUND: "1"` to suppress Astro v7's
+     `am-i-vibing` agent detection. `@astrojs/cloudflare`'s `astro preview` requires
+     Wrangler Pages bindings that hang outside Wrangler environments. */
   webServer: {
-    command: "pnpm run build && pnpm run preview",
-    url: "http://localhost:4321",
-    reuseExistingServer: true,
+    command: "pnpm exec astro dev",
+    url: "http://127.0.0.1:4321",
+    reuseExistingServer: !process.env.CI,
     timeout: 180_000,
+    env: {
+      ...process.env,
+      ASTRO_DEV_BACKGROUND: "1",
+    },
   },
 });

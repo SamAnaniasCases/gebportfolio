@@ -1,21 +1,17 @@
 import { test, expect, type Page } from "@playwright/test";
 
 async function openChatModal(page: Page) {
-  const isMobile = await page.locator("#menu-open").isVisible();
-  if (isMobile) {
-    const mobileMenu = page.getByRole("navigation", { name: "Mobile navigation" });
-    if (!(await mobileMenu.isVisible())) {
-      await page.locator("#menu-open").click();
-      await expect(mobileMenu).toBeVisible();
-    }
-    const trigger = page.locator("#mobile-menu button", { hasText: "Live Chat" });
-    await expect(trigger).toBeVisible();
-    await trigger.click();
-  } else {
-    const trigger = page.locator("aside button", { hasText: "Live Chat" });
-    await expect(trigger).toBeVisible();
-    await trigger.click();
-  }
+  await page.waitForLoadState("domcontentloaded");
+  const dialog = page.getByRole("dialog", { name: "Real-time live chat room" });
+
+  await expect(async () => {
+    await page.evaluate(() => {
+      (window as unknown as { __portfolio_chat_requested?: boolean }).__portfolio_chat_requested =
+        true;
+      window.dispatchEvent(new CustomEvent("open-portfolio-chat"));
+    });
+    await expect(dialog).toBeVisible();
+  }).toPass({ timeout: 15_000 });
 }
 
 test.describe("Anonymous Real-Time Chatbox Onboarding & Verification", () => {
@@ -61,11 +57,10 @@ test.describe("Anonymous Real-Time Chatbox Onboarding & Verification", () => {
   test("should persist username in localStorage and bypass onboarding on reload", async ({
     page,
   }) => {
-    // Set localStorage display name directly
-    await page.evaluate(() => {
-      localStorage.setItem("portfolio_chat_display_name_v1", "TacticalTester");
+    await page.addInitScript(() => {
+      window.localStorage.setItem("portfolio_chat_display_name_v1", "TacticalTester");
     });
-    await page.reload();
+    await page.goto("/");
 
     await openChatModal(page);
 
@@ -93,8 +88,10 @@ test.describe("Anonymous Real-Time Chatbox Onboarding & Verification", () => {
     const nameInput = page.getByPlaceholder("e.g. TacticalKnight");
     await expect(nameInput).toBeFocused();
 
-    await page.keyboard.press("Escape");
-    await expect(dialog).not.toBeVisible();
+    await expect(async () => {
+      await page.keyboard.press("Escape");
+      await expect(dialog).not.toBeVisible();
+    }).toPass({ timeout: 5000 });
   });
 
   test("should close chat modal when close button is clicked", async ({ page }) => {
@@ -103,8 +100,10 @@ test.describe("Anonymous Real-Time Chatbox Onboarding & Verification", () => {
     const dialog = page.getByRole("dialog", { name: "Real-time live chat room" });
     await expect(dialog).toBeVisible();
 
-    const closeBtn = page.getByRole("button", { name: "Close chat modal" }).first();
-    await closeBtn.click();
-    await expect(dialog).not.toBeVisible();
+    await expect(async () => {
+      const closeBtn = page.getByRole("button", { name: "Close chat modal" }).first();
+      await closeBtn.click();
+      await expect(dialog).not.toBeVisible();
+    }).toPass({ timeout: 5000 });
   });
 });

@@ -4,7 +4,17 @@ export interface StoredGameState {
   history: string[]; // Full SAN move history
   positionKeys: string[]; // Array of FEN position keys for threefold repetition
   contributors: number;
+  seenSessions: string[]; // Array of unique session IDs that moved in current match
+  allTimeContributors: number; // Permanent cumulative unique contributor count
   lastMoveAt: string;
+}
+
+export interface ArchivedGameRecord {
+  id: number;
+  pgn: string;
+  outcome: string;
+  contributors: number;
+  endedAt: string;
 }
 
 export interface StorageProvider {
@@ -14,6 +24,7 @@ export interface StorageProvider {
     nextState: StoredGameState
   ): Promise<{ ok: true; state: StoredGameState } | { ok: false; reason: "superseded" }>;
   archiveGame(pgn: string, outcome: string, contributors: number): Promise<void>;
+  getArchivedGames(limit?: number): Promise<ArchivedGameRecord[]>;
 }
 
 // Default initial FEN position
@@ -26,8 +37,12 @@ let memoryState: StoredGameState = {
   history: [],
   positionKeys: [INITIAL_FEN.split(" ")[0]],
   contributors: 0,
+  seenSessions: [],
+  allTimeContributors: 0,
   lastMoveAt: new Date().toISOString(),
 };
+
+const memoryArchivedGames: ArchivedGameRecord[] = [];
 
 /**
  * In-Memory Storage Provider (Local Dev / Fallback)
@@ -39,6 +54,8 @@ export const memoryStorageProvider: StorageProvider = {
       ...memoryState,
       history: [...memoryState.history],
       positionKeys: [...memoryState.positionKeys],
+      seenSessions: [...(memoryState.seenSessions || [])],
+      allTimeContributors: memoryState.allTimeContributors || 0,
     };
   },
 
@@ -55,16 +72,29 @@ export const memoryStorageProvider: StorageProvider = {
       ...nextState,
       history: [...nextState.history],
       positionKeys: [...nextState.positionKeys],
+      seenSessions: [...(nextState.seenSessions || [])],
+      allTimeContributors: nextState.allTimeContributors || 0,
     };
 
     return { ok: true, state: { ...memoryState } };
   },
 
   async archiveGame(pgn: string, outcome: string, contributors: number): Promise<void> {
+    memoryArchivedGames.unshift({
+      id: memoryArchivedGames.length + 1,
+      pgn,
+      outcome,
+      contributors,
+      endedAt: new Date().toISOString(),
+    });
     console.log(
       `[Chess Archive] Game ended (${outcome}) with ${contributors} contributors. PGN captured:`,
       pgn
     );
+  },
+
+  async getArchivedGames(limit = 10): Promise<ArchivedGameRecord[]> {
+    return memoryArchivedGames.slice(0, limit);
   },
 };
 
@@ -75,6 +105,7 @@ export interface D1PreparedStatement {
   first<T = Record<string, unknown>>(): Promise<T | null>;
   bind(...values: unknown[]): D1PreparedStatement;
   run(): Promise<{ meta: { changes: number } }>;
+  all<T = Record<string, unknown>>(): Promise<{ results?: T[] }>;
 }
 
 export interface D1DatabaseBinding {
@@ -120,10 +151,29 @@ async function ensureD1Tables(d1Binding: D1DatabaseBinding): Promise<void> {
           history TEXT NOT NULL,
           position_keys TEXT NOT NULL,
           contributors INTEGER NOT NULL,
+          seen_sessions TEXT NOT NULL DEFAULT '[]',
+          all_time_contributors INTEGER NOT NULL DEFAULT 0,
           last_move_at TEXT NOT NULL
         )`
       )
       .run();
+
+    // Auto-migration for existing deployed tables missing new columns
+    try {
+      await d1Binding
+        .prepare(`ALTER TABLE game ADD COLUMN seen_sessions TEXT NOT NULL DEFAULT '[]'`)
+        .run();
+    } catch {
+      // Column already exists
+    }
+
+    try {
+      await d1Binding
+        .prepare(`ALTER TABLE game ADD COLUMN all_time_contributors INTEGER NOT NULL DEFAULT 0`)
+        .run();
+    } catch {
+      // Column already exists
+    }
 
     await d1Binding
       .prepare(
@@ -139,8 +189,8 @@ async function ensureD1Tables(d1Binding: D1DatabaseBinding): Promise<void> {
 
     await d1Binding
       .prepare(
-        `INSERT OR IGNORE INTO game (id, version, fen, history, position_keys, contributors, last_move_at)
-         VALUES (1, 0, '${INITIAL_FEN}', '[]', '${JSON.stringify([INITIAL_FEN.split(" ")[0]])}', 0, '${new Date().toISOString()}')`
+        `INSERT OR IGNORE INTO game (id, version, fen, history, position_keys, contributors, seen_sessions, all_time_contributors, last_move_at)
+         VALUES (1, 0, '${INITIAL_FEN}', '[]', '${JSON.stringify([INITIAL_FEN.split(" ")[0]])}', 0, '[]', 0, '${new Date().toISOString()}')`
       )
       .run();
   } catch (e) {
@@ -178,6 +228,8 @@ export function createD1StorageProvider(d1Binding: D1DatabaseBinding): StoragePr
             history: [],
             positionKeys: [INITIAL_FEN.split(" ")[0]],
             contributors: 0,
+            seenSessions: [],
+            allTimeContributors: 0,
             lastMoveAt: new Date().toISOString(),
           };
         }
@@ -188,6 +240,8 @@ export function createD1StorageProvider(d1Binding: D1DatabaseBinding): StoragePr
           history: JSON.parse(String(row.history || "[]")),
           positionKeys: JSON.parse(String(row.position_keys || "[]")),
           contributors: Number(row.contributors),
+          seenSessions: JSON.parse(String(row.seen_sessions || "[]")),
+          allTimeContributors: Number(row.all_time_contributors || 0),
           lastMoveAt: String(row.last_move_at),
         };
       } catch (e) {
@@ -204,12 +258,14 @@ export function createD1StorageProvider(d1Binding: D1DatabaseBinding): StoragePr
         await initSchema();
         const stmt = d1Binding.prepare(`
           UPDATE game
-          SET version       = ?,
-              fen           = ?,
-              history       = ?,
-              position_keys = ?,
-              contributors  = ?,
-              last_move_at  = ?
+          SET version                = ?,
+              fen                    = ?,
+              history                = ?,
+              position_keys          = ?,
+              contributors           = ?,
+              seen_sessions          = ?,
+              all_time_contributors  = ?,
+              last_move_at           = ?
           WHERE id = 1 AND version = ?
         `);
 
@@ -220,6 +276,8 @@ export function createD1StorageProvider(d1Binding: D1DatabaseBinding): StoragePr
             JSON.stringify(nextState.history),
             JSON.stringify(nextState.positionKeys),
             nextState.contributors,
+            JSON.stringify(nextState.seenSessions || []),
+            nextState.allTimeContributors || 0,
             nextState.lastMoveAt,
             currentVersion
           )
@@ -246,6 +304,27 @@ export function createD1StorageProvider(d1Binding: D1DatabaseBinding): StoragePr
           .run();
       } catch (e) {
         console.error("[D1 Storage] Error archiving finished game:", e);
+      }
+    },
+
+    async getArchivedGames(limit = 10): Promise<ArchivedGameRecord[]> {
+      try {
+        await initSchema();
+        const { results } = await d1Binding
+          .prepare(`SELECT * FROM finished_game ORDER BY id DESC LIMIT ?`)
+          .bind(limit)
+          .all();
+        if (!results) return [];
+        return (results as Record<string, unknown>[]).map((r) => ({
+          id: Number(r.id),
+          pgn: String(r.pgn),
+          outcome: String(r.outcome),
+          contributors: Number(r.contributors),
+          endedAt: String(r.ended_at),
+        }));
+      } catch (e) {
+        console.error("[D1 Storage] Error reading archived games:", e);
+        return memoryStorageProvider.getArchivedGames(limit);
       }
     },
   };

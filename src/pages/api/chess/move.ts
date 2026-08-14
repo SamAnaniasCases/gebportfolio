@@ -48,6 +48,8 @@ export const POST: APIRoute = async ({ request, cookies, locals }) => {
         history: [],
         positionKeys: [INITIAL_FEN.split(" ")[0]],
         contributors: 0,
+        seenSessions: [],
+        allTimeContributors: 0,
         lastMoveAt: new Date().toISOString(),
       };
     }
@@ -63,7 +65,7 @@ export const POST: APIRoute = async ({ request, cookies, locals }) => {
         sideToMove: (game.fen.split(" ")[1] === "b" ? "black" : "white") as "white" | "black",
         history: game.history,
         positionKeys: game.positionKeys,
-        seenSessions: [],
+        seenSessions: game.seenSessions || [],
         contributors: game.contributors,
         startedAt: game.lastMoveAt,
         lastMoveAt: game.lastMoveAt,
@@ -98,12 +100,17 @@ export const POST: APIRoute = async ({ request, cookies, locals }) => {
 
     // Prepare updated DB state from serialized arbiter result
     const serialized = arbiter.serialize();
+    const isNewSession = !(game.seenSessions || []).includes(session.sessionId);
+    const nextAllTimeContributors = (game.allTimeContributors || 0) + (isNewSession ? 1 : 0);
+
     const updatedDbState = {
       version: serialized.version,
       fen: serialized.position,
       history: serialized.history,
       positionKeys: serialized.positionKeys,
       contributors: serialized.contributors,
+      seenSessions: serialized.seenSessions,
+      allTimeContributors: nextAllTimeContributors,
       lastMoveAt: serialized.lastMoveAt,
     };
 
@@ -125,7 +132,7 @@ export const POST: APIRoute = async ({ request, cookies, locals }) => {
                 "white" | "black",
               history: freshGame.history,
               positionKeys: freshGame.positionKeys,
-              seenSessions: [],
+              seenSessions: freshGame.seenSessions || [],
               contributors: freshGame.contributors,
               startedAt: freshGame.lastMoveAt,
               lastMoveAt: freshGame.lastMoveAt,
@@ -141,6 +148,7 @@ export const POST: APIRoute = async ({ request, cookies, locals }) => {
           publicView: {
             ...freshArbiter.publicView({ historyLimit: 10 }),
             yourSide: session.side,
+            allTimeContributors: freshGame?.allTimeContributors || 0,
           },
         }),
         {
@@ -162,6 +170,7 @@ export const POST: APIRoute = async ({ request, cookies, locals }) => {
       canMoveNow: arbiter.publicView().sideToMove === session.side,
       recentMoves: serialized.history.slice(-10),
       contributorCount: serialized.contributors,
+      allTimeContributors: nextAllTimeContributors,
       fen: serialized.position,
     };
 

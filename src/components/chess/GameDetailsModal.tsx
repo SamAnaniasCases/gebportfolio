@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { DoodleIcon } from "../ui/DoodleIcon";
+import { showToast } from "../feedback/Toast";
 
 export interface PublicGameState {
   version: number;
@@ -9,8 +10,17 @@ export interface PublicGameState {
   canMoveNow: boolean;
   recentMoves: string[];
   contributorCount: number;
+  allTimeContributors?: number;
   lastMoveAt: string;
   outcome: { type: string; winner?: "white" | "black" } | null;
+}
+
+interface ArchivedGameRecord {
+  id: number;
+  pgn: string;
+  outcome: string;
+  contributors: number;
+  endedAt: string;
 }
 
 interface GameDetailsModalProps {
@@ -26,9 +36,32 @@ export const GameDetailsModal: React.FC<GameDetailsModalProps> = ({
   gameState,
   displayName,
 }) => {
+  const [archivedGames, setArchivedGames] = useState<ArchivedGameRecord[]>([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetch("/api/chess/archive")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.ok && Array.isArray(data.archives)) {
+            setArchivedGames(data.archives);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isOpen]);
+
   if (!isOpen || !gameState) return null;
 
   const isYourTurn = gameState.yourSide === gameState.sideToMove;
+  const isGameOver = !!gameState.outcome;
+
+  const handleCopyPGN = (pgn: string) => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(pgn);
+      showToast("PGN copied to clipboard!");
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-md">
@@ -39,10 +72,11 @@ export const GameDetailsModal: React.FC<GameDetailsModalProps> = ({
         {/* Header */}
         <header className="border-border-custom/60 mb-4 flex items-center justify-between border-b pb-3">
           <div className="flex items-center gap-2">
-            <span className="font-display text-primary text-xl"></span>
             <div>
               <h3 className="font-display text-text text-base font-bold">Game Details & History</h3>
-              <p className="text-text-muted font-mono text-[11px]">Crowd Chess Match #1</p>
+              <p className="text-text-muted font-mono text-[11px]">
+                Crowd Chess Match v{gameState.version}
+              </p>
             </div>
           </div>
           <button
@@ -56,7 +90,16 @@ export const GameDetailsModal: React.FC<GameDetailsModalProps> = ({
         </header>
 
         {/* Details Grid */}
-        <div className="space-y-4 font-sans text-xs">
+        <div className="custom-scrollbar max-h-[75vh] space-y-4 overflow-y-auto pr-1 font-sans text-xs">
+          {/* Victory Header Alert if game finished */}
+          {isGameOver && (
+            <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/15 p-3 text-center font-mono text-xs font-bold text-emerald-700 dark:text-emerald-300">
+              {gameState.outcome?.winner
+                ? `★ GAME OVER - TEAM ${gameState.outcome.winner.toUpperCase()} WINS BY CHECKMATE!`
+                : `★ GAME OVER - ${gameState.outcome?.type.toUpperCase() || "FINISHED"}`}
+            </div>
+          )}
+
           {/* Team Assignment & Side */}
           <div className="border-border-custom/70 bg-surface-subtle/80 space-y-2 rounded-xl border p-3.5">
             <div className="flex items-center justify-between">
@@ -85,9 +128,20 @@ export const GameDetailsModal: React.FC<GameDetailsModalProps> = ({
             </div>
 
             <div className="flex items-center justify-between">
-              <span className="text-text-muted font-mono text-[11px]">Total Contributors:</span>
+              <span className="text-text-muted font-mono text-[11px]">
+                Current Match Contributors:
+              </span>
               <span className="text-text font-mono text-xs font-bold">
                 {gameState.contributorCount} visitors
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <span className="text-text-muted font-mono text-[11px]">
+                All-Time Total Visitors:
+              </span>
+              <span className="text-primary font-mono text-xs font-bold">
+                {gameState.allTimeContributors ?? gameState.contributorCount} visitors
               </span>
             </div>
           </div>
@@ -125,11 +179,11 @@ export const GameDetailsModal: React.FC<GameDetailsModalProps> = ({
           {/* Move Log History */}
           <div className="space-y-1.5">
             <div className="text-text-muted flex items-center justify-between font-mono text-[11px]">
-              <span>Full Move History:</span>
+              <span>Current Move History:</span>
               <span>{gameState.recentMoves.length} moves recorded</span>
             </div>
 
-            <div className="custom-scrollbar border-border-custom/70 bg-surface text-text max-h-36 overflow-y-auto rounded-xl border p-3 font-mono text-xs leading-relaxed">
+            <div className="custom-scrollbar border-border-custom/70 bg-surface text-text max-h-32 overflow-y-auto rounded-xl border p-3 font-mono text-xs leading-relaxed">
               {gameState.recentMoves.length > 0 ? (
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                   {gameState.recentMoves.map((m, idx) => (
@@ -147,6 +201,42 @@ export const GameDetailsModal: React.FC<GameDetailsModalProps> = ({
             </div>
           </div>
 
+          {/* Archived Finished Games Section */}
+          {archivedGames.length > 0 && (
+            <div className="space-y-2 pt-2">
+              <div className="text-text-muted flex items-center justify-between font-mono text-[11px]">
+                <span>Archived Completed Matches:</span>
+                <span>{archivedGames.length} saved</span>
+              </div>
+
+              <div className="custom-scrollbar max-h-36 space-y-2 overflow-y-auto pr-1">
+                {archivedGames.map((game) => (
+                  <div
+                    key={game.id}
+                    className="border-border-custom/70 bg-surface-subtle/60 flex items-center justify-between rounded-lg border p-2 font-mono text-[11px]"
+                  >
+                    <div>
+                      <div className="text-text font-bold uppercase">
+                        Match #{game.id} · {game.outcome}
+                      </div>
+                      <div className="text-text-muted text-[10px]">
+                        {game.contributors} contributors ·{" "}
+                        {new Date(game.endedAt).toLocaleDateString()}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleCopyPGN(game.pgn)}
+                      className="bg-primary/10 hover:bg-primary/20 text-primary border-primary/30 cursor-pointer rounded border px-2 py-1 font-mono text-[10px] font-bold transition-colors"
+                    >
+                      Copy PGN
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* FEN String */}
           <div className="space-y-1">
             <span className="text-text-muted font-mono text-[10px]">FEN Position Key:</span>
@@ -157,7 +247,7 @@ export const GameDetailsModal: React.FC<GameDetailsModalProps> = ({
         </div>
 
         {/* Footer Button */}
-        <footer className="border-border-custom/60 mt-5 border-t pt-3 text-right">
+        <footer className="border-border-custom/60 mt-4 border-t pt-3 text-right">
           <button
             type="button"
             onClick={onClose}
