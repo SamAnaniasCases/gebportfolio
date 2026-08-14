@@ -98,7 +98,7 @@ export const CoreMindsetCarousel: React.FC<CoreMindsetCarouselProps> = ({ princi
     (index: number) => {
       const targetIndex = Math.max(0, Math.min(total - 1, index));
       setActiveIndex(targetIndex);
-      scrollLockoutUntilRef.current = Date.now() + 1500;
+      scrollLockoutUntilRef.current = Date.now() + 4000;
 
       // Scroll window sticky positioning ONLY on desktop viewports
       if (window.innerWidth < 768) return;
@@ -246,9 +246,9 @@ export const CoreMindsetCarousel: React.FC<CoreMindsetCarouselProps> = ({ princi
           aria-label="Slide navigation"
         >
           {/* Horizontal Track Connecting Line */}
-          <div className="bg-border-custom/80 absolute top-1/2 right-2 left-2 h-[2px] -translate-y-1/2" />
+          <div className="bg-border-custom/80 pointer-events-none absolute top-1/2 right-2 left-2 h-[2px] -translate-y-1/2" />
 
-          {/* Square Pagination Indicators with Enlarged 44px Minimum Touch Target Area */}
+          {/* Square Pagination Indicators with Accessible 44px Minimum Touch Target */}
           {principles.map((p, i) => {
             const isActive = i === activeIndex;
             return (
@@ -271,13 +271,17 @@ export const CoreMindsetCarousel: React.FC<CoreMindsetCarouselProps> = ({ princi
                     scrollToSlide(i - 1);
                   }
                 }}
-                className={`focus-visible:ring-focus focus-visible:ring-offset-bg relative z-10 flex cursor-pointer items-center justify-center transition-all duration-300 outline-none before:absolute before:-inset-1.5 before:content-[''] focus-visible:ring-2 focus-visible:ring-offset-2 md:before:-inset-3.5 ${
-                  isActive
-                    ? "border-primary bg-primary ring-primary/40 size-4 rounded-xs shadow-sm ring-2"
-                    : "bg-surface border-border-custom hover:border-primary/60 hover:bg-surface-subtle size-3 rounded-xs border"
-                }`}
+                className="focus-visible:ring-focus focus-visible:ring-offset-bg relative z-10 flex min-h-[44px] min-w-[44px] cursor-pointer items-center justify-center rounded-md transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
               >
-                {isActive && <span className="rounded-2xs size-1.5 bg-white" />}
+                <span
+                  className={`flex items-center justify-center transition-all duration-300 ${
+                    isActive
+                      ? "border-primary bg-primary ring-primary/40 size-4 rounded-xs shadow-sm ring-2"
+                      : "bg-surface border-border-custom hover:border-primary/60 hover:bg-surface-subtle size-3 rounded-xs border"
+                  }`}
+                >
+                  {isActive && <span className="rounded-2xs size-1.5 bg-white" />}
+                </span>
               </button>
             );
           })}

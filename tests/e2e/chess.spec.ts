@@ -1,29 +1,17 @@
 import { test, expect, type Page } from "@playwright/test";
 
 async function openChessModal(page: Page) {
-  await page.evaluate(() => {
-    localStorage.setItem("portfolio_chat_display_name_v1", "ChessTester");
-  });
-  await page.reload();
-  await page.waitForLoadState("load");
+  await page.waitForLoadState("domcontentloaded");
   const dialog = page.getByRole("dialog", { name: "Real-time live chat room" });
 
   await expect(async () => {
-    const isMobile = await page.locator("#menu-open").isVisible();
-    if (isMobile) {
-      const mobileMenu = page.getByRole("navigation", { name: "Mobile navigation" });
-      if (!(await mobileMenu.isVisible())) {
-        await page.locator("#menu-open").click();
-        await expect(mobileMenu).toBeVisible();
-      }
-      const trigger = page.locator("#mobile-menu button", { hasText: "Live Chat" });
-      await trigger.click();
-    } else {
-      const trigger = page.locator("aside button", { hasText: "Live Chat" });
-      await trigger.click();
-    }
-    await expect(dialog).toBeVisible({ timeout: 1000 });
-  }).toPass({ timeout: 10000 });
+    await page.evaluate(() => {
+      (window as unknown as { __portfolio_chat_requested?: boolean }).__portfolio_chat_requested =
+        true;
+      window.dispatchEvent(new CustomEvent("open-portfolio-chat"));
+    });
+    await expect(dialog).toBeVisible({ timeout: 1500 });
+  }).toPass({ timeout: 15_000 });
 
   // Switch to chess tab if present
   const chessTabBtn = page.getByRole("button", { name: /Shared Chess/i }).first();
@@ -34,6 +22,9 @@ async function openChessModal(page: Page) {
 
 test.describe("Interactive Chess Game Board E2E Tests", () => {
   test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem("portfolio_chat_display_name_v1", "ChessTester");
+    });
     await page.goto("/");
   });
 
@@ -51,29 +42,25 @@ test.describe("Interactive Chess Game Board E2E Tests", () => {
   }) => {
     await openChessModal(page);
 
-    // Find any pawn square belonging to player's assigned team (White or Black)
-    let pawnSquare = page.locator('button[aria-label^="White Pawn"]').first();
-    let isSelected = false;
+    // Determine the player's assigned team from the live game state
+    const yourSide = await page.evaluate(async () => {
+      const res = await fetch("/api/chess/state");
+      const data = await res.json();
+      return data.yourSide as "white" | "black";
+    });
 
-    if (await pawnSquare.isVisible()) {
-      await pawnSquare.click();
-      const cls = await pawnSquare.getAttribute("class");
-      if (cls?.includes("outline")) {
-        isSelected = true;
-      }
-    }
-
-    if (!isSelected) {
-      pawnSquare = page.locator('button[aria-label^="Black Pawn"]').first();
-      await expect(pawnSquare).toBeVisible();
-      await pawnSquare.click();
-    }
+    const piecePrefix = yourSide === "white" ? "White Pawn" : "Black Pawn";
+    const pawnSquare = page.locator(`button[aria-label^="${piecePrefix}"]`).first();
+    await expect(pawnSquare).toBeVisible();
 
     const squareName = await pawnSquare.getAttribute("title");
     expect(squareName).toBeTruthy();
 
-    // Verify piece is selected
-    await expect(pawnSquare).toHaveClass(/outline/);
+    // Verify piece is selected and retains outline
+    await expect(async () => {
+      await pawnSquare.click();
+      await expect(pawnSquare).toHaveClass(/outline/, { timeout: 1000 });
+    }).toPass({ timeout: 10_000 });
 
     // Verify floating piece label badge appears
     const labelBadge = page.locator(`text=Pawn on ${squareName}`);

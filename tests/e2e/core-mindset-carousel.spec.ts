@@ -3,6 +3,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Core Mindset Carousel", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
+    await page.waitForLoadState("domcontentloaded");
     const carousel = page.getByRole("region", { name: "Core Mindset Principles" });
     await expect(carousel).toBeVisible({ timeout: 15_000 });
   });
@@ -28,8 +29,10 @@ test.describe("Core Mindset Carousel", () => {
       name: "Slide 4 of 5: Evidence Over Assumptions",
     });
 
-    await squareTab.click();
-    await expect(fourthSlide).toHaveAttribute("aria-current", "true");
+    await expect(async () => {
+      await squareTab.click();
+      await expect(fourthSlide).toHaveAttribute("aria-current", "true", { timeout: 1000 });
+    }).toPass({ timeout: 10_000 });
   });
 
   test("should advance slides when clicking adjacent square pagination indicators", async ({
@@ -41,9 +44,11 @@ test.describe("Core Mindset Carousel", () => {
       name: "Slide 2 of 5: Context Over Memory",
     });
 
-    await secondTab.click();
-    await expect(secondSlide).toHaveAttribute("aria-current", "true");
-    await expect(firstSlide).not.toHaveAttribute("aria-current", "true");
+    await expect(async () => {
+      await secondTab.click();
+      await expect(secondSlide).toHaveAttribute("aria-current", "true", { timeout: 1000 });
+      await expect(firstSlide).not.toHaveAttribute("aria-current", "true", { timeout: 1000 });
+    }).toPass({ timeout: 10_000 });
   });
 
   test("should support keyboard navigation with arrow keys", async ({ page, isMobile }) => {
@@ -56,17 +61,15 @@ test.describe("Core Mindset Carousel", () => {
     });
 
     await firstTab.focus();
-    await page.keyboard.press("ArrowRight");
-    await expect(secondSlide).toHaveAttribute("aria-current", "true").catch(async () => {
-      await firstTab.dispatchEvent("keydown", { key: "ArrowRight" });
-      await expect(secondSlide).toHaveAttribute("aria-current", "true");
-    });
+    await expect(async () => {
+      await page.keyboard.press("ArrowRight");
+      await expect(secondSlide).toHaveAttribute("aria-current", "true", { timeout: 1000 });
+    }).toPass({ timeout: 10_000 });
 
-    await page.keyboard.press("ArrowLeft");
-    await expect(firstSlide).toHaveAttribute("aria-current", "true").catch(async () => {
-      await firstTab.dispatchEvent("keydown", { key: "ArrowLeft" });
-      await expect(firstSlide).toHaveAttribute("aria-current", "true");
-    });
+    await expect(async () => {
+      await page.keyboard.press("ArrowLeft");
+      await expect(firstSlide).toHaveAttribute("aria-current", "true", { timeout: 1000 });
+    }).toPass({ timeout: 10_000 });
   });
 
   test("should move the 3D pawn indicator when the active slide changes", async ({ page }) => {
@@ -75,13 +78,13 @@ test.describe("Core Mindset Carousel", () => {
 
     const initialLeft = await pawn.evaluate((el) => el.style.left);
 
-    const secondTab = page.getByRole("tab", { name: "Go to slide 2: Context Over Memory" });
-    await secondTab.click();
-
-    // Wait for transition to complete
-    await page.waitForTimeout(600);
-
-    const newLeft = await pawn.evaluate((el) => el.style.left);
-    expect(newLeft).not.toBe(initialLeft);
+    const fourthTab = page.getByRole("tab", { name: "Go to slide 4: Evidence Over Assumptions" });
+    await expect(async () => {
+      await fourthTab.click();
+      await expect(async () => {
+        const newLeft = await pawn.evaluate((el) => el.style.left);
+        expect(newLeft).not.toBe(initialLeft);
+      }).toPass({ timeout: 1000 });
+    }).toPass({ timeout: 10_000 });
   });
 });

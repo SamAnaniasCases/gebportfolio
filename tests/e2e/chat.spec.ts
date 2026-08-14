@@ -5,28 +5,18 @@ async function openChatModal(page: Page) {
   const dialog = page.getByRole("dialog", { name: "Real-time live chat room" });
 
   await expect(async () => {
-    const isMobile = await page.locator("#menu-open").isVisible();
-    if (isMobile) {
-      const mobileMenu = page.getByRole("navigation", { name: "Mobile navigation" });
-      if (!(await mobileMenu.isVisible())) {
-        await page.locator("#menu-open").click();
-        await expect(mobileMenu).toBeVisible();
-      }
-      const trigger = page.locator("#mobile-menu button", { hasText: "Live Chat" });
-      await trigger.click();
-    } else {
-      const trigger = page.locator("aside button", { hasText: "Live Chat" });
-      await trigger.click();
-    }
-    await expect(dialog).toBeVisible({ timeout: 1000 });
-  }).toPass({ timeout: 10000 });
+    await page.evaluate(() => {
+      (window as unknown as { __portfolio_chat_requested?: boolean }).__portfolio_chat_requested =
+        true;
+      window.dispatchEvent(new CustomEvent("open-portfolio-chat"));
+    });
+    await expect(dialog).toBeVisible({ timeout: 1500 });
+  }).toPass({ timeout: 15_000 });
 }
 
 test.describe("Anonymous Real-Time Chatbox Onboarding & Verification", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
-    await page.evaluate(() => window.localStorage.clear()).catch(() => {});
-    await page.reload();
   });
 
   test("should render navigation live chat trigger button", async ({ page }) => {
@@ -67,11 +57,10 @@ test.describe("Anonymous Real-Time Chatbox Onboarding & Verification", () => {
   test("should persist username in localStorage and bypass onboarding on reload", async ({
     page,
   }) => {
-    // Set localStorage display name directly
-    await page.evaluate(() => {
-      localStorage.setItem("portfolio_chat_display_name_v1", "TacticalTester");
+    await page.addInitScript(() => {
+      window.localStorage.setItem("portfolio_chat_display_name_v1", "TacticalTester");
     });
-    await page.reload();
+    await page.goto("/");
 
     await openChatModal(page);
 

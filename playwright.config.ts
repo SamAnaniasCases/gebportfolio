@@ -18,8 +18,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Parallel worker allocation: 2 in CI (2-core GitHub Actions runner), 50% locally */
-  workers: process.env.CI ? 2 : "50%",
+  /* Parallel worker allocation: 2 in CI and locally for dev server stability */
+  workers: process.env.CI ? 2 : 2,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -66,7 +66,7 @@ export default defineConfig({
      `am-i-vibing` agent detection. `@astrojs/cloudflare`'s `astro preview` requires
      Wrangler Pages bindings that hang outside Wrangler environments. */
   webServer: {
-    command: "pnpm exec astro dev --force",
+    command: "pnpm exec astro dev",
     url: "http://127.0.0.1:4321",
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
